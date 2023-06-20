@@ -19,15 +19,7 @@ class DatabaseSeeder extends Seeder
 
        Post::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        User::create([
-            'name' => 'jois',
-            'email' => 'animadmin@gmail.com',
-            'password' => bcrypt('password')
-        ]);
+        $this->call(RoleSeeder::class);
+        $this->call(AdminSeeder::class);
     }
 }

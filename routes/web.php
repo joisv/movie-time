@@ -34,8 +34,12 @@ Route::get('/', function () {
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return Inertia::render('Users/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/admin', function () {
+    return Inertia::render('Admin/Dashboard');
+})->middleware(['auth', 'role:admin'])->name('admin');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
