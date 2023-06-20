@@ -54,4 +54,25 @@ class PostController extends Controller
 
       return response()->json(['berhasil'], 200);
    }
+   public function bookmark(string $id) {
+      $post = Post::findOrFail($id);
+      $user = auth()->user();
+
+      $isBookmarked = $post->bookmarkedByUsers()->where('user_id', $user->id)->exists();
+
+      if($isBookmarked){
+
+         $post->decrement('bookmark');
+         $post->bookmarkedByUsers()->detach($user->id);
+
+      } else{
+
+         $post->increment('bookmark');
+         $post->bookmarkedByUsers()->attach($user->id);
+         
+      }
+
+
+      return response()->json(['berhasil'], 200);
+   }
 }

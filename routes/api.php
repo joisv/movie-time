@@ -22,5 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.postlike');
+    Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
     
 });
