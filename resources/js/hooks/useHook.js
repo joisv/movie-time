@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function useHook() {
     
     const [ loading, setLoading ] = useState(false);
-    const [ result, setResult ] = useState('');
+    const [ result, setResult ] = useState({});
     
     const setDataApi = async (url, id) => {
         setLoading(false)
@@ -20,10 +20,21 @@ export default function useHook() {
         
     }
 
+    const setReport = async (req) => {
+        console.log(req);
+        try {
+            const res = await axios.post(route('report.store', req));
+            setResult(res)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return{  
         setDataApi,
         loading,
         result,
+        setReport
     }
      
 }
