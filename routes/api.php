@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,5 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.postlike');
     Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
+    
+    Route::post('/report-post', [ReportController::class, 'store'])->name('report.store');
     
 });
