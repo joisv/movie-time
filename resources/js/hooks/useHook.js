@@ -7,10 +7,10 @@ export default function useHook() {
     const [ loading, setLoading ] = useState(false);
     const [ result, setResult ] = useState('');
     
-    const likePost = async (id) => {
+    const setDataApi = async (url, id) => {
         setLoading(false)
         try {
-            const res = await axios.post(route('post.postlike', id))
+            const res = await axios.post(route(url, id))
             setResult(res)
         } catch (error) {
             console.log(error);
@@ -20,21 +20,10 @@ export default function useHook() {
         
     }
 
-    const postComment = async () => {
-
-        try {
-            const res = axios.post(route('comment.store'))
-        } catch (error) {
-            console.log(error)
-        }
-        
-    }
-
     return{  
-        likePost,
+        setDataApi,
         loading,
         result,
-        postComment
     }
      
 }

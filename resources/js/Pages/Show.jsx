@@ -6,7 +6,9 @@ import { router } from '@inertiajs/react';
 export default function Show({ auth, postdata, comments }) {
 
     const [ like, setLike ] = useState(false);
-    const { likePost, result } = useHook()
+    const [ bookmark, setBookmark ] = useState(false);
+
+    const { setDataApi, result } = useHook()
 
     const { data, post, errors, progress, setData, reset } = useForm({
         post_id: postdata.id,
@@ -27,11 +29,22 @@ export default function Show({ auth, postdata, comments }) {
             onSuccess: () => reset()
         }) : alert('login dulu');
     }
-    
-    async function handleLike () {
+    const likeUrl = 'post.postlike'
+    const bookmarkUrl = 'post.bookmark'
+
+    function handleLike () {
         if(auth.user){
             setLike((prevlike) => !prevlike)
-            likePost(postdata.id)
+            setDataApi(likeUrl, postdata.id)
+        } else {
+            alert('login dulu');
+        }
+    }
+
+    function handleBookmark(){
+        if(auth.user){
+            setBookmark((prevBookmark) => !prevBookmark)
+            setDataApi(bookmarkUrl, postdata.id)
         } else {
             alert('login dulu');
         }
@@ -73,9 +86,14 @@ export default function Show({ auth, postdata, comments }) {
 
         {/* like */}
         
-        <button className={`px-2 my-3 rounded-sm ${like ? 'bg-blue-600 text-white' : 'bg-gray-300'}`} onClick={handleLike}>
-                like {postdata.like}
-        </button>
+        <div className='flex space-x-3'>
+            <button className={`px-2 my-3 rounded-sm ${like ? 'bg-blue-600 text-white' : 'bg-gray-300'}`} onClick={handleLike}>
+                    like {postdata.like}
+            </button>
+            <button className={`px-2 my-3 rounded-sm ${bookmark ? 'bg-lime-400 text-white' : 'bg-gray-300'}`} onClick={handleBookmark}>
+                    bookmark { postdata.bookmark }
+            </button>
+        </div>
         
         {/* comment form */}
         <form onSubmit={submit}>
