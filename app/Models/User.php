@@ -63,4 +63,13 @@ class User extends Authenticatable
         return $this->hasMany(Report::class);
     }
 
+    public function requests() {
+        return $this->hasMany(Request::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
 }

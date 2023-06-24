@@ -12,13 +12,13 @@ class PostController extends Controller
 {
    public function index() {
 
-      return Inertia::render('Dashboard/Post/Index');
+      return Inertia::render('Admin/Post/Index');
     
    }
 
    public function create() {
 
-      return Inertia::render('Dashboard/Post/Create');
+      return Inertia::render('Admin/Post/Create');
     
    }
 

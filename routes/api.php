@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\ReportController;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +27,33 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
     
     Route::post('/report-post', [ReportController::class, 'store'])->name('report.store');
+
+    Route::get('/notification', function() {
+        $user = auth()->user();
+        $data = Notification::where('user_id', $user->id)
+        ->where('is_read', false)
+        ->count();
+
+        return response()->json(['notifications' => $data], 200);
+    })->name('notification');
+
+    Route::put('/notification/update', function(Request $request) {
+        
+        try {
+            $user = auth()->user();
+
+            if( $user->id == $request->user_id ){
+
+                $data = Notification::findOrfail($request->id);
+                $data->is_read = true;
+                $data->save();
+
+                return response()->json(['message' => 'berhasil'], 200);
+            }
+
+        } catch (\Throwable $th) {
+            return response()->json('something went wrong');
+        }
+    })->name('notification.update');
     
 });

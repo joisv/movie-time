@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\Dashboard\UserNotificationsController;
+use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Post;
 use Illuminate\Foundation\Application;
@@ -33,13 +36,29 @@ Route::get('/', function () {
 });
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Users/Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// user
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Users/Dashboard');
+    })->name('dashboard');
 
-Route::get('/admin', function () {
-    return Inertia::render('Admin/Dashboard');
-})->middleware(['auth', 'role:admin'])->name('admin');
+    Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
+    Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
+
+    Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
+});
+
+// admin
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', function() {
+        return Inertia::render('Admin/Dashboard');
+    })->name('admin');
+    
+    Route::get('/resquest/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
+    Route::patch('/resquest/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
+    Route::patch('/request/update/{id}', [AdminRequestController::class, 'update'])->name('adminrequest.update');
+});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
