@@ -3,6 +3,7 @@ import UserLayouts from './Layouts/UserLayouts'
 import { formatDateTime } from '@/Helper/formatDate'
 import CustomModal from '@/Components/CustomModal';
 import axios from 'axios';
+import AuthLayout from '@/Layouts/AuthLayout';
 
 export default function Notifications({ auth, datas }) {
     const [ open, setOpen ] = useState(false);
@@ -30,7 +31,7 @@ export default function Notifications({ auth, datas }) {
     }
   return (
    <>
-     <UserLayouts user={auth?.user}>
+     <AuthLayout user={auth?.user}>
         <div className='h-screen bg-secondaryBtn p-4 space-y-2'>
         <h1 className='text-text text-lg font-semibold'>Notifications page</h1>
            {
@@ -45,7 +46,7 @@ export default function Notifications({ auth, datas }) {
             ))
            }
         </div>
-    </UserLayouts>
+    </AuthLayout>
            <CustomModal open={open} onClose={()=> setOpen(false)}>
             <div className={`relative w-full font-medium rounded-md hover:opacity-75 cursor-pointer ease-in duration-200`}>
                     <div className='absolute -top-5 -right-5 text-sm font-light text-gray-600'>

@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\ReportController;
-use App\Models\History;
+use App\Http\Controllers\UserHistoryController;
 use App\Models\Notification;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -58,31 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
         }
     })->name('notification.update');
 
-    Route::post('/history/store', function(Request $request) {
-        try {
-
-            $data = History::where('post_id', $request->post_id)
-            ->where('user_id', $request->user_id)
-            ->get();
-
-            if ($data->isEmpty()) {
-                // Jika tidak ada data history dengan post_id yang sama, tambahkan history baru
-                $history = new History();
-                $history->post_id = $request->post_id;
-                $history->user_id = $request->user_id;
-                $history->timestamp = Carbon::now();
-                $history->save();
-            } else {
-                // Jika data history dengan post_id yang sama ditemukan, perbarui timestamp
-                $history = $data->first();
-                $history->timestamp = Carbon::now();
-                $history->save();
-            }
-
-            return response()->json(['message' => 'history created succesfully'],200);
-        } catch (\Throwable $th) {
-            return response()->json('something went wrong',500);
-        }
-    })->name('history.store');
+    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
     
 });
