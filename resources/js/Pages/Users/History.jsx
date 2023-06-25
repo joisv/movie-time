@@ -18,7 +18,6 @@ export default function History({ histories, auth }) {
             setHistory(dataHistory);
         }
     }
-    console.log(histories);
   return (
     <AuthLayout user={auth?.user}>
          <div className='space-y-4 z-20'>
