@@ -27,4 +27,10 @@ class Post extends Model
     {
         return $this->hasMany(Report::class);
     }
+
+    public function histories()
+    {
+        return $this->hasMany(History::class);
+    }
+
 }

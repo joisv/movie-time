@@ -1,7 +1,26 @@
 import { Link, Head, usePage } from '@inertiajs/react';
+import axios from 'axios';
+import { useState } from 'react';
 
 export default function Welcome({ datas, auth, laravelVersion, phpVersion }) {
     const user = usePage().props;
+
+    const [ dataHistory, setDataHistory ] = useState({
+        post_id: '',
+        user_id: auth.user?.id,
+    });
+
+    const useHistory = async (post_id) => {
+        if(auth.user){
+            setDataHistory(prev => prev.post_id = post_id);
+            try {
+                const response = await axios.post(route('history.store', dataHistory));
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
 
     return (
         <>
@@ -38,9 +57,11 @@ export default function Welcome({ datas, auth, laravelVersion, phpVersion }) {
                     datas.map(data => (
                         <div className='mt-20' key={data.id}>
                             <Link href={route('post.show',data.id)}>
-                                <h1 className='font-semibold'>{data.title}</h1>
+                                <div onClick={() => useHistory(data.id)}>
+                                    <h1 className='font-semibold'>{data.title}</h1>
+                                    <p>{data.description}</p>
+                                </div>
                             </Link>
-                            <p>{data.description}</p>
                         </div>
                     ))
                 }
