@@ -1,10 +1,10 @@
 import React from 'react'
-import UserLayouts from './Layouts/UserLayouts'
 
 import CustomTextInput from '@/Components/CustomTextInput'
 import PrimaryButton from '@/Components/PrimaryButton'
 import { useForm } from '@inertiajs/react'
 import { formatDateTime } from '@/Helper/formatDate'
+import AuthLayout from '@/Layouts/AuthLayout'
 
 export default function Request({ auth, datas }) {
 
@@ -23,7 +23,7 @@ export default function Request({ auth, datas }) {
     })
   }
   return (
-    <UserLayouts user={auth?.user}>
+    <AuthLayout user={auth?.user}>
         <div className='h-screen  bg-secondaryBtn text-text p-4 space-y-6'>
           <div className='flex justify-between'>
             <h1 className='text-text text-lg font-semibold'>Request page</h1>
@@ -92,6 +92,6 @@ export default function Request({ auth, datas }) {
     </div>
           </div>
         </div>
-    </UserLayouts>
+    </AuthLayout>
   )
 }

@@ -30,11 +30,20 @@ export default function useHook() {
         }
     }
 
+    const setHistory = async (dataHistory) => {
+        try {
+            const response = await axios.post(route('history.store', dataHistory));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return{  
         setDataApi,
         loading,
         result,
-        setReport
+        setReport,
+        setHistory
     }
      
 }

@@ -12,7 +12,7 @@ class UserRequestController extends Controller
 {
     public function index() {
         $user = auth()->user();
-        $data = ModelsRequest::where('user_id', $user->id)->with('user')->get();
+        $data = ModelsRequest::where('user_id', $user->id)->with('user')->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Users/Request', [
             'datas' => $data
