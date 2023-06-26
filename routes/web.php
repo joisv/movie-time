@@ -48,8 +48,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/post', [PostController::class, 'index'])->name('post');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
     
-    Route::get('/resquest/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
-    Route::patch('/resquest/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
+    Route::get('/request/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
+    Route::patch('/request/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
     Route::patch('/request/update/{id}', [AdminRequestController::class, 'update'])->name('adminrequest.update');
 });
 

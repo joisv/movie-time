@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\GenerateMovieController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
 use App\Models\Notification;
@@ -59,4 +60,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
     
+    Route::post('/genereate-movie/{id}',[GenerateMovieController::class, 'generate'])->name('generate');
+    Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
 });

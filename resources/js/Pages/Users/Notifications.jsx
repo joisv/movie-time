@@ -48,11 +48,11 @@ export default function Notifications({ auth, datas }) {
         </div>
     </AuthLayout>
            <CustomModal open={open} onClose={()=> setOpen(false)}>
-            <div className={`relative w-full font-medium rounded-md hover:opacity-75 cursor-pointer ease-in duration-200`}>
+                <div className={`relative w-full font-medium rounded-md hover:opacity-75 cursor-pointer text-text mt-32`}>
                     <div className='absolute -top-5 -right-5 text-sm font-light text-gray-600'>
                         <h3>{ formatDateTime(displayData.created_at) }</h3>
                     </div>
-                    <h1 className='font-semibold text-lg'>{ displayData.request?.content }</h1>
+                    <h1 className='font-semibold text-lg'>title: { displayData.request?.content }</h1>
                     <p className='opacity-95'>{ displayData.message }</p>
                 </div>
            </CustomModal>
