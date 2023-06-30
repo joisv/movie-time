@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserHistoryController;
+use App\Http\Controllers\UserProfileController;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Application;
@@ -38,9 +39,16 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+Route::get('/stream', function () {
+    return Inertia::render('Stream');
+});
 
 // admin
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Route::get('/dashboard', function () {
+    //     return Inertia::render('Users/Dashboard');
+    // })->name('dashboard');
+
     Route::get('/admin', function() {
         return Inertia::render('Admin/Dashboard');
     })->name('admin');
@@ -55,10 +63,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Users/Dashboard');
-    })->name('dashboard');
-
     Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
     Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
 
@@ -67,6 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
 
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 

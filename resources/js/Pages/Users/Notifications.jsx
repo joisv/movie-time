@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import UserLayouts from './Layouts/UserLayouts'
 import { formatDateTime } from '@/Helper/formatDate'
 import CustomModal from '@/Components/CustomModal';
 import axios from 'axios';
 import AuthLayout from '@/Layouts/AuthLayout';
+import NoDataDisplay from '@/Components/NoDataDisplay';
 
 export default function Notifications({ auth, datas }) {
     const [ open, setOpen ] = useState(false);
@@ -12,11 +12,14 @@ export default function Notifications({ auth, datas }) {
         id: '',
         user_id: auth.user.id
     })
-
     const openNotification = async (id, index) => {
-       if( datas[index].is_read === 0 ) {
-            setUpdateData(prevdata => prevdata.id = id);
-            setDisplayData(datas[index]);
+        console.log(id);
+        if( datas[index].is_read === 0 ) {
+           setDisplayData(datas[index]);
+           setUpdateData(prevdata => ({
+            ...prevdata,
+            id : id
+           }));
             setOpen(true);
             try {
                 const response = await axios.put(route('notification.update', updateData));
@@ -28,6 +31,15 @@ export default function Notifications({ auth, datas }) {
             setOpen(true);
             setDisplayData(datas[index]);
        }
+    }
+    
+    console.log(updateData.id);
+    if (datas.length == 0 ) {
+        return(
+            <AuthLayout user={auth?.user}>
+              <NoDataDisplay message={'No Notifications'}/>
+            </AuthLayout>
+        )
     }
   return (
    <>

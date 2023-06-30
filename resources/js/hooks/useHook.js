@@ -40,6 +40,7 @@ export default function useHook() {
 
     const generateMovie = async (id) => {
         setLoading(true)
+        setErr('');
         try {
             const response = await axios.post(route('generate',id))
             setResult(response)
@@ -51,7 +52,8 @@ export default function useHook() {
     }
     
     const generateGenreMovie = async () => {
-        setLoading(true)
+        setLoading(true);
+        setErr('');
         try {
             const response = await axios.get(route('generate.genre'));
             setResult(response)

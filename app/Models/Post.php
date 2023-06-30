@@ -33,4 +33,8 @@ class Post extends Model
         return $this->hasMany(History::class);
     }
 
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, 'post_genre', 'post_id', 'genre_id');
+    }
 }

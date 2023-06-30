@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\Http;
 class GenerateMovieController extends Controller
 {
     private $http_get;
+    private $isdataExist;
 
     public function __construct(){
         $url = \config('access_token.url');
+
+        $this->isdataExist = Genre::exists();
         $this->http_get = Http::withHeaders([
             'Authorization' => 'Bearer ' . $url,
             'Accept' => 'application/json',
@@ -30,7 +33,16 @@ class GenerateMovieController extends Controller
                     $data = $response->json();
     
                     if (is_array($data)) {
-                        // Simpan data ke model Post
+
+                        $genres = [];
+                        if(isset($data['genres']) && is_array($data['genres'])){
+                            if(!$this->isdataExist) $this->generateMovieGenre();
+                            foreach ($data['genres'] as $genre ) {
+                                $res = Genre::where('tmdb_id', $genre['id'])->first(); 
+                                $genres[] = $res->id;
+                            }
+                        }
+                        
                         $post = new Post();
                         $post->adult = $data['adult'];
                         $post->backdrop_path = $data['backdrop_path'];
@@ -51,8 +63,9 @@ class GenerateMovieController extends Controller
                         $post->vote_average = $data['vote_average'];
                         $post->vote_count = $data['vote_count'];
                         $post->save();
+                        $post->genres()->sync($genres);
         
-                        return response('Generate created succesfully');
+                        return response('Generated succesfully');
                     } else {
                         // Tangani jika $data bukan array
                         return response('Error: Invalid data format', 500);
@@ -71,10 +84,8 @@ class GenerateMovieController extends Controller
     }
 
     public function generateMovieGenre(){
-
-        $isdataExist = Genre::exists();
         
-        if(!$isdataExist){
+        if(!$this->isdataExist){
 
             $response = $this->http_get->get('https://api.themoviedb.org/3/genre/movie/list?language=en');
             if($response->successful()){

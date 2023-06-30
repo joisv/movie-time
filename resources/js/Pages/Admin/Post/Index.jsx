@@ -12,9 +12,6 @@ export default function Index({ auth }) {
   function handleGenerate() {
     generateMovie(tmdbId)
   }
-  console.log(result); 
-
- 
   return (
     <AuthenticatedLayout
             user={auth.user}
@@ -29,13 +26,12 @@ export default function Index({ auth }) {
                     <Link href={route('post.create')}>Create</Link>
                     <div className='flex items-center space-x-3 h-fit'>
                      <div className='flex flex-col justify-center'>
-                      <input type="text" id="default-input" className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 ${ err ? 'border-red-400' : 'border-gray-300' }`} autoComplete='off' placeholder='tmdb id'
+                      <input type="text" id="default-input" className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 ${ err ? 'border-2 border-red-400' : 'border-gray-300' }`} autoComplete='off' placeholder='tmdb id'
                           onChange={(e) => setTmdbId(e.target.value)}
                         />
-                       <InputError message={err}/>
+                        { err && <InputError message={err}/>}
                      </div>
                       <GenerateButton children='generate' disabled={loading} handleButton={handleGenerate} className='bg-purple-700 h-fit' type={'button'}/>
-
                     </div>
                     </div>
                 </div>
