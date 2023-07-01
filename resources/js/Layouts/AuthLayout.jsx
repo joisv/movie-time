@@ -15,7 +15,6 @@ import ResponsiveMenu from '@/Components/ResponsiveMenu';
 const active = 'bg-secondaryAccent bg-opacity-70 border-r-4 border-secondaryAccent font-semibold '
 
 export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
-  console.log(isDetail);
   const current = route().current() 
   const { screen, width } = checkScreen()
   const [ navbar, setNavbar ] = useState(false);

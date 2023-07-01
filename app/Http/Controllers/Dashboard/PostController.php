@@ -10,9 +10,11 @@ use Inertia\Inertia;
 
 class PostController extends Controller
 {
-   public function index() {
-
-      return Inertia::render('Admin/Post/Index');
+   public function index(Request $request) {
+      return Inertia::render('Admin/Post/Index', [
+         'posts' => Post::orderBy('created_at', 'desc')->paginate(10)->withQueryString(),
+         'filters' => $request->only(['search'])
+      ]);
     
    }
 
@@ -22,13 +24,13 @@ class PostController extends Controller
     
    }
 
-   public function show($id) {
-      $data = Post::where('id', $id)->with('likedByUsers')->first();
-      $comments = Comment::where('post_id', $id)->orderBy('created_at', 'desc')->with('user')->get();
+   public function show(string $imdb_id) {
+      $data = Post::where('imdb_id', $imdb_id)->with('likedByUsers', 'genres')->first();
+      // $comments = Comment::where('slug', $slug)->orderBy('created_at', 'desc')->with('user')->get();
 
       return Inertia::render('Show', [
          'postdata' => $data,
-         'comments' => $comments
+         // 'comments' => $comments
       ]);
     
    }
@@ -74,5 +76,13 @@ class PostController extends Controller
 
 
       return response()->json(['berhasil'], 200);
+   }
+
+   public function search(Request $request){
+     $data = Post::query()->when($request->input('search'),function($query, $search) {
+                        $query->where('title','like','%'. $search .'%');
+                     })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+      return response()->json($data);
    }
 }

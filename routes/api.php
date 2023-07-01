@@ -62,4 +62,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/genereate-movie/{id}',[GenerateMovieController::class, 'generate'])->name('generate');
     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
+
+    Route::get('/search', [PostController::class, 'search'])->name('search');
 });

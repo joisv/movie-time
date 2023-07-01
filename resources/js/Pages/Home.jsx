@@ -23,6 +23,49 @@ const img = [
   '../../Moana-Movie-Poster-landscape.jpg',
 ]
 
+const breakpoints = {
+  240: {
+    slidesPerView: 2,
+    spaceBetween: 80,
+  },
+  300: {
+    slidesPerView: 3,
+    spaceBetween: 120
+  },
+  330: {
+    slidesPerView: 3,
+    spaceBetween: 90
+  },
+  400: {
+    slidesPerView: 3,
+    spaceBetween: 75
+  },
+  480: {
+    slidesPerView: 4,
+    spaceBetween: 100
+  },
+  620:{
+    slidesPerView: 3,
+    spaceBetween: 30
+  },
+  738:{
+    slidesPerView: 4,
+    spaceBetween: 100
+  },
+  768: {
+    slidesPerView: 4,
+    spaceBetween: 20
+  },
+  1024: {
+    slidesPerView: 5,
+    spaceBetween: 10
+  },
+  1280: {
+    slidesPerView: 6,
+    spaceBetween: 10
+  },
+};
+
 export default function Home({ datas, auth }) {
 
   const { setHistory } = useHook();
@@ -38,6 +81,8 @@ const useHistory = async (post_id) => {
         setHistory(dataHistory);
     }
 }
+
+console.log(datas);
   
   return (
     <AuthLayout user={auth?.user} isDetail={false}>
@@ -46,10 +91,10 @@ const useHistory = async (post_id) => {
       spaceBetween={50} 
       slidesPerView={1}
       centeredSlides={true}
-      // autoplay= {{ 
-      //   delay: 2500,
-      //   disableOnInteraction: false,
-      //  }} 
+      autoplay= {{ 
+        delay: 2500,
+        disableOnInteraction: false,
+       }} 
       loop={true}
       virtual
       >
@@ -84,11 +129,19 @@ const useHistory = async (post_id) => {
         </SwiperSlide>
       ))}
     </Swiper>
-    <div className='p-2'>
-      <div className='flex space-x-2 '>
-        <Card />
+      <div className='p-2'>
+        <h1 className='text-primaryBtn text-2xl font-semibold py-3'>Popular Movie</h1>
+        <Swiper 
+          navigation={true}
+          breakpoints={breakpoints}
+        >
+          {datas.map((item, index) => (
+            <SwiperSlide key={index}>
+              <Card item={item}/>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
-    </div>
     </AuthLayout>
   )
 }

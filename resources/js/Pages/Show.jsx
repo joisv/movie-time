@@ -10,6 +10,10 @@ import { FiThumbsUp } from "react-icons/fi";
 import { IoBookmarkOutline } from "react-icons/io5";
 import { IoMdShareAlt } from "react-icons/io";
 import { IoPlay } from 'react-icons/io5'
+import { shortSentence } from '@/Helper/shortSentence';
+
+const backdrop = 'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/'
+const poster = 'https://image.tmdb.org/t/p/original/'
 
 export default function Show({ auth, postdata, comments }) {
 
@@ -19,6 +23,11 @@ export default function Show({ auth, postdata, comments }) {
     const [ openToast, setOpenToast ] = useState(false);
     const [ isDetail, setIsDetail ] = useState(true);
 
+    const vote = parseFloat(postdata.vote_average)
+    const voteFix = vote.toFixed(1) 
+    const date = new Date(postdata.release_date);
+    const formattedDate = date.toLocaleDateString("en-US");
+    
     const { setDataApi, result } = useHook()
 
     const { data, post, errors, progress, setData, reset } = useForm({
@@ -65,45 +74,44 @@ export default function Show({ auth, postdata, comments }) {
     <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
     <Head title="Welcome" />
     <div style={{ 
-        backgroundImage: `url(${'../../Moana-Movie-Poster-landscape.jpg'})`
+        backgroundImage: `url(${poster+postdata.backdrop_path})`
      }} className='sm:w-full sm:h-[70vh] h-[70vh] sm:bg-cover bg-center detail-shadow '>
         <div className="flex items-center w-full h-full backdrop-blur-sm backdrop-brightness-50 sm:px-8 sm:space-x-4 px-2">
             <div className='md:w-52 sm:w-32 rounded-md overflow-hidden shadow-2xl hidden sm:block'>
-                <img src="../../Interstrellar.jpg" alt="" srcSet="" />
+                <img src={poster+postdata.poster_path} alt="" srcSet="" />
             </div>
             <div>
                 <div className='flex space-x-2'>
-                    <h1 className='text-tex font-semibold md:text-4xl sm:text-2xl text-xl text-text'>InterStellar</h1>
-                    <p className='text-secondaryAccent font-medium md:text-lg text-base'>{'(2020)'}</p>
+                    <h1 className='text-tex font-semibold md:text-4xl sm:text-2xl text-xl text-text'>{postdata.title}</h1>
                 </div>
-                <div className="flex space-x-2 items-center text-sm md:text-base">
-                    <p className='text-text font-light'>02/06/2002</p>
-                    <div className="flex space-x-2">
-                        <div className='px-2 py-1 text-xs border border-secondaryAccent rounded-md text-text'>
-                            action
-                        </div>
-                        <div className='px-2 py-1 text-xs border border-secondaryAccent rounded-md text-text'>
-                            sci-fi
-                        </div>
-                        <p className='text-text font-medium'>2h 30m</p>
+                <div className="sm:flex sm:space-x-2 items-center text-sm md:text-base">
+                    <p className='text-text font-light'>{formattedDate}</p>
+                    <div className="flex sm:space-x-2 space-x-1">
+                        {
+                            postdata.genres.map((genre, index) => (
+                                <div className='px-2 py-1 text-xs border border-secondaryAccent rounded-md text-text w-fit h-fit'>
+                                    {genre.name}
+                                </div>
+                            ))
+                        }
+                    <p className='text-text font-medium hidden sm:block'>2h 30m</p>
                     </div>
                 </div>
-                <div className="sm:flex space-x-2 mt-5 items-center hidden">
-                    <div className='h-9 w-9 bg-secondaryBtn border border-secondaryAccent rounded-full text-primaryBtn text-sm flex justify-center items-center'>8.0</div>
+                <div className="sm:flex space-x-2 sm:mt-5 items-center hidden">
+                    <div className='h-9 w-9 bg-secondaryBtn border border-secondaryAccent rounded-full text-primaryBtn text-sm flex justify-center items-center'>{voteFix}</div>
                     <FiThumbsUp size={25} color='#01AED3'/>
                     <IoBookmarkOutline size={25} color='#01AED3'/>
                     <IoMdShareAlt size={30} color='#01AED3'/>
                 </div>
-                <div className='mt-4 md:w-[50vw] sm:w-[60vw]'>
-                    <h3 className='text-primaryBtn md:text-xl sm:text:lg text-lg font-semibold'>Tagline</h3>
+                <div className='sm:mt-4 md:w-[50vw] sm:w-[60vw]'>
+                    <h3 className='text-primaryBtn md:text-xl sm:text:lg text-lg font-extralight'>{postdata.tagline}</h3>
                     <h3 className='text-text xm:text-lg md:text-xl text-lg font-semibold'>Synopsis</h3>
-                    <p className='text-gray-200 text-sm md:text-base'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veniam nesciunt non sequi placeat recusandae, cumque nemo debitis reprehenderit totam quibusdam excepturi, voluptatibus voluptates dolore omnis minima culpa sunt laboriosam enim!</p>
+                    <p className='text-gray-200 text-sm md:text-base font-extralight'>{shortSentence(postdata.overview, 30)}</p>
                 </div>
                <button type="button" className='bg-secondaryBtn rounded-md border border-secondaryAccent px-2 py-1 text-secondaryAccent mt-3 md:text-xl sm:text-lg text-lg flex items-center gap-1'>
                 <IoPlay color='white' size={20}/>
-                <Link href='/stream'>
+                <Link href={route('stream', postdata.imdb_id)}>
                 watch
-
                 </Link>
                 </button>
             </div>

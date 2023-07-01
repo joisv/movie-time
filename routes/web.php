@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\UserProfileController;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Application;
@@ -38,10 +39,15 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
-Route::get('/stream', function () {
-    return Inertia::render('Stream');
-});
+Route::get('/post/{imdb_id}', [PostController::class, 'show'])->name('post.show');
+Route::get('/stream/{imdb_id}', function (string $imdb_id) {
+    $data = Post::where('imdb_id', $imdb_id)->with('likedByUsers', 'genres')->first();
+    $comments = Comment::where('post_id', $data->id)->orderBy('created_at', 'desc')->with('user')->get();
+    return Inertia::render('Stream', [
+        'postdata' => $data,
+        'comments' => $comments
+    ]);
+})->name('stream');
 
 // admin
 Route::middleware(['auth', 'role:admin'])->group(function () {
