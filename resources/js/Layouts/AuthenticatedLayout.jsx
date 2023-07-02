@@ -30,6 +30,9 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
                                     Request
                                 </NavLink>
+                                <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
+                                    Stream
+                                </NavLink>
                             </div>
                         </div>
 

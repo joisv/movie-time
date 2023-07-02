@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\GenerateMovieController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
+use App\Models\Genre;
 use App\Models\Notification;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,4 +67,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
 
     Route::get('/search', [PostController::class, 'search'])->name('search');
+
+    Route::get('/get-post', function() {
+        
+        $data = Post::all();
+        return response()->json($data);
+
+    })->name('getpost');
+
+
+    Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
+    Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Genre;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,11 +31,37 @@ class PostController extends Controller
 
       return Inertia::render('Show', [
          'postdata' => $data,
-         // 'comments' => $comments
       ]);
     
    }
 
+   public function edit(string $id ){
+      $post = Post::where('id', $id)->with('genres')->first();
+      $genres = Genre::all();
+      
+      return Inertia::render('Admin/Post/Edit', [
+         'postdata' => $post,
+         'genres' => $genres
+      ]);
+   }
+
+   public function update(Request $request, string $id) {
+      $data = $request->all();
+      $post = Post::findOrFail($id);
+      $post->update($data);
+      $post->genres()->sync($data['genres']);
+
+      return redirect()->route('post')->with('message', 'post updated');
+   }
+   
+   public function destroy(string $id){
+      $data = Post::findOrFail($id);
+      $data->delete();
+      
+      return redirect()->back()->with('message', 'post updated');
+
+   }
+   
    public function likePost(string $id) {
       $post = Post::findOrFail($id);
       $user = auth()->user();

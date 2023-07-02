@@ -45,7 +45,7 @@ export default function Index({ auth, datas }) {
             <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     
-                <GenerateButton children='genre' disabled={loading} handleButton={handleGenerateGenre} className='bg-purple-700' type={'button'}/>
+                <GenerateButton children='genre' disabled={loading} onClick={() => handleGenerateGenre()} className='bg-purple-700' type={'button'}/>
                     <CustomTale datas={datas} setOpenModal={setOpenModal} setId={handleSetId}/>
                 </div>
             </div>

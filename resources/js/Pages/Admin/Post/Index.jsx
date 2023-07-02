@@ -29,7 +29,7 @@ export default function Index({ auth, posts, filters }) {
         console.log(error);
         
     }
-};
+  };
     function displayData () {
         switch (searchTerm.search) {
             case '':
@@ -57,7 +57,7 @@ export default function Index({ auth, posts, filters }) {
                             />
                             { err && <InputError message={err}/>}
                         </div>
-                        <GenerateButton children='generate' disabled={loading} handleButton={handleGenerate} className='bg-purple-700 h-fit' type={'button'}/>
+                        <GenerateButton children='generate' disabled={loading} onClick={() => handleGenerate()} className='bg-purple-700 h-fit' type={'button'}/>
                       </div>
                     </div>
                    {displayData()}

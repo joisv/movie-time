@@ -14,7 +14,7 @@ export default function Card({ item }) {
     const formattedDate = date.toLocaleDateString("en-US");
   return (
     <div className='space-y-2'>
-      <Link href={route('post.show', item.imdb_id)}>
+      <Link href={route('post.show', item.id)}>
         <div className="relative sm:w-40 sm:h-60 w-32 h-44 cursor-pointer">
           <img src={base+item.poster_path} alt="" srcSet="" className={`absolute w-full h-full object-cover rounded-md ${ isHover ? 'opacity-60' : '' }`}/>
           <div className='absolute px-3 py-1 bg-secondaryBtn -top-0 shadow-2xl -right-2 flex justify-center space-x-1'>

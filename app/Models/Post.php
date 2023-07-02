@@ -37,4 +37,8 @@ class Post extends Model
     {
         return $this->belongsToMany(Genre::class, 'post_genre', 'post_id', 'genre_id');
     }
+
+    public function streams() {
+        return $this->hasMany(Stream::class);
+    }
 }

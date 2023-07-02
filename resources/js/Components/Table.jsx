@@ -1,7 +1,16 @@
 import { formatDateTime } from '@/Helper/formatDate';
-
+import { Link } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 export default function Table({ datas, handleSearchChange, searchTerm }) {
-    console.log(datas);
+
+   
+
+    function destroy(id){
+        if(confirm('sure')){
+            router.delete(route('post.delete', id))
+        }
+    }
+    
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div className="flex items-center justify-between pb-4">
@@ -108,8 +117,9 @@ export default function Table({ datas, handleSearchChange, searchTerm }) {
                     <td className="px-6 py-4">
                         { post.status }
                     </td>
-                    <td className="px-6 py-4">
-                        <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                    <td className="px-6 py-4 flex space-x-2">
+                        <Link href={route('post.edit',post.id )}>edit</Link>
+                        <button type="button" onClick={() => destroy(post.id)} className='text-red-500'>delete</button>
                     </td>
                 </tr>
             ))

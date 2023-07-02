@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "react-icons": "^4.10.1",
+        "react-select": "^5.7.3",
         "swiper": "^9.4.1"
     }
 }

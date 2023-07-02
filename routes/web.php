@@ -3,6 +3,7 @@
 use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
+use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ProfileController;
@@ -39,9 +40,9 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('/post/{imdb_id}', [PostController::class, 'show'])->name('post.show');
-Route::get('/stream/{imdb_id}', function (string $imdb_id) {
-    $data = Post::where('imdb_id', $imdb_id)->with('likedByUsers', 'genres')->first();
+Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+Route::get('/stream/{id}', function (string $id) {
+    $data = Post::where('id', $id)->with('likedByUsers', 'genres')->first();
     $comments = Comment::where('post_id', $data->id)->orderBy('created_at', 'desc')->with('user')->get();
     return Inertia::render('Stream', [
         'postdata' => $data,
@@ -60,11 +61,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     })->name('admin');
 
     Route::get('/post', [PostController::class, 'index'])->name('post');
+    Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
+    Route::put('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
+    Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('post.delete');
     
     Route::get('/request/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
     Route::patch('/request/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
     Route::patch('/request/update/{id}', [AdminRequestController::class, 'update'])->name('adminrequest.update');
+
+    Route::resource('/episdos', StreamController::class)->names('streamurl');
 });
 
 

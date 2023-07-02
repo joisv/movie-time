@@ -89,7 +89,7 @@ export default function Show({ auth, postdata, comments }) {
                     <div className="flex sm:space-x-2 space-x-1">
                         {
                             postdata.genres.map((genre, index) => (
-                                <div className='px-2 py-1 text-xs border border-secondaryAccent rounded-md text-text w-fit h-fit'>
+                                <div className='px-2 py-1 text-xs border border-secondaryAccent rounded-md text-text w-fit h-fit' key={index}>
                                     {genre.name}
                                 </div>
                             ))
