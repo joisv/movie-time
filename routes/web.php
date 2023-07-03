@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
@@ -11,7 +13,6 @@ use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Comment;
 use App\Models\Post;
-use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -51,26 +52,27 @@ Route::get('/stream/{id}', function (string $id) {
 })->name('stream');
 
 // admin
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    // Route::get('/dashboard', function () {
-    //     return Inertia::render('Users/Dashboard');
-    // })->name('dashboard');
-
-    Route::get('/admin', function() {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    // admin dashboard
+    Route::get('/', function() {
         return Inertia::render('Admin/Dashboard');
     })->name('admin');
-
-    Route::get('/post', [PostController::class, 'index'])->name('post');
+    // post
+    Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
     Route::put('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
-    Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('post.delete');
-    
+
+    // request
     Route::get('/request/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
     Route::patch('/request/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
     Route::patch('/request/update/{id}', [AdminRequestController::class, 'update'])->name('adminrequest.update');
-
-    Route::resource('/episdos', StreamController::class)->names('streamurl');
+    // episodes
+    Route::resource('/episodes', StreamController::class)->names('streamurl');
+    // permission
+    Route::resource('/permissions', PermissionController::class)->names('permissions');
+    // role
+    Route::resource('/roles', RoleController::class)->names('roles');
 });
 
 
@@ -107,5 +109,8 @@ Route::middleware('auth')->group(function () {
     })->name('like');
     
 });
+ // Route::get('/dashboard', function () {
+    //     return Inertia::render('Users/Dashboard');
+    // })->name('dashboard');
 
 require __DIR__.'/auth.php';

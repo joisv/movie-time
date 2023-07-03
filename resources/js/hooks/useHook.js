@@ -20,6 +20,56 @@ export default function useHook() {
         }
         
     }
+    const index = async (url, id) => {
+        setLoading(false)
+        try {
+            const res = await axios.get(route(url, id))
+            setResult(res)
+        } catch (error) {
+            console.log(error);
+        }finally {
+            setLoading(true);
+        }
+        
+    }
+    const store = async (url, req) => {
+        setLoading(true)
+        setErr('')
+        try {
+            const res = await axios.post(route(url, req))
+            setResult(res)
+        } catch (error) {
+            if (error.response.status === 422) {
+                const validationErrors = error.response.data.errors;
+                setErr(validationErrors)
+            } else {
+                setErr(error.response.status);
+            }  
+        }finally {
+            setLoading(false);
+        }
+        
+    }
+    const destroy = async (url, req) => {
+        setLoading(true)
+        try {
+            const res = await axios.delete(route(url, req))
+            setResult(res)
+        } catch (error) {
+            if (error.response.status === 422) {
+                const validationErrors = error.response.data.errors;
+                setErr(validationErrors)
+            } else {
+                setErr(error.response.status);
+
+            }  
+        }finally {
+            setLoading(false);
+        }
+        
+    }
+
+    
 
     const setReport = async (req) => {
         try {
@@ -71,7 +121,10 @@ export default function useHook() {
         setHistory,
         generateMovie,
         generateGenreMovie,
-        err
+        err,
+        index,
+        store,
+        destroy
     }
      
 }

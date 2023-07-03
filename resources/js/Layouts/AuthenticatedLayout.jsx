@@ -24,7 +24,7 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('admin')} active={route().current('admin')}>
                                     Dashboard
                                 </NavLink>
-                                <NavLink href={route('post')} active={route().current('post')}>
+                                <NavLink href={route('post.index')} active={route().current('post.index')}>
                                     Post
                                 </NavLink>
                                 <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
@@ -32,6 +32,12 @@ export default function Authenticated({ user, header, children }) {
                                 </NavLink>
                                 <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
                                     Stream
+                                </NavLink>
+                                <NavLink href={route('permissions.index')} active={route().current('permissions.index')}>
+                                    Permissions
+                                </NavLink>
+                                <NavLink href={route('roles.index')} active={route().current('roles.index')}>
+                                    Roles
                                 </NavLink>
                             </div>
                         </div>

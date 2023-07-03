@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\GenerateMovieController;
@@ -22,8 +23,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
+     // admin
+     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');
+
+     Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
+    
+     Route::post('/genereate-movie/{id}',[GenerateMovieController::class, 'generate'])->name('generate');
+     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
+ 
+     Route::get('/search', [PostController::class, 'search'])->name('search');
+ 
+     Route::get('/get-post', function() {
+         
+         $data = Post::all();
+         return response()->json($data);
+ 
+     })->name('getpost');
+ 
+ 
+     Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
+     Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
+ 
+     Route::post('/roles/store', [RoleController::class, 'store'])->name('api.roles.store');
+     Route::delete('/roles/destroy/{id}', [RoleController::class, 'destroy'])->name('api.roles.destroy');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -60,22 +87,5 @@ Route::middleware('auth:sanctum')->group(function () {
             return response()->json('something went wrong');
         }
     })->name('notification.update');
-
-    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
-    
-    Route::post('/genereate-movie/{id}',[GenerateMovieController::class, 'generate'])->name('generate');
-    Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
-
-    Route::get('/search', [PostController::class, 'search'])->name('search');
-
-    Route::get('/get-post', function() {
-        
-        $data = Post::all();
-        return response()->json($data);
-
-    })->name('getpost');
-
-
-    Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
-    Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
 });
+

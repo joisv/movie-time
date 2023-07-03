@@ -8,6 +8,9 @@ import InputError from '@/Components/InputError';
 import axios from 'axios';
 import Table from '@/Components/Table';
 
+const th = [ 'id','title', 'tmdb_id', 'created_at', 'status', 'actions']
+const destroyUrl = 'api.post.destroy'
+
 export default function Index({ auth, posts, filters }) {
   const [ tmdbId, setTmdbId ] = useState();
   const [ postdata, setPosData ] = useState(posts)
@@ -30,14 +33,15 @@ export default function Index({ auth, posts, filters }) {
         
     }
   };
-    function displayData () {
-        switch (searchTerm.search) {
-            case '':
-              return <Table datas={posts} handleSearchChange={handleSearchChange} searchTerm={searchTerm} />;
-            default:
-              return <Table datas={postdata} handleSearchChange={handleSearchChange} searchTerm={searchTerm} />;
-          }
-    }
+
+  const filteredDatas = posts.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
+  const filteredDatasSearch = postdata.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
+  
+  function displayData() {
+    const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;
+  
+    return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} th={th} destroyUrl={destroyUrl}/>;
+  }
   return (
     <AuthenticatedLayout
             user={auth.user}
@@ -49,7 +53,7 @@ export default function Index({ auth, posts, filters }) {
             <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                     <div className='flex justify-between'>
-                      <Link href={route('post.create')}>Create</Link>
+                    <GenerateButton className='bg-purple-500' onClick={() => {}} >create</GenerateButton>
                       <div className='flex items-center space-x-3 h-fit'>
                         <div className='flex flex-col justify-center'>
                           <input type="text" id="default-input" className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 ${ err ? 'border-2 border-red-400' : 'border-gray-300' }`} autoComplete='off' placeholder='tmdb id'

@@ -33,12 +33,13 @@ class StreamController extends Controller
      */
     public function store(Request $request)
     {
-        // $data = $request->validate([
-        //     'streams' => 'array',
-        //     'streams.*' => 'string',
-        //     'downloads' => 'array',
-        //     'downloads.*' => 'string'
-        // ]);
+        $data = $request->validate([
+            'post_id' => 'required',
+            'streams' => 'array',
+            'streams.*' => 'string|required',
+            'downloads' => 'array',
+            'downloads.*' => 'string|required'
+        ]);
 
 
         foreach ($request->streams as $stream) {
