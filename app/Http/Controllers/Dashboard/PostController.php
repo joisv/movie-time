@@ -51,7 +51,7 @@ class PostController extends Controller
       $post->update($data);
       $post->genres()->sync($data['genres']);
 
-      return redirect()->route('post')->with('message', 'post updated');
+      return redirect()->route('post.index')->with('message', 'post updated');
    }
    
    public function destroy(string $id){
@@ -111,5 +111,11 @@ class PostController extends Controller
                      })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
       return response()->json($data);
+   }
+
+   public function bulkDelete(Request $request){
+
+      Post::whereIn('id', $request->postId)->delete();
+      return redirect()->back()->with('message', 'bulk delete successfully');
    }
 }

@@ -1,18 +1,37 @@
 import { formatDateTime } from '@/Helper/formatDate';
-import { Link } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import GenerateButton from './GenerateButton';
 import React, { useState } from 'react';
 import useHook from '@/hooks/useHook';
-export default function Table({ datas, handleSearchChange, searchTerm, th, destroyUrl }) {
+export default function Table({ datas, handleSearchChange, searchTerm, th, destroyUrl, bulkDeleteUrl }) {
 
     const {destroy:deleteById, loading, result:response, err  } = useHook();
+    const { data, setData, delete:bulkDelete, errors } = useForm({
+        postId: []
+    })
     const [ action, setAction ] = useState(false);
     
     const destroy = (id) => {
         console.log(destroyUrl);
         if(confirm('sure')) deleteById(destroyUrl, id);
         router.reload();
+    }
+    const handleCheckboxChange = (e, id) => {
+        if (e.target.checked) {
+            setData('postId', [...data.postId, id]);
+        } else {
+            setData('postId', data.postId.filter(postId => postId !== id));
+        }
+    };
+    const handleBulkDelete = () => {
+       if(confirm('sure ? ')){
+        bulkDelete(route(bulkDeleteUrl, data.postId), {
+            onSuccess: () => {
+                setData('postId', [])
+            }
+        })
+       }
     }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -26,7 +45,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
                         <svg className="w-3 h-3 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     {
-                        action ?<button id="dropdownAction" className="z-10 absolute block shadow-2xl bg-white divide-y divide-gray-100 rounded-lg w-44 dark:bg-gray-700 dark:divide-gray-600">
+                        action ?<button id="dropdownAction" className="z-10 absolute block shadow-2xl bg-white divide-y divide-gray-100 rounded-lg w-44 dark:bg-gray-700 dark:divide-gray-600" onClick={() => handleBulkDelete()}>
                                 <div href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete User</div>
                         </button> : null
                     }
@@ -46,7 +65,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
             <tr>
                 <th scope="col" className="p-4">
                     <div className="flex items-center">
-                        <input id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        <input id="checkbox-all-search" type="checkbox" disabled className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                         <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                     </div>
                 </th>
@@ -67,7 +86,14 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
                 <tr className="bg-white border-b" key={index}>
                     <td className="w-4 p-4">
                         <div className="flex items-center">
-                            <input id={`checkbox-table-search-${index}`} type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                            <input 
+                                id={`checkbox-table-search-${index}`} 
+                                type="checkbox" 
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" 
+                                value={data.postId}
+                                onChange={e => handleCheckboxChange(e, post.id)}
+                                 
+                                />
                             <label htmlFor={`checkbox-table-search-${index}`} className="sr-only">checkbox</label>
                         </div>
                     </td>

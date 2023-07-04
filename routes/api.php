@@ -48,9 +48,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
  
      Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
      Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
- 
-     Route::post('/roles/store', [RoleController::class, 'store'])->name('api.roles.store');
-     Route::delete('/roles/destroy/{id}', [RoleController::class, 'destroy'])->name('api.roles.destroy');
 });
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -80,12 +80,6 @@ class RoleController extends Controller
 
         $role->delete();
     
-        // $users = User::role($role->name)->get(); // Mendapatkan pengguna yang memiliki peran tersebut
-    
-        // foreach ($users as $user) {
-        //     $user->removeRole($role);
-        // }
-    
-        return response()->json(['message' => 'Deleted successfully'], 200);
+        return redirect()->back()->with('message', 'deleted successfully');
     }
 }

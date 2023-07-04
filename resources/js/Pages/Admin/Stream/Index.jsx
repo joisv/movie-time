@@ -23,7 +23,7 @@ const defInput = {
     translate: '-translate-y-5'
 }
 
-const th = [ 'id', 'name', 'post title', 'created at', 'actions']
+const th = [ 'name', 'post title', 'created at', 'actions']
 const destroyUrl = 'stream.destroy'
 
 export default function Index({ auth, datastreams }) {

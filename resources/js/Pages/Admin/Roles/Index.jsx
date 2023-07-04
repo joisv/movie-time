@@ -10,8 +10,8 @@ import useHook from '@/hooks/useHook';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-const th = ['id', 'name', 'created', 'actions']
-const destroyUrl = 'api.roles.destroy'
+const th = ['name', 'created', 'actions']
+const destroyUrl = 'roles.destroy'
 export default function Index({ auth, roles }) {
     const { flash } = usePage().props
     const [ open, setOpen ] = useState(false)
@@ -22,7 +22,7 @@ export default function Index({ auth, roles }) {
 
     function submit(e){
         e.preventDefault();
-        post(route('api.roles.store', data) ,{
+        post(route('roles.store', data) ,{
             onSuccess:() => {
                 setOpen(false),
                 reset()

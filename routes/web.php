@@ -62,6 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
     Route::put('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
+    Route::delete('/post-bulkdelete', [PostController::class, 'bulkDelete'])->name('post.bulkdelete');
 
     // request
     Route::get('/request/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
@@ -69,9 +70,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::patch('/request/update/{id}', [AdminRequestController::class, 'update'])->name('adminrequest.update');
     // episodes
     Route::resource('/episodes', StreamController::class)->names('streamurl');
-    // permission
+    // permissions
     Route::resource('/permissions', PermissionController::class)->names('permissions');
-    // role
+    // roles
     Route::resource('/roles', RoleController::class)->names('roles');
 });
 

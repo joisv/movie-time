@@ -33,7 +33,10 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate(['name' => 'required|min:3']);
+        Permission::create($validate);
+
+        return redirect()->back()->with('message', 'permission created successfully');
     }
 
     /**
@@ -65,6 +68,9 @@ class PermissionController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+       $permission = Permission::findOrFail($id);
+       $permission->delete();
+
+       return redirect()->back()->with('message', 'deleted succesfully');
     }
 }

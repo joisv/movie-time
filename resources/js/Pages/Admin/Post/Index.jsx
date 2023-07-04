@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import useHook from '@/hooks/useHook';
 import GenerateButton from '@/Components/GenerateButton';
 import InputError from '@/Components/InputError';
@@ -10,8 +10,10 @@ import Table from '@/Components/Table';
 
 const th = [ 'id','title', 'tmdb_id', 'created_at', 'status', 'actions']
 const destroyUrl = 'api.post.destroy'
+const bulkDeleteUrl = 'post.bulkdelete'
 
 export default function Index({ auth, posts, filters }) {
+  const {flash} = usePage().props
   const [ tmdbId, setTmdbId ] = useState();
   const [ postdata, setPosData ] = useState(posts)
   const { generateMovie, err, result, loading } = useHook();
@@ -40,7 +42,7 @@ export default function Index({ auth, posts, filters }) {
   function displayData() {
     const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;
   
-    return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} th={th} destroyUrl={destroyUrl}/>;
+    return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} th={th} destroyUrl={destroyUrl} bulkDeleteUrl={bulkDeleteUrl}/>;
   }
   return (
     <AuthenticatedLayout
@@ -50,6 +52,9 @@ export default function Index({ auth, posts, filters }) {
         <Head title="Dashboard" />
 
         <div className="py-12">
+          {
+            flash ? flash.message : null
+          }
             <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                     <div className='flex justify-between'>
