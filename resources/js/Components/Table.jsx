@@ -4,7 +4,8 @@ import { router } from '@inertiajs/react';
 import GenerateButton from './GenerateButton';
 import React, { useState } from 'react';
 import useHook from '@/hooks/useHook';
-export default function Table({ datas, handleSearchChange, searchTerm, th, destroyUrl, bulkDeleteUrl }) {
+
+export default function Table({ datas, handleSearchChange, searchTerm, setProps }) {
 
     const {destroy:deleteById, loading, result:response, err  } = useHook();
     const { data, setData, delete:bulkDelete, errors } = useForm({
@@ -13,8 +14,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
     const [ action, setAction ] = useState(false);
     
     const destroy = (id) => {
-        console.log(destroyUrl);
-        if(confirm('sure')) deleteById(destroyUrl, id);
+        if(confirm('sure')) deleteById(setProps?.destroyUrl, id);
         router.reload();
     }
     const handleCheckboxChange = (e, id) => {
@@ -26,7 +26,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
     };
     const handleBulkDelete = () => {
        if(confirm('sure ? ')){
-        bulkDelete(route(bulkDeleteUrl, data.postId), {
+        bulkDelete(route(setProps?.bulkDeleteUrl, data.postId), {
             onSuccess: () => {
                 setData('postId', [])
             }
@@ -70,7 +70,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
                     </div>
                 </th>
                 {
-                    th.map((t, index) => (
+                    setProps?.th.map((t, index) => (
                         <th scope="col" className="px-6 py-3" key={index}>
                             { t }
                         </th>
@@ -114,7 +114,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, th, destr
                     ))}
 
                     <td className="px-6 py-4 flex space-x-2">
-                        <Link href={route('post.edit', post.id )}>edit</Link>
+                        <button type='button' onClick={() => setProps?.handleEdit(post.id)}>edit</button>
                         <button type="button" onClick={() => destroy(post.id)} className='text-red-500'>delete</button>
                     </td>
 

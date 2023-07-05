@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Models\Stream;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,8 +16,10 @@ class StreamController extends Controller
     public function index()
     {
         $data = Stream::with('post', 'downloads')->get();
+        $posts = Post::all();
         return Inertia::render('Admin/Stream/Index', [
-            'datastreams' => $data
+            'datastreams' => $data,
+            'posts' => $posts
         ]);
     }
 

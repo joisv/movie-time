@@ -8,6 +8,15 @@ export default function useHook() {
     const [ result, setResult ] = useState({});
     const [ err, setErr ] = useState('');
     
+    const callback = {
+        onSuccess: () => {
+          // logika untuk onSuccess
+        },
+        onError: () => {
+          // logika untuk onError
+        }
+      };
+    
     const setDataApi = async (url, id) => {
         setLoading(false)
         try {
@@ -39,11 +48,11 @@ export default function useHook() {
             const res = await axios.post(route(url, req))
             setResult(res)
         } catch (error) {
-            if (error.response.status === 422) {
-                const validationErrors = error.response.data.errors;
+            if (error.res.status === 422) {
+                const validationErrors = error.res.data.errors;
                 setErr(validationErrors)
             } else {
-                setErr(error.response.status);
+                setErr(error.res.status);
             }  
         }finally {
             setLoading(false);
@@ -124,7 +133,7 @@ export default function useHook() {
         err,
         index,
         store,
-        destroy
+        destroy,
     }
      
 }

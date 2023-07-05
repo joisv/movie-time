@@ -26,6 +26,14 @@ const defInput = {
 const th = [ 'name', 'post title', 'created at', 'actions']
 const destroyUrl = 'stream.destroy'
 
+const setProps = {
+    th : [ 'name', 'post title', 'created at', 'actions'],
+    destroyUrl : 'stream.destroy',
+    handleEdit: (params) => {
+      router.visit(route('post.edit', params ))
+    }
+  }
+
 export default function Index({ auth, datastreams }) {
   const [ postData, setPostData ] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -82,36 +90,32 @@ export default function Index({ auth, datastreams }) {
             downloads: updatedDownload
         }));
     }
-    const getPost = async () => {
-        const response = await axios.get(route('getpost'))
-        setPostData(response.data)
-        
-    }
-    
-    const handleChange = (selectOptions) => {
-        setData(prev => ({
-            ...prev,
-            post_id: selectOptions.id
-        }))
-    }
-
-    const loadOptions = ( searhValue, callback) => {
-        getPost();
-        const filteredOptions = postData.filter(posts => posts.title.toLowerCase().includes(searhValue.toLowerCase()))
-        callback(filteredOptions);
-    }
-
-    const [ err, setErr ] = useState({
-        stream: {
-            message: ''
-        },
-        downloads: {
-            message: ''
-        },
-        post_id: {
-            message: ''
+    const loadOptions = async (searchValue, callback) => {
+        try {
+          const response = await axios.get(route('getpost'));
+          const postData = response.data;
+      
+          const filteredOptions = postData.filter(post =>
+            post.title.toLowerCase().includes(searchValue.toLowerCase())
+          );
+      
+          const options = filteredOptions.map(post => ({
+            post_id: post.id,
+            title: post.title
+          }));
+      
+          callback(options);
+        } catch (error) {
+          // Handle error jika diperlukan
         }
-    })
+      };
+      
+      const handleChange = (selectedOption) => {
+        setData(prevData => ({
+          ...prevData,
+          post_id: selectedOption.post_id
+        }));
+      };
     
    async function submit(e){
         e.preventDefault();
@@ -154,6 +158,7 @@ export default function Index({ auth, datastreams }) {
         post_title: post?.title, 
         created_at, 
     }));
+
   return (
    <AuthenticatedLayout  user={auth.user}
    header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Stream</h2>}>
@@ -164,7 +169,7 @@ export default function Index({ auth, datastreams }) {
                 <div className="bg-white shadow-sm sm:rounded-lg p-4">
                    <GenerateButton onClick={() => setOpen(true)} className='bg-purple-500 disabled:bg-purple-300'>create</GenerateButton>
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <Table datas={filteredDatas}  th={th} destroyUrl={destroyUrl}/>
+                    <Table datas={filteredDatas} setProps={setProps}/>
                 </div>
                 </div>
             </div>
@@ -181,7 +186,8 @@ export default function Index({ auth, datastreams }) {
                         download
                     </button>
                    </div>
-                <AsyncSelect loadOptions={loadOptions} onChange={handleChange} getOptionLabel={(option) => option.title} required placeholder='Choose Movie'/>
+                <AsyncSelect  loadOptions={loadOptions}
+    onChange={handleChange} getOptionLabel={(option) => option.title} required placeholder='Choose Movie'/>
                     {
                     data.streams.map((stream, index) => (
                         <div className='flex justify-between items-center w-full' key={index}>

@@ -62,6 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
     Route::put('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
+    Route::post('/post-store', [PostController::class, 'store'])->name('post.store');
     Route::delete('/post-bulkdelete', [PostController::class, 'bulkDelete'])->name('post.bulkdelete');
 
     // request

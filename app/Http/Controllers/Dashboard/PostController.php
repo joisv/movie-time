@@ -6,25 +6,77 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Genre;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PostController extends Controller
 {
    public function index(Request $request) {
+
+      
       return Inertia::render('Admin/Post/Index', [
          'posts' => Post::orderBy('created_at', 'desc')->paginate(10)->withQueryString(),
-         'filters' => $request->only(['search'])
+      ]);
+      
+   }
+   
+   public function create() {
+      
+      $genres = Genre::all();
+      return Inertia::render('Admin/Post/Create', [
+         'genres' => $genres
+
       ]);
     
    }
 
-   public function create() {
+   public function store(Request $request) {
+      // dd($request);
+      // $validatedData = $request->all();
+      $validatedData = $request->validate([
+         'adult' => 'boolean',
+         'backdrop_path' => 'nullable|string',
+         'tmdb_id' => 'nullable|numeric',
+         'imdb_id' => 'nullable|string',
+         'original_language' => 'nullable|string',
+         'original_title' => 'nullable|string',
+         'overview' => 'nullable|string',
+         'popularity' => 'nullable|numeric',
+         'poster_path' => 'nullable|string',
+         'release_date' => 'nullable|string',
+         'revenue' => 'nullable|numeric',
+         'runtime' => 'nullable|numeric',
+         'status' => 'nullable|string',
+         'tagline' => 'nullable|string',
+         'title' => 'required|string',
+         'video' => 'boolean',
+         'vote_average' => 'nullable|numeric|between:0,999.999',
+         'vote_count' => 'nullable|numeric',
+         'poster_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+         'backdrop_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+         'genres' => 'required',
+     ]);
 
-      return Inertia::render('Admin/Post/Create');
-    
+     if ($request->hasFile('poster_path')) {
+         $posterPath = $request->file('poster_path')->store('posters');
+         $validatedData['poster_path'] = $posterPath;
+     }
+
+     if ($request->hasFile('backdrop_path')) {
+         $backdropPath = $request->file('backdrop_path')->store('backdrops');
+         $validatedData['backdrop_path'] = $backdropPath;
+     }
+
+     $post = Post::create($validatedData);
+
+     // Simpan genre-genre terkait
+     $post->genres()->attach($request->genres);
+
+     return redirect()->route('post.index')->with('success', 'Created successfully');
    }
-
+   
    public function show(string $imdb_id) {
       $data = Post::where('imdb_id', $imdb_id)->with('likedByUsers', 'genres')->first();
       // $comments = Comment::where('slug', $slug)->orderBy('created_at', 'desc')->with('user')->get();
@@ -46,19 +98,60 @@ class PostController extends Controller
    }
 
    public function update(Request $request, string $id) {
-      $data = $request->all();
-      $post = Post::findOrFail($id);
-      $post->update($data);
-      $post->genres()->sync($data['genres']);
+      $validatedData = $request->validate([
+         'adult' => 'boolean',
+         'backdrop_path' => 'nullable|string',
+         'tmdb_id' => 'nullable|numeric',
+         'imdb_id' => 'nullable|string',
+         'original_language' => 'nullable|string',
+         'original_title' => 'nullable|string',
+         'overview' => 'nullable|string',
+         'popularity' => 'nullable|numeric',
+         'poster_path' => 'nullable|string',
+         'release_date' => 'nullable|string',
+         'revenue' => 'nullable|numeric',
+         'runtime' => 'nullable|numeric',
+         'status' => 'nullable|string',
+         'tagline' => 'nullable|string',
+         'title' => 'required|string',
+         'video' => 'boolean',
+         'vote_average' => 'nullable|numeric|between:0,999.999',
+         'vote_count' => 'nullable|numeric',
+         'poster_path' => ($request->hasFile('poster_path')) ? 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' : '',
+         'backdrop_path' => ($request->hasFile('backdrop_path')) ? 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' : '',
+         'genres' => 'required',
+     ]);
+     if ($request->hasFile('poster_path')) {
+            $posterPath = $request->file('poster_path')->store('posters');
+            $validatedData['poster_path'] = $posterPath;
+      }
 
-      return redirect()->route('post.index')->with('message', 'post updated');
+      if ($request->hasFile('backdrop_path')) {
+            $backdropPath = $request->file('backdrop_path')->store('backdrops');
+            $validatedData['backdrop_path'] = $backdropPath;
+      }
+      try {
+         $post = Post::findOrFail($id);
+         $post->update($validatedData);
+         $post->genres()->sync($request->genres);
+ 
+         return redirect()->route('post.index')->with('message', 'Post updated');
+     } catch (ModelNotFoundException $e) {
+         return redirect()->route('post.index')->with('error', 'Post not found');
+     }
    }
    
    public function destroy(string $id){
       $data = Post::findOrFail($id);
+      if($data->poster_path){
+         Storage::delete($data->poster_path);
+      }
+      if($data->backdrop_path){
+         Storage::delete($data->backdrop_path);
+      }
       $data->delete();
       
-      return redirect()->back()->with('message', 'post updated');
+      return redirect()->back()->with('message', 'post deleted successfully');
 
    }
    

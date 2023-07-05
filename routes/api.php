@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
@@ -11,6 +12,7 @@ use App\Models\Notification;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,23 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
  
      Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
      Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
+
+     Route::get('/permission/{id}', function(string $id) {
+        $permission = Permission::where('id', $id)->first();
+
+        return response()->json($permission);
+     })->name('api.permission.show');
+
+    Route::post('/permission/update', function(Request $request) {
+        $validation = $request->validate([
+            'name' => 'string|min:3',
+          ]);
+          
+          $permission = Permission::findOrFail($request->id);
+          $permission->update(['name' => $validation['name']]);
+          
+          return redirect()->back()->with('success', 'Update successfully');
+    })->name('api.permission.update');
 });
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -14,7 +14,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('created_at', 'desc')->get();
        return Inertia::render('Admin/Permissions/Index', [
         'permissions' => $permissions
        ]);
@@ -60,7 +60,13 @@ class PermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        return response()->json($request->all());
+        // $validation = $request->validate(['name' => 'string|min:3']);
+
+        // $permission = Permission::findOrFail($request->id);
+        // $permission->update($validation['name']);
+
+        // return redirect()->back()->with('message', 'update successfully');
     }
 
     /**
