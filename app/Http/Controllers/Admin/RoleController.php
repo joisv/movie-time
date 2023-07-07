@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -15,7 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::all();
+        $roles = Role::orderBy('created_at', 'desc')->get();
         return Inertia::render('Admin/Roles/Index', [
             'roles' => $roles
         ]);
@@ -65,7 +66,14 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validation = $request->validate([
+            'name' => 'string|min:3|unique:roles,name',
+        ]);
+          
+        $role = Role::findOrFail($id);
+        $role->update(['name' => $validation['name']]);
+
+        return redirect()->back()->with('message', 'updated successfully');
     }
 
     /**
@@ -82,4 +90,23 @@ class RoleController extends Controller
     
         return redirect()->back()->with('message', 'deleted successfully');
     }
-}
+
+    public function givePermission(Request $request, Role $role) {
+
+        if($role->hasPermissionTo($request->permission)){
+            return back()->with('message', 'permission exist.');
+        }
+
+        $role->givePermissionTo($request->permission);
+        return back()->with('message', 'permission added. ');
+    }
+
+    public function revokePermission(Role $role, Permission $permission)
+    {
+        if($role->hasPermissionTo($permission)){
+            $role->revokePermissionTo($permission);
+            return back()->with('message', 'Permission revoked.');
+        }
+        return back()->with('message', 'Permission not exists.');
+    }
+}   

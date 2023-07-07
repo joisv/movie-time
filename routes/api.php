@@ -10,9 +10,11 @@ use App\Http\Controllers\UserHistoryController;
 use App\Models\Genre;
 use App\Models\Notification;
 use App\Models\Post;
+use App\Models\Stream;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,15 +54,23 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
      Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
 
      Route::get('/permission/{id}', function(string $id) {
-        $permission = Permission::where('id', $id)->first();
-
-        return response()->json($permission);
+        // $permission = Permission::where('id', $id)->first();
+        return response()->json($id);
      })->name('api.permission.show');
+
+     Route::get('/roles/{id}', function(string $id) {
+        $permissions =  Permission::all();
+        $role = Role::where('id', $id)->with('permissions')->first();
+        return response()->json([
+            'role' => $role,
+            'permissions' => $permissions
+        ]);
+     })->name('api.roles.show');
 
     Route::post('/permission/update', function(Request $request) {
         $validation = $request->validate([
             'name' => 'string|min:3',
-          ]);
+        ]);
           
           $permission = Permission::findOrFail($request->id);
           $permission->update(['name' => $validation['name']]);

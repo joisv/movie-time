@@ -10,8 +10,7 @@ import { ImSpinner9 } from 'react-icons/im'
 
 export default function Edit({ open, setOpen, params }) {
     const [ load, setLoad ] = useState(false)
-    const [ loading, setLoading ] = useState(false);
-    const [ data, setData ] = useState({
+    const { data, setData, errors, processing, put } = useForm({
         id: params,
         name: ''
     })
@@ -33,18 +32,19 @@ export default function Edit({ open, setOpen, params }) {
             }
         }
     fetchData();
-    }, [params]);
+    }, []);
 
 
     async function submit(e){
-        setLoading(true)
         e.preventDefault();
-        const response = await axios.post(route('api.permission.update', data))
-        if(response.status === 200 ){
-            setOpen(false);
-            router.reload();
-            setLoading(false)
-        }
+        put(route('permissions.update', params),{
+            onSuccess: () => {
+                setOpen(false);
+            },
+            onError: () => {
+                setOpen(true);
+            }
+        })
     }
 
   return (
@@ -67,9 +67,9 @@ export default function Edit({ open, setOpen, params }) {
                             name: e.target.value
                         }))}
                     />
-                    {/* <InputError message={errors}/> */}
+                    <InputError message={errors.name}/>
 
-                    <GenerateButton type={'submit'} className='bg-purple-500 mt-2' disabled={loading}>
+                    <GenerateButton type={'submit'} className='bg-purple-500 mt-2' disabled={processing}>
                         update
                     </GenerateButton>
                 </form>

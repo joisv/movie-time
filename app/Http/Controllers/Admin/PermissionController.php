@@ -60,13 +60,14 @@ class PermissionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return response()->json($request->all());
-        // $validation = $request->validate(['name' => 'string|min:3']);
-
-        // $permission = Permission::findOrFail($request->id);
-        // $permission->update($validation['name']);
-
-        // return redirect()->back()->with('message', 'update successfully');
+        $validation = $request->validate([
+            'name' => 'string|min:3|unique:permissions,name',
+        ]);
+          
+        $permission = Permission::findOrFail($id);
+        $permission->update(['name' => $validation['name']]);
+        
+        return redirect()->back()->with('success', 'Update successfully');
     }
 
     /**

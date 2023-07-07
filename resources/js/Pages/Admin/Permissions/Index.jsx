@@ -1,23 +1,23 @@
 import CustomModal from '@/Components/CustomModal';
 import GenerateButton from '@/Components/GenerateButton';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
 import Table from '@/Components/Table';
-import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
-import { Children, useState } from 'react';
+import { Head, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import Create from './Create';
-import Edit from './Edit';
+import Edit from '../Permissions/Edit';
 
 
 export default function Index({ auth, permissions }) {
 
     const filteredDatas = permissions?.map(({ id, name, created_at,  }) => ({ 
         id, 
-        name,
+        title: name,
         created_at, 
     }));
+
+    const { flash } = usePage().props
+    console.log(flash);
     const [ open, setOpen ] = useState(false)
     const [modalContent, setModalContent] = useState(null);
 
@@ -36,7 +36,7 @@ export default function Index({ auth, permissions }) {
     };
   
     const handleCreate = () => {
-      const createComponent = <Create open={open} setOpen={setOpen} />;
+      const createComponent = <Create setOpen={setOpen}/>;
       displayModal(createComponent);
     };
     
@@ -49,6 +49,9 @@ export default function Index({ auth, permissions }) {
 
         <div className="py-12">
             <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                {
+                    flash ? flash.message : null
+                }
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                 <GenerateButton className='bg-purple-500' onClick={handleCreate} >create</GenerateButton>
                     <Table datas={filteredDatas} setProps={setProps}/>
