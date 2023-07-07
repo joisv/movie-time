@@ -57,16 +57,22 @@ export default function Edit({ open, setOpen, params }) {
         e.preventDefault();
         postPermission(route('givepermission', role.id), {
             onSuccess: () => {
+                setOpen(false)
+            },
+            onError: () => {
                 setOpen(true)
             }
         })
     }
 
     function roleDestroy(id){
-       if(confirm('sure')){
+       if(confirm('remove permission ?')){
         destroyRole(route('roles.permission.revoke', id), {
             onSuccess: () => {
-                console.log('success');
+                setOpen(false)
+            },
+            onError: () => {
+                setOpen(true)
             }
         })
        }
@@ -99,17 +105,18 @@ export default function Edit({ open, setOpen, params }) {
                             update
                         </GenerateButton>
                     </form>
-                    <div className='flex space-x-1 mb-2 overflow-x-scroll'>
+                    <label htmlFor="permission" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role Permissions</label>
+                    <div className='flex space-x-1 mb-2 '>
                         {
                             role.permissions?.map((role_permission, index) => (
                                 <button type='button' onClick={() => roleDestroy([role.id, role_permission.id]) }
-                                    className='text-xs px-1 py-2 bg-blue-500 text-white rounded-md text-center' key={index}>{role_permission.name}
+                                    className='text-xs p-1 bg-red-500 text-white rounded-md text-center' key={index}>{role_permission.name}
                                 </button>
                             ))
                         }
                     </div>
                     <form onSubmit={submitPermission}>
-                        <label htmlFor="permission" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role Permissions</label>
+                       
                         <select
                             id="permission"
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

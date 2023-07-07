@@ -10,23 +10,26 @@ import { ImSpinner9 } from 'react-icons/im'
 
 export default function Edit({ open, setOpen, params }) {
     const [load, setLoad] = useState(false)
-    const [permissions, setPermissions] = useState([])
+    const [user, setUser] = useState([])
     const [roles, setRoles] = useState([]);
-    const { data: dataPermission, setData: setDataPermission, errors: errorsPermission, processing: processingPermission, put: updatePermission, delete: permissionRemove } = useForm({
-        name: ''
+    const { data: dataUser, setData: setDataUser, errors: errorsUser, processing: processingUser, patch: updateUser, delete: userRemove } = useForm({
+        name: '',
+        email: ''
     })
+    console.log(dataUser);
     useEffect(() => {
         async function fetchData() {
             setLoad(true)
             try {
-                const res = await axios.get(route('api.permission.show', params));
+                const res = await axios.get(route('api.user.show', params));
                 if (res.status === 200 && res.data) {
-                    setDataPermission(prevData => ({
+                    setDataUser(prevData => ({
                         ...prevData,
-                        name: res.data.permissions.name
+                        name: res.data.user.name,
+                        email: res.data.user.email
                     }));
-                    setPermissions(res.data.permissions)
                     setRoles(res.data.roles)
+                    setUser(res.data.user)
                 }
             } catch (error) {
 
@@ -37,10 +40,10 @@ export default function Edit({ open, setOpen, params }) {
         fetchData();
     }, []);
 
-
+    console.log(user);
     async function submit(e) {
         e.preventDefault();
-        updatePermission(route('permissions.update', params), {
+        updateUser(route('profile.update', user.id), {
             onSuccess: () => {
                 setOpen(false);
             },
@@ -50,13 +53,13 @@ export default function Edit({ open, setOpen, params }) {
         })
     }
 
-    const { data: dataRole, setData: setDataRole, errors: errorsRole, processing: processingRole, post: postRole } = useForm({
+    const { data: dataRole, setData: setDataRole, errors: errorsRole, processing: processingRole, post: postRole, } = useForm({
         role: ''
     })
 
     function assignRole(e) {
         e.preventDefault();
-        postRole(route('permissions.role', permissions.id), {
+        postRole(route('users.roles', user.id), {
             onSuccess: () => {
                 setOpen(false);
             },
@@ -66,8 +69,8 @@ export default function Edit({ open, setOpen, params }) {
         })
     }
 
-    function permissionRoleRemove(id) {
-        if (confirm('remove role ?')) permissionRemove(route('permissions.role.remove', id), {
+    function userRoleRemove(id) {
+        if (confirm('remove role from this user ?')) userRemove(route('users.roles.remove', id), {
             onSuccess: () => {
                 setOpen(false);
             },
@@ -76,39 +79,58 @@ export default function Edit({ open, setOpen, params }) {
             }
         })
     }
+
     return (
-        <div className='bg-white w-[50vh] p-3 rounded-lg shadow-2xl min-h-[20vh]'>
+        <div className='bg-white w-[60vh] p-3 rounded-lg shadow-2xl min-h-[20vh]'>
             {
                 load ? <div className='p-1 rounded-full w-fit mx-auto mt-[5vh] bg-transparent'>
                     <ImSpinner9 color='rgb(168 85 247)' size={30} className='animate-spin' />
                 </div> : <>
-                    <form onSubmit={submit}>
-                        <InputLabel htmlFor='name' value='Permission name' />
+                    {/* <form onSubmit={submit} className='space-y-2'>
+                        <div>
+                        <InputLabel htmlFor='name' value='User name' />
                         <TextInput
                             id="name"
                             type="text"
                             name="name"
-                            value={dataPermission?.name}
+                            value={dataUser?.name}
                             className="mt-1 block w-full"
                             autoComplete="off"
                             isFocused={true}
-                            onChange={(e) => setDataPermission(prev => ({
+                            onChange={(e) => setDataUser(prev => ({
                                 ...prev,
                                 name: e.target.value
                             }))}
                         />
-                        <InputError message={errorsPermission.name} />
+                        <InputError message={errorsUser.name} />
+                        </div>
+                        <div>
+                        <InputLabel htmlFor='email' value='User email' />
+                        <TextInput
+                            id="email"
+                            type="text"
+                            name="name"
+                            value={dataUser?.email}
+                            className="mt-1 block w-full"
+                            autoComplete="off"
+                            onChange={(e) => setDataUser(prev => ({
+                                ...prev,
+                                email: e.target.value
+                            }))}
+                        />
+                        <InputError message={errorsUser.name} />
+                        </div>
 
-                        <GenerateButton type={'submit'} className='bg-purple-500 mt-2' disabled={processingPermission}>
+                        <GenerateButton type={'submit'} className='bg-purple-500 mt-2' disabled={processingUser}>
                             update
                         </GenerateButton>
-                    </form>
-                    <label htmlFor="permission" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role Permissions</label>
-                    <div className='flex space-x-1 mb-2 '>
+                    </form> */}
+                    <label htmlFor="permission" className="block mb-1 text-sm font-medium text-gray-900 dark:text-white mt-2">Role Permissions</label>
+                    <div className='flex space-x-1 mb-2'>
                         {
-                            permissions.roles?.map((permission_role, index) => (
-                                <button type='button' onClick={() => permissionRoleRemove([permissions.id, permission_role.id])}
-                                    className='text-xs p-1 bg-red-500 text-white rounded-md text-center' key={index}>{permission_role.name}
+                            user.roles?.map((user_role, index) => (
+                                <button type='button' onClick={() => userRoleRemove([user.id, user_role.id])}
+                                    className='text-xs p-1 bg-red-500 text-white rounded-md text-center' key={index}>{user_role.name}
                                 </button>
                             ))
                         }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
@@ -31,7 +32,7 @@ use Inertia\Inertia;
 Route::get('/', function () {
 
     $datas = Post::all();
-    
+
     return Inertia::render('Home', [
         'datas' => $datas,
         'canLogin' => Route::has('login'),
@@ -54,7 +55,7 @@ Route::get('/stream/{id}', function (string $id) {
 // admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // admin dashboard
-    Route::get('/', function() {
+    Route::get('/', function () {
         return Inertia::render('Admin/Dashboard');
     })->name('admin');
     // post
@@ -73,10 +74,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('/episodes', StreamController::class)->names('streamurl');
     // permissions
     Route::resource('/permissions', PermissionController::class)->names('permissions');
+    Route::post('/permissions/{permission}/roles', [PermissionController::class, 'assignRole'])->name('permissions.role');
+    Route::delete('/permissions/{permission}/roles/{role}', [PermissionController::class, 'removeRole'])->name('               ');
     // roles
     Route::resource('/roles', RoleController::class)->names('roles');
     Route::post('/roles/{role}/permissions', [RoleController::class, 'givePermission'])->name('givepermission');
     Route::delete('/roles/{role}/permissions/{permission}', [RoleController::class, 'revokePermission'])->name('roles.permission.revoke');
+
+    // users
+    Route::get('/users', [UserController::class, 'index'])->name('user.index');
+    Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.roles');
+    Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.remove');
 });
 
 
@@ -85,7 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
 
     Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -96,7 +104,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/history', [UserHistoryController::class, 'index'])->name('history.index');
 
-    Route::get('/bookmark', function() {
+    Route::get('/bookmark', function () {
         $data = auth()->user()->bookmarkedPosts;
 
         return Inertia::render('Users/Bookmark', [
@@ -104,17 +112,16 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('bookmark');
 
-    Route::get('/like', function() {
+    Route::get('/like', function () {
         $data = auth()->user()->likedPosts;
 
         return Inertia::render('Users/Like', [
             'likes' => $data
         ]);
     })->name('like');
-    
 });
- // Route::get('/dashboard', function () {
-    //     return Inertia::render('Users/Dashboard');
-    // })->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Users/Dashboard');
+// })->name('dashboard');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

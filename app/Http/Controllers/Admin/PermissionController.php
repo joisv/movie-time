@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionController extends Controller
 {
@@ -79,5 +80,25 @@ class PermissionController extends Controller
        $permission->delete();
 
        return redirect()->back()->with('message', 'deleted succesfully');
+    }
+
+    public function assignRole(Request $request, Permission $permission)
+    {
+        if ($permission->hasRole($request->role)) {
+            return back()->with('message', 'Role exists.');
+        }
+
+        $permission->assignRole($request->role);
+        return back()->with('message', 'Role assigned.');
+    }
+
+    public function removeRole(Permission $permission, Role $role)
+    {
+        if ($permission->hasRole($role)) {
+            $permission->removeRole($role);
+            return back()->with('message', 'Role removed.');
+        }
+
+        return back()->with('message', 'Role not exists.');
     }
 }
