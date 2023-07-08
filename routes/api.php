@@ -10,6 +10,7 @@ use App\Http\Controllers\UserHistoryController;
 use App\Models\Genre;
 use App\Models\Notification;
 use App\Models\Post;
+use App\Models\Request as ModelsRequest;
 use App\Models\Stream;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -33,26 +34,18 @@ use Spatie\Permission\Models\Role;
 // });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    // admin
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');
-
     Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
-
     Route::post('/genereate-movie/{id}', [GenerateMovieController::class, 'generate'])->name('generate');
     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
-
     Route::get('/search', [PostController::class, 'search'])->name('search');
-
     Route::get('/get-post', function () {
 
         $data = Post::all();
         return response()->json($data);
     })->name('getpost');
-
-
     Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
     Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
-
     Route::get('/permission/{id}', function (string $id) {
         $roles = Role::all();
         $permission = Permission::where('id', $id)->with('roles')->first();
@@ -61,7 +54,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'roles' => $roles
         ]);
     })->name('api.permission.show');
-
     Route::get('/roles/{id}', function (string $id) {
         $permissions =  Permission::all();
         $role = Role::where('id', $id)->with('permissions')->first();
@@ -70,7 +62,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'permissions' => $permissions
         ]);
     })->name('api.roles.show');
-    
     Route::get('/user/{id}', function (string $id) {
         $roles =  Role::all();
         $user = User::where('id', $id)->with('roles')->first();
@@ -79,6 +70,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'roles' => $roles
         ]);
     })->name('api.user.show');
+
+    Route::get('/request/count', function(){
+        $req = ModelsRequest::where('is_new', true)->count();
+        return response()->json($req);
+    })->name('api.request.count');
 });
 
 Route::middleware('auth:sanctum')->group(function () {

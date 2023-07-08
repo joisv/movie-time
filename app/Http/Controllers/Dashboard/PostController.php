@@ -17,7 +17,7 @@ class PostController extends Controller
 
       
       return Inertia::render('Admin/Post/Index', [
-         'posts' => Post::orderBy('created_at', 'desc')->paginate(10)->withQueryString(),
+         'posts' => Post::orderBy('created_at', 'desc')->paginate(5)->withQueryString(),
       ]);
       
    }

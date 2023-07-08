@@ -30,6 +30,7 @@ class UserRequestController extends Controller
         $req->content = $data['content'];
         $req->user_id = $data['user_id'];
         $req->status = $data['status'];
+        $req->is_new = true;
         $req->save();
 
         return redirect()->route('request.index')->with('message', 'request sent');

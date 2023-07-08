@@ -1,12 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
+import { IoHomeOutline, IoGitPullRequestOutline, IoFingerPrintSharp } from "react-icons/io5";
+import { MdPostAdd, MdMovieEdit } from 'react-icons/md'
+import { FaUsers, FaUserLock } from 'react-icons/fa'
+import useHook from '@/hooks/useHook';
+import axios from 'axios';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [requestCount, setRequestCount] = useState('');
+
+    useEffect(() => {
+        const getRequestCount = async () => {
+            try {
+                const response = await axios.get(route('api.request.count'))
+                if (response.status === 200) {
+                    setRequestCount(response.data)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getRequestCount();
+    }, [])
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -20,7 +40,7 @@ export default function Authenticated({ user, header, children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            {/* <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink href={route('admin')} active={route().current('admin')}>
                                     Dashboard
                                 </NavLink>
@@ -42,7 +62,7 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('user.index')} active={route().current('user.index')}>
                                     Users
                                 </NavLink>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
@@ -131,13 +151,56 @@ export default function Authenticated({ user, header, children }) {
                 </div>
             </nav>
 
-            {header && (
+            {/* {header && (
                 <header className="bg-white shadow">
                     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
                 </header>
-            )}
+            )} */}
 
-            <main>{children}</main>
+            <div className="flex space-x-1 w-full ">
+                <div className="  flex flex-col w-[25vw] min-h-screen space-y-1 bg-white p-3">
+                    <NavLink href={route('admin')} active={route().current('admin')}>
+                        <IoHomeOutline color='#000000' size={22} />
+                        <span>
+                            Dashboard
+                        </span>
+                    </NavLink>
+                    <hr className='opacity-80 mt-1' />
+                    <NavLink href={route('post.index')} active={route().current('post.index')}>
+                        <MdPostAdd size={25} color='#000000' />
+                        <span>Post</span>
+                    </NavLink>
+                    <div className='relative'>
+                        <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
+                            <IoGitPullRequestOutline size={23} color='#000000' />
+                            <span> Request</span>
+                        </NavLink>
+                        {
+                            requestCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
+                                <span>{requestCount}</span>
+                            </div> : null
+                        }
+
+                    </div>
+                    <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
+                        <MdMovieEdit size={23} color='#000000' />
+                        <span>Stream</span>
+                    </NavLink>
+                    <NavLink href={route('permissions.index')} active={route().current('permissions.index')}>
+                        <IoFingerPrintSharp size={23} color='#000000' />
+                        <span>Permissions</span>
+                    </NavLink>
+                    <NavLink href={route('roles.index')} active={route().current('roles.index')}>
+                        <FaUserLock color='#000000' size={22} />
+                        <span>Roles</span>
+                    </NavLink>
+                    <NavLink href={route('user.index')} active={route().current('user.index')}>
+                        <FaUsers size={23} color='#000000' />
+                        <span>Users</span>
+                    </NavLink>
+                </div>
+                <main className='w-[100vw]'>{children}</main>
+            </div>
         </div>
     );
 }

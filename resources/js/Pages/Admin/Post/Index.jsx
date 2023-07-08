@@ -9,6 +9,7 @@ import Create from './Create';
 import axios from 'axios';
 import Table from '@/Components/Table';
 import CustomModal from '@/Components/CustomModal';
+import Pagination from '@/Components/Pagination';
 
 
 
@@ -21,17 +22,15 @@ const setProps = {
   }
 }
   
-export default function Index({ auth, posts, filters }) {
+export default function Index({ auth, posts }) {
   
   const {flash} = usePage().props
-  console.log(flash);
   const [ tmdbId, setTmdbId ] = useState();
   const [ postdata, setPosData ] = useState(posts)
   const { generateMovie, err, result, loading } = useHook();
   function handleGenerate() {
     generateMovie(tmdbId)
   }
-
   const [ searchTerm, setSearchTerm ] = useState({
     search : ''
   })
@@ -83,6 +82,7 @@ export default function Index({ auth, posts, filters }) {
                       </div>
                     </div>
                    {displayData()}
+                   <Pagination data={posts} />
                 </div>
             </div>
         </div>

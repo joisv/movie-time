@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\Request as ModelsRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AdminRequestController extends Controller
@@ -13,6 +14,8 @@ class AdminRequestController extends Controller
     public function index() {
 
         $data = ModelsRequest::with('user')->orderBy('created_at', 'desc')->get();
+        DB::table('requests')->where('is_new', true)->update(['is_new' => false]);
+        
         return Inertia::render('Admin/Request/Index', [
             'datas' => $data
         ]);
