@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Dashboard\CommentController;
@@ -51,6 +52,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/genereate-movie/{id}', [GenerateMovieController::class, 'generate'])->name('generate');
     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
     Route::get('/search', [PostController::class, 'search'])->name('search');
+    Route::get('/search/genres', [GenreController::class, 'search'])->name('search.genres');
     Route::get('/search/stream', [StreamController::class, 'search'])->name('stream.search');
     Route::get('/get-post', function () {
 
@@ -83,6 +85,12 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'roles' => $roles
         ]);
     })->name('api.user.show');
+    Route::get('/genre/{id}', function (string $id) {
+        $genre = Genre::where('id', $id)->first();
+        return response()->json([
+            'genre' => $genre,
+        ]);
+    })->name('api.genre.show');
 
     Route::get('/request/count', function(){
         $req = ModelsRequest::where('is_new', true)->count();

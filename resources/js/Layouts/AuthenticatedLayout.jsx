@@ -171,6 +171,10 @@ export default function Authenticated({ user, header, children }) {
                         <MdPostAdd size={25} color='#000000' />
                         <span className='sm:hidden md:block'>Post</span>
                     </NavLink>
+                    <NavLink href={route('genres.index')} active={route().current('genres.index')}>
+                        <MdPostAdd size={25} color='#000000' />
+                        <span className='sm:hidden md:block'>Genres</span>
+                    </NavLink>
                     <div className='relative'>
                         <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
                             <IoGitPullRequestOutline size={23} color='#000000' />

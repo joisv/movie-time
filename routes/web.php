@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -67,6 +68,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/post-store', [PostController::class, 'store'])->name('post.store');
     Route::delete('/post-bulkdelete', [PostController::class, 'bulkDelete'])->name('post.bulkdelete');
 
+    Route::get('/genres', [GenreController::class, 'index'])->name('genres.index');
+    Route::post('/genres/store', [GenreController::class, 'store'])->name('genres.store');
+    Route::put('/genres/update/{id}', [GenreController::class, 'update'])->name('genres.update');
+    Route::delete('/genres/destroy/{id}', [GenreController::class, 'destroy'])->name('genres.destroy');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // request
     Route::get('/request/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
     Route::patch('/request/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
@@ -92,14 +101,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
     Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
-
     Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
 
     Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
+    Route::post('/user-profile/update', [UserProfileController::class, 'update'])->name('userprofile.update');
 
     Route::get('/history', [UserHistoryController::class, 'index'])->name('history.index');
 
