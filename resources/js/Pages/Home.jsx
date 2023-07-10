@@ -44,11 +44,11 @@ const breakpoints = {
     slidesPerView: 4,
     spaceBetween: 100
   },
-  620:{
+  620: {
     slidesPerView: 3,
     spaceBetween: 30
   },
-  738:{
+  738: {
     slidesPerView: 4,
     spaceBetween: 100
   },
@@ -69,42 +69,39 @@ const breakpoints = {
 export default function Home({ datas, auth }) {
 
   const { setHistory } = useHook();
-  
-  const [ dataHistory, setDataHistory ] = useState({
+
+  const [dataHistory, setDataHistory] = useState({
     post_id: '',
     user_id: auth.user?.id,
-});
+  });
 
-const useHistory = async (post_id) => {
-    if(auth.user){
-        setDataHistory(prev => prev.post_id = post_id);
-        setHistory(dataHistory);
+  const useHistory = async (post_id) => {
+    if (auth.user) {
+      setDataHistory(prev => prev.post_id = post_id);
+      setHistory(dataHistory);
     }
-}
-
-console.log(datas);
-  
+  }
   return (
     <AuthLayout user={auth?.user} isDetail={false}>
-    <Swiper 
-      modules={[Virtual, Autoplay]} 
-      spaceBetween={50} 
-      slidesPerView={1}
-      centeredSlides={true}
-      autoplay= {{ 
-        delay: 2500,
-        disableOnInteraction: false,
-       }} 
-      loop={true}
-      virtual
+      <Swiper
+        modules={[Virtual, Autoplay]}
+        spaceBetween={50}
+        slidesPerView={1}
+        centeredSlides={true}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        loop={true}
+        virtual
       >
-      {img.map((img, index) => (
-        <SwiperSlide key={index} virtualIndex={index} >
-            <div 
-              className='w-full sm:h-[60vh] h-[45vh] bg-cover shadow-bg rounded-sm flex flex-col justify-center sm:px-14 px-3' 
-              style={{ 
+        {img.map((img, index) => (
+          <SwiperSlide key={index} virtualIndex={index} >
+            <div
+              className='w-full sm:h-[60vh] h-[45vh] bg-cover shadow-bg rounded-sm flex flex-col justify-center sm:px-14 px-3'
+              style={{
                 backgroundImage: `url(${img})`
-              }} 
+              }}
             >
               <div className='text-text mt-20 sm:space-y-2 space-y-1'>
                 <h1 className=' font-bold sm:text-2xl text-xl'>Lorem ipsum dolor sit amet.</h1>
@@ -121,23 +118,23 @@ console.log(datas);
                 </div>
                 <p className='w-[80%] text-sm font-light text-secondaryAccent'>{shortSentence('Lorem ipsum dolor sit amet consectetur adipisicing elit. A, sint sed voluptates exercitationem quisquam, quasi recusandae minima nemo eligendi eaque corporis facilis autem? Autem, odit.')}</p>
                 <GenerateButton className='bg-secondaryAccent hidden sm:flex'>
-                  <IoPlay size={20}/>
+                  <IoPlay size={20} />
                   watch
                 </GenerateButton>
               </div>
-             </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <div className='p-2'>
         <h1 className='text-primaryBtn text-2xl font-semibold py-3'>Popular Movie</h1>
-        <Swiper 
+        <Swiper
           navigation={true}
           breakpoints={breakpoints}
         >
           {datas.map((item, index) => (
             <SwiperSlide key={index}>
-              <Card item={item}/>
+              <Card item={item} />
             </SwiperSlide>
           ))}
         </Swiper>

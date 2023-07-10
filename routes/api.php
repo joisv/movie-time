@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
+use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\GenerateMovieController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
+use App\Models\Comment;
 use App\Models\Genre;
 use App\Models\Notification;
 use App\Models\Post;
@@ -33,12 +36,22 @@ use Spatie\Permission\Models\Role;
 //     return $request->user();
 // });
 
+// Route::get('/post-show/{id}', [PostController::class, 'showByApi'])->name('api.post.show');
+Route::get('/post-comment/{id}', function(string $id) {
+    $comments = Comment::where('post_id', $id)->orderBy('created_at', 'desc')->with('user')->get();
+    $comments_count = $comments->count();
+    return response()->json([
+        'comments' => $comments,
+        'count' => $comments_count
+    ]);
+})->name('api.postcomment');
+
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');
-    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
     Route::post('/genereate-movie/{id}', [GenerateMovieController::class, 'generate'])->name('generate');
     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
     Route::get('/search', [PostController::class, 'search'])->name('search');
+    Route::get('/search/stream', [StreamController::class, 'search'])->name('stream.search');
     Route::get('/get-post', function () {
 
         $data = Post::all();
@@ -78,10 +91,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-
-    Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.postlike');
+    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
+    Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.like');
     Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
-
     Route::post('/report-post', [ReportController::class, 'store'])->name('report.store');
 
     Route::get('/notification', function () {
@@ -93,21 +105,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['notifications' => $data], 200);
     })->name('notification');
 
-    Route::put('/notification/update', function (Request $request) {
+    Route::patch('/notification/update', [UserNotificationsController::class, 'update'])->name('notification.update');
 
-        try {
-            $user = auth()->user();
-
-            if ($user->id == $request->user_id) {
-
-                $data = Notification::findOrfail($request->id);
-                $data->is_read = true;
-                $data->save();
-
-                return response()->json(['message' => 'berhasil'], 200);
-            }
-        } catch (\Throwable $th) {
-            return response()->json('something went wrong');
-        }
-    })->name('notification.update');
+    
+    Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 });

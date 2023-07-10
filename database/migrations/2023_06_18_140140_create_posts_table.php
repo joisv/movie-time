@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('views')->default(0);
+            $table->string('slug')->unique()->nullable();
             $table->boolean('adult')->default(false);
             $table->string('backdrop_path')->nullable();
             $table->bigInteger('tmdb_id')->nullable();

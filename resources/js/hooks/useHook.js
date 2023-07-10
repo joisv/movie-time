@@ -7,15 +7,7 @@ export default function useHook() {
     const [ loading, setLoading ] = useState(false);
     const [ result, setResult ] = useState({});
     const [ err, setErr ] = useState('');
-    
-    const callback = {
-        onSuccess: () => {
-          // logika untuk onSuccess
-        },
-        onError: () => {
-          // logika untuk onError
-        }
-      };
+
     
     const setDataApi = async (url, id) => {
         setLoading(false)
@@ -78,8 +70,6 @@ export default function useHook() {
         
     }
 
-    
-
     const setReport = async (req) => {
         try {
             const res = await axios.post(route('report.store', req));
@@ -91,7 +81,7 @@ export default function useHook() {
 
     const setHistory = async (dataHistory) => {
         try {
-            const response = await axios.post(route('history.store', dataHistory));
+            const response = await axios.post();
         } catch (error) {
             console.log(error);
         }

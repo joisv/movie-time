@@ -22,7 +22,7 @@ class CommentController extends Controller
         $comment->content = $data['content'];
         $comment->save();
 
-        return redirect()->back()->with('message', 'comment send');
+        return response()->json('berhsil comment');
 
     }
 }

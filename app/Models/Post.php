@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -11,6 +12,20 @@ class Post extends Model
 
     protected $guarded = ['id'];
 
+    public function setSlugAttribute($value)
+    {
+        $slug = Str::slug($value);
+        $originalSlug = $slug;
+        $count = 2;
+        
+        while ($this->where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+        
+        $this->attributes['slug'] = $slug;
+    }
+    
     public function comments(){
         return $this->hasMany(Comment::class);
     }

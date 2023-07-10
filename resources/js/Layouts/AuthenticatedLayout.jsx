@@ -39,30 +39,6 @@ export default function Authenticated({ user, header, children }) {
                                     <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
-
-                            {/* <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink href={route('admin')} active={route().current('admin')}>
-                                    Dashboard
-                                </NavLink>
-                                <NavLink href={route('post.index')} active={route().current('post.index')}>
-                                    Post
-                                </NavLink>
-                                <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
-                                    Request
-                                </NavLink>
-                                <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
-                                    Stream
-                                </NavLink>
-                                <NavLink href={route('permissions.index')} active={route().current('permissions.index')}>
-                                    Permissions
-                                </NavLink>
-                                <NavLink href={route('roles.index')} active={route().current('roles.index')}>
-                                    Roles
-                                </NavLink>
-                                <NavLink href={route('user.index')} active={route().current('user.index')}>
-                                    Users
-                                </NavLink>
-                            </div> */}
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
@@ -133,6 +109,31 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink href={route('admin')} active={route().current('admin')}>
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('post.index')} active={route().current('post.index')}>
+                            Post
+                        </ResponsiveNavLink>
+                        <div className='relative'>
+                            <ResponsiveNavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
+                                Request
+                            </ResponsiveNavLink>
+                            {
+                                requestCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
+                                    <span className='sm:hidden md:block'>{requestCount}</span>
+                                </div> : null
+                            }
+                        </div>
+                        <ResponsiveNavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
+                            Stream
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('permissions.index')} active={route().current('permissions.index')}>
+                            Permission
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('roles.index')} active={route().current('roles.index')}>
+                            Role
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('user.index')} active={route().current('user.index')}>
+                            Users
+                        </ResponsiveNavLink>
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
@@ -158,45 +159,45 @@ export default function Authenticated({ user, header, children }) {
             )} */}
 
             <div className="flex space-x-1 w-full ">
-                <div className="  flex flex-col w-[25vw] min-h-screen space-y-1 bg-white p-3">
+                <div className="hidden sm:flex flex-col md:w-[25vw] sm:w-fit min-h-screen space-y-1 bg-white p-3">
                     <NavLink href={route('admin')} active={route().current('admin')}>
                         <IoHomeOutline color='#000000' size={22} />
-                        <span>
+                        <span className='sm:hidden md:block'>
                             Dashboard
                         </span>
                     </NavLink>
                     <hr className='opacity-80 mt-1' />
                     <NavLink href={route('post.index')} active={route().current('post.index')}>
                         <MdPostAdd size={25} color='#000000' />
-                        <span>Post</span>
+                        <span className='sm:hidden md:block'>Post</span>
                     </NavLink>
                     <div className='relative'>
                         <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
                             <IoGitPullRequestOutline size={23} color='#000000' />
-                            <span> Request</span>
+                            <span className='sm:hidden md:block'> Request</span>
                         </NavLink>
                         {
                             requestCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
-                                <span>{requestCount}</span>
+                                <span className='sm:hidden md:block'>{requestCount}</span>
                             </div> : null
                         }
 
                     </div>
                     <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
                         <MdMovieEdit size={23} color='#000000' />
-                        <span>Stream</span>
+                        <span className='sm:hidden md:block'>Stream</span>
                     </NavLink>
                     <NavLink href={route('permissions.index')} active={route().current('permissions.index')}>
                         <IoFingerPrintSharp size={23} color='#000000' />
-                        <span>Permissions</span>
+                        <span className='sm:hidden md:block'>Permissions</span>
                     </NavLink>
                     <NavLink href={route('roles.index')} active={route().current('roles.index')}>
                         <FaUserLock color='#000000' size={22} />
-                        <span>Roles</span>
+                        <span className='sm:hidden md:block'>Roles</span>
                     </NavLink>
                     <NavLink href={route('user.index')} active={route().current('user.index')}>
                         <FaUsers size={23} color='#000000' />
-                        <span>Users</span>
+                        <span className='sm:hidden md:block'>Users</span>
                     </NavLink>
                 </div>
                 <main className='w-[100vw]'>{children}</main>

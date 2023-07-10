@@ -48,7 +48,8 @@ Route::get('/stream/{id}', function (string $id) {
     $comments = Comment::where('post_id', $data->id)->orderBy('created_at', 'desc')->with('user')->get();
     return Inertia::render('Stream', [
         'postdata' => $data,
-        'comments' => $comments
+        'comments' => $comments,
+        'post_id' => $data->id
     ]);
 })->name('stream');
 
@@ -99,8 +100,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
-
-    Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 
     Route::get('/history', [UserHistoryController::class, 'index'])->name('history.index');
 

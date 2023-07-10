@@ -59,6 +59,7 @@ class GenerateMovieController extends Controller
                         $post->status = $data['status'];
                         $post->tagline = $data['tagline']; 
                         $post->title = $data['title'];
+                        $post->setSlugAttribute($data['title']);
                         $post->video = $data['video'];
                         $post->vote_average = $data['vote_average'];
                         $post->vote_count = $data['vote_count'];

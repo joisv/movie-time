@@ -15,7 +15,7 @@ class StreamController extends Controller
      */
     public function index()
     {
-        $data = Stream::with('post', 'downloads')->orderBy('created_at', 'desc')->get();
+        $data = Stream::orderBy('created_at', 'desc')->with('post', 'downloads')->paginate(20)->withQueryString();
         $posts = Post::all();
         return Inertia::render('Admin/Stream/Index', [
             'datastreams' => $data,
@@ -42,15 +42,15 @@ class StreamController extends Controller
                 'name' => $stream['name'],
                 'url' => $stream['url']
             ]);
-        
-           if(isset($request->downloads)){
-            foreach ($request->downloads as $download) {
-                $newStream->downloads()->create([
-                    'name_download' => $download['name_download'],
-                    'url_download' => $download['url_download']
-                ]);
+
+            if (isset($request->downloads)) {
+                foreach ($request->downloads as $download) {
+                    $newStream->downloads()->create([
+                        'name_download' => $download['name_download'],
+                        'url_download' => $download['url_download']
+                    ]);
+                }
             }
-           }
         }
         return response()->json(['message' => 'data berhasil di buat']);
     }
@@ -70,7 +70,7 @@ class StreamController extends Controller
     {
         $data = Stream::where('id', $id)->first();
         $post = Post::where('id', $data->post_id)
-                ->with('streams.downloads')->first();
+            ->with('streams.downloads')->first();
         $posts = Post::all();
         return Inertia::render('Admin/Stream/Edit', [
             'datastreams' => $post,
@@ -99,7 +99,7 @@ class StreamController extends Controller
                 'name' => $streamData['name'],
                 'url' => $streamData['url']
             ]);
-        
+
             // Buat ulang downloads untuk stream saat ini
             foreach ($request['downloads'] as $download) {
                 $newStream->downloads()->create([
@@ -122,5 +122,14 @@ class StreamController extends Controller
         $data->delete();
 
         return response()->json('sucees');
+    }
+
+    public function search(Request $request)
+    {
+        $data = Stream::query()->when($request->input('search'), function ($query, $search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        return response()->json($data);
     }
 }
