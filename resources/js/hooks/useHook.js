@@ -88,6 +88,7 @@ export default function useHook() {
     }
 
     const generateMovie = async (id) => {
+        console.log(id);
         setLoading(true)
         setErr('');
         try {

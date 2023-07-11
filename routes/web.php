@@ -32,7 +32,7 @@ use Inertia\Inertia;
 // guest
 Route::get('/', function () {
 
-    $datas = Post::all();
+    $datas = Post::orderBy('created_at', 'desc')->get();
 
     return Inertia::render('Home', [
         'datas' => $datas,
@@ -63,7 +63,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // post
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
-    Route::put('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
+    Route::post('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
     Route::post('/post-store', [PostController::class, 'store'])->name('post.store');
     Route::delete('/post-bulkdelete', [PostController::class, 'bulkDelete'])->name('post.bulkdelete');

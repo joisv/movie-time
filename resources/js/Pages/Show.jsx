@@ -1,15 +1,14 @@
 import { Head, router } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 import { IoPlay } from 'react-icons/io5'
 import { IoBookmarkOutline } from "react-icons/io5";
 import { MdNoAdultContent } from 'react-icons/md'
 
 import AuthLayout from '@/Layouts/AuthLayout';
-
-const backdrop = 'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/'
-const poster = 'https://image.tmdb.org/t/p/original/'
 
 export default function Show({ auth, postdata }) {
     console.info(postdata);
@@ -56,11 +55,16 @@ export default function Show({ auth, postdata }) {
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
             <Head title="Welcome" />
             <div style={{
-                backgroundImage: `url(${poster + postdata.backdrop_path})`
+                backgroundImage: `url(/storage/${ postdata.backdrop_path})`
             }} className='sm:w-full h-[70vh] sm:bg-cover bg-center detail-shadow relative'>
                 <div className="flex items-center w-full h-full backdrop-blur-sm backdrop-brightness-50 sm:px-8 sm:space-x-4 px-2">
                     <div className='md:w-52 sm:w-32 rounded-md overflow-hidden shadow-2xl hidden sm:block'>
-                        <img src={poster + postdata.poster_path} alt="" srcSet="" />
+                        <LazyLoadImage
+                            effect='blur'
+                            src={`/storage/${postdata.backdrop_path}`}
+                            className='w-full h-full'
+                        />
+                        {/* <img src={`storage/${postdata.poster_path}`} alt="" srcSet="" /> */}
                     </div>
                     <div>
                         <div className='flex space-x-2'>

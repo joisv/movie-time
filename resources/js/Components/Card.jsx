@@ -3,8 +3,10 @@ import { FaStarOfLife } from 'react-icons/fa'
 import { useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
 import axios from 'axios';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
-const base = 'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/'
+const base = '12'
 
 export default function Card({ item }) {
 
@@ -36,7 +38,11 @@ export default function Card({ item }) {
     <div className='space-y-2'>
       <button onClick={() => handleCard()}>
         <div className="relative sm:w-40 sm:h-60 w-32 h-44 cursor-pointer">
-          <img src={base + item.poster_path} alt="" srcSet="" className={`absolute w-full h-full object-cover rounded-md ${isHover ? 'opacity-60' : ''}`} />
+          <LazyLoadImage
+            alt={item.poster_path}
+            src={`storage/${item.poster_path}`}
+            className={`absolute w-full h-full object-cover rounded-md ${isHover ? 'opacity-60' : ''}`}
+          />
           <div className='absolute px-3 py-1 bg-secondaryBtn -top-0 shadow-2xl -right-2 flex justify-center space-x-1'>
             <FaStarOfLife size={10} color='#818383' />
             <p className='text-primaryBtn font-semibold text-sm'>{voteFix}</p>
@@ -53,7 +59,7 @@ export default function Card({ item }) {
           <div className='flex space-x-1'>
             <h1 className="text-text text-base font-medium">{item?.title.substring(0, 20) + '...'}</h1>
           </div>
-          <p className='text-primaryBtn font-light text-xs'>{formattedDate}</p>
+          <p className='text-primaryBtn font-light text-xs text-start'>{formattedDate}</p>
         </div>
       </button>
     </div>

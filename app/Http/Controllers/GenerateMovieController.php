@@ -15,7 +15,7 @@ class GenerateMovieController extends Controller
     public function __construct(){
         $url = \config('access_token.url');
 
-        $this->isdataExist = Genre::exists();
+        $this->isdataExist = Genre::whereNotNull('tmdb_id')->exists();
         $this->http_get = Http::withHeaders([
             'Authorization' => 'Bearer ' . $url,
             'Accept' => 'application/json',
@@ -38,21 +38,21 @@ class GenerateMovieController extends Controller
                         if(isset($data['genres']) && is_array($data['genres'])){
                             if(!$this->isdataExist) $this->generateMovieGenre();
                             foreach ($data['genres'] as $genre ) {
-                                $res = Genre::where('tmdb_id', $genre['id'])->first(); 
-                                $genres[] = $res->id;
+                                $res = Genre::where('tmdb_id', $genre['id'])->first();
+                                if ($res) {
+                                    $genres[] = $res->id;
+                                } 
                             }
                         }
                         
                         $post = new Post();
                         $post->adult = $data['adult'];
-                        $post->backdrop_path = $data['backdrop_path'];
                         $post->tmdb_id = $data['id'];
                         $post->imdb_id = $data['imdb_id'];
                         $post->original_language = $data['original_language'];
                         $post->original_title = $data['original_title'];
                         $post->overview = $data['overview'];
                         $post->popularity = $data['popularity'];
-                        $post->poster_path = $data['poster_path'];
                         $post->release_date = $data['release_date'];
                         $post->revenue = $data['revenue'];
                         $post->runtime = $data['runtime'];

@@ -16,7 +16,7 @@ const defInput = {
 }
 export default function Edit({ auth, postdata, genres }) {
 
-  const { data, setData, errors, put, processing } = useForm({
+  const { data, setData, errors, post, processing } = useForm({
     title: postdata.title,
     release_date: postdata.release_date,
     original_language: postdata.original_language,
@@ -39,7 +39,7 @@ export default function Edit({ auth, postdata, genres }) {
   });
     function submit(e) {
         e.preventDefault()
-        put(route('post.update', postdata.id))
+        post(route('post.update', postdata.id))
     }
     console.log(data.genres);
   return (

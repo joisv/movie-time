@@ -25,11 +25,21 @@ const setProps = {
 export default function Index({ auth, posts }) {
   
   const {flash} = usePage().props
-  const [ tmdbId, setTmdbId ] = useState();
+  const [ tmdbId, setTmdbId ] = useState(null);
   const [ postdata, setPosData ] = useState(posts)
-  const { generateMovie, err, result, loading } = useHook();
-  function handleGenerate() {
-    generateMovie(tmdbId)
+  const [ err, setErr ] = useState('');
+  const [ loading, setLoading ] = useState(false);
+
+ async function handleGenerate() {
+  setLoading(true)
+    try {
+      const response = await axios.post(route('generate', tmdbId))
+      console.log(response);
+    } catch (error) {
+      setErr(error.response.data)
+    }finally{
+      setLoading(false)
+    }
   }
   const [ searchTerm, setSearchTerm ] = useState({
     search : ''

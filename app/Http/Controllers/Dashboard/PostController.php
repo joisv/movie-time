@@ -111,7 +111,6 @@ class PostController extends Controller
          'original_title' => 'nullable|string',
          'overview' => 'nullable|string',
          'popularity' => 'nullable|numeric',
-         'poster_path' => 'nullable|string',
          'release_date' => 'nullable|string',
          'revenue' => 'nullable|numeric',
          'runtime' => 'nullable|numeric',
@@ -125,17 +124,20 @@ class PostController extends Controller
          'backdrop_path' => ($request->hasFile('backdrop_path')) ? 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' : '',
          'genres' => 'required',
       ]);
+      $post = Post::findOrFail($id);
       if ($request->hasFile('poster_path')) {
+         if ($post->poster_path !== null) Storage::delete($post->poster_path);
          $posterPath = $request->file('poster_path')->store('posters');
          $validatedData['poster_path'] = $posterPath;
       }
 
       if ($request->hasFile('backdrop_path')) {
+         if ($post->backdrop_path !== null)  Storage::delete($post->backdrop_path);
          $backdropPath = $request->file('backdrop_path')->store('backdrops');
          $validatedData['backdrop_path'] = $backdropPath;
       }
       try {
-         $post = Post::findOrFail($id);
+
          $post->update($validatedData);
          $post->setSlugAttribute($validatedData['title']);
          $post->save();
