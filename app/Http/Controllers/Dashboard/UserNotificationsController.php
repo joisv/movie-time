@@ -29,14 +29,12 @@ class UserNotificationsController extends Controller
                 $notification = Notification::where('request_id', $request->id)->first();
                 $notification->update(['is_read' => true]);
     
-                return response()->json([
-                    'user_id' => $notification
-                ]);
+                return response()->json('updated successfully');
             } else {
                 return response()->json('Not authenticated');
             }
         } catch (\Throwable $th) {
-            return response()->json('Something went wrong');
+            return response()->json($th);
         }
     }
 }

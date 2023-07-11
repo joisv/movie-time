@@ -14,6 +14,7 @@ use App\Models\Comment;
 use App\Models\Genre;
 use App\Models\Notification;
 use App\Models\Post;
+use App\Models\Report;
 use App\Models\Request as ModelsRequest;
 use App\Models\Stream;
 use App\Models\User;
@@ -91,6 +92,12 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'genre' => $genre,
         ]);
     })->name('api.genre.show');
+    Route::get('/report/{id}', function (string $id) {
+        $report = Report::where('id', $id)->with('post', 'user')->first();
+        return response()->json([
+            'report' => $report,
+        ]);
+    })->name('api.report.show');
 
     Route::get('/request/count', function(){
         $req = ModelsRequest::where('is_new', true)->count();
@@ -114,7 +121,6 @@ Route::middleware('auth:sanctum')->group(function () {
     })->name('notification');
 
     Route::patch('/notification/update', [UserNotificationsController::class, 'update'])->name('notification.update');
-
     
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 });

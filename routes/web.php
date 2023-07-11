@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Comment;
@@ -103,6 +104,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
     Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
     
+    Route::get('/report/all', [ReportController::class, 'index'])->name('report.index');
+    Route::patch('/report/update/{id}', [ReportController::class, 'update'])->name('report.update');
 
     Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
     Route::post('/user-profile/update', [UserProfileController::class, 'update'])->name('userprofile.update');

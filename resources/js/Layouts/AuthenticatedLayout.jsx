@@ -203,6 +203,10 @@ export default function Authenticated({ user, header, children }) {
                         <FaUsers size={23} color='#000000' />
                         <span className='sm:hidden md:block'>Users</span>
                     </NavLink>
+                    <NavLink href={route('report.index')} active={route().current('report.index')}>
+                        <FaUsers size={23} color='#000000' />
+                        <span className='sm:hidden md:block'>Report</span>
+                    </NavLink>
                 </div>
                 <main className='w-[100vw]'>{children}</main>
             </div>

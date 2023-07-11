@@ -5,6 +5,9 @@ import GenerateButton from './GenerateButton';
 import React, { useState } from 'react';
 import useHook from '@/hooks/useHook';
 
+const open = 'bg-red-500 text-black'
+const completed = 'bg-blue-400 text-text'
+
 export default function Table({ datas, handleSearchChange, searchTerm, setProps }) {
 
     const { destroy: deleteById, loading, result: response, err } = useHook();
@@ -99,17 +102,24 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
                                 </td>
                                 {Object.entries(post).map(([key, value]) => (
                                     <React.Fragment key={key}>
-                                        {key === 'id' ? <td className="hidden">{value}</td> :
+                                        {key === 'status' ? <td className='px-6 py-4'>
+                                            <span className={`h-fit p-1 rounded-md ${value === 'open' ? open : value === 'close' ? completed : 'bg-red-400 text-text'}`}>
+                                                {value}
+                                            </span>
+                                        </td> :
+                                            key === 'id' ? <td className="hidden">
+                                                {value}
+                                            </td> :
 
-                                            key === 'title' ? (
-                                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                    {value}
-                                                </th>
-                                            ) : key === 'created_at' ? (
-                                                <td className="px-6 py-4">{formatDateTime(value)}</td>
-                                            ) : (
-                                                <td className="px-6 py-4">{value}</td>
-                                            )}
+                                                key === 'title' ? (
+                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                                        {value}
+                                                    </th>
+                                                ) : key === 'created_at' ? (
+                                                    <td className="px-6 py-4">{formatDateTime(value)}</td>
+                                                ) : (
+                                                    <td className="px-6 py-4">{value}</td>
+                                                )}
                                     </React.Fragment>
                                 ))}
 

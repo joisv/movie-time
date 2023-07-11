@@ -1,39 +1,36 @@
+import Card from '@/Components/Card';
+import NoDataDisplay from '@/Components/NoDataDisplay';
 import AuthLayout from '@/Layouts/AuthLayout';
 import useHook from '@/hooks/useHook';
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react'
 
 export default function History({ histories, auth }) {
-
-    const { setHistory } = useHook()
-  
-    const [ dataHistory, setDataHistory ] = useState({
-        post_id: '',
-        user_id: auth.user?.id,
-    });
-
-    const useHistory = async (post_id) => {
-        if(auth.user){
-            setDataHistory(prev => prev.post_id = post_id);
-            setHistory(dataHistory);
-        }
+    
+    if(histories.length === 0){
+        return(
+            <AuthLayout user={auth?.user}>
+                <NoDataDisplay>
+                    nothing to display
+                </NoDataDisplay>
+            </AuthLayout>
+        )
     }
-  return (
-    <AuthLayout user={auth?.user}>
-         <div className='space-y-4 z-20'>
-            {
-            histories?.map(data => (
-                <div className='text-text cursor-pointer' key={data.post.id}>
-                    <Link href={route('post.show',data.post.id)}>
-                        <div onClick={() => useHistory(data.post.id)}>
-                            <h1 className='font-semibold'>{data.post.title}</h1>
-                            <p>{data.post.description}</p>
-                        </div>
-                    </Link>
-                </div>
-            ))
-            }
+
+    return (
+        <AuthLayout user={auth?.user}>
+            <div className="pb-5">
+                <h1 className='text-secondaryAccent text-xl font-semibold'>History page</h1>
+                <p className='text-white text-base font-light'>Your movie memories and recommendations.</p>
+
             </div>
-    </AuthLayout>
-  )
+            <div className='w-full h-20 flex flex-wrap gap-2'>
+                {
+                    histories.map((data, index) => (
+                        <Card item={data.post} key={index} />
+                    ))
+                }
+            </div>
+        </AuthLayout>
+    )
 }

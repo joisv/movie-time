@@ -10,11 +10,10 @@ export default function Notifications({ auth, datas }) {
     const [displayData, setDisplayData] = useState({})
     const [updateData, setUpdateData] = useState({
         id: '',
-        user_id: auth.user.id
     })
 
     const openNotification = async (id, index) => {
-
+        console.log(id);
         if (datas[index].is_read === 0) {
             setDisplayData(datas[index]);
             setUpdateData(prevdata => ({
@@ -23,7 +22,7 @@ export default function Notifications({ auth, datas }) {
             }));
             setOpen(true);
             try {
-                const response = await axios.patch(route('notification.update', updateData));
+                const response = await axios.patch(route('notification.update'), updateData);
                 console.log(response);
             } catch (error) {
                 console.log(error);
@@ -38,7 +37,9 @@ export default function Notifications({ auth, datas }) {
     if (datas.length == 0) {
         return (
             <AuthLayout user={auth?.user}>
-                <NoDataDisplay message={'No Notifications'} />
+                <NoDataDisplay>
+                    no Notifications
+                </NoDataDisplay>
             </AuthLayout>
         )
     }

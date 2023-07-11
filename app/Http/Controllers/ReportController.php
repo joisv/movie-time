@@ -2,11 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class ReportController extends Controller
 {
+    public function index(){
+
+        $this->middleware('role:admin');
+
+        $reports = Report::orderBy('created_at', 'desc')->with('user', 'post')->get();
+        
+        return Inertia::render('Admin/Reports/Index',[
+            'reports' => $reports
+        ]);
+    }
+    
     public function store(Request $request) {
         try {
             $data = $request->all();
@@ -29,4 +43,32 @@ class ReportController extends Controller
             return response()->json('something went wrong', 500);
         }
     }
+
+    public function update(Request $request,$id){
+
+        try {
+            $validatedData = $request->validate([
+                'message' => 'nullable|string|min:3',
+                'status' => 'required|string'
+            ]);
+    
+            $report = Report::findOrFail($id);
+            $report->update(['status' => $validatedData['status']]);
+    
+            $notif = new Notification();
+            $notif->user_id = $request->user_id;
+            $notif->is_read = false;
+            $notif->report_id = $id;
+            $notif->message = $validatedData['message'];
+            $notif->save();
+    
+            return redirect()->back()->with('message', 'Updated successfully');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            // Tangani kesalahan lainnya (misalnya, kesalahan basis data)
+            return redirect()->back()->with('error', 'An error occurred during the update.');
+        }
+        
+    } 
 }
