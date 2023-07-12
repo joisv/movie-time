@@ -6,7 +6,7 @@ export default function CustomModal({ children, open, onClose }) {
     
   return (
     <div className='backdrop-blur-sm fixed top-0 w-full h-screen p-10 flex justify-center' onClick={onClose}>
-        <div className='h-fit rounded-sm w-fit p-10 flex flex-col justify-center items-center' onClick={(e) => {
+        <div className='h-fit rounded-sm w-fit sm:p-10 flex flex-col justify-center items-center' onClick={(e) => {
             e.stopPropagation()
         }}>
             { children }

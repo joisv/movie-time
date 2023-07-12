@@ -22,8 +22,8 @@ export default function Index({ auth, reports }) {
 
     const setProps = {
         th: ['post title', 'user', 'status', 'created_at', 'actions'],
-        destroyUrl: 'api.post.destroy',
-        bulkDeleteUrl: 'post.bulkdelete',
+        destroyUrl: 'api.report.destroy',
+        bulkDeleteUrl: '',
         handleEdit: (params) => {
             const createComponent = <Edit open={open} setOpen={setOpen} params={params} />;
             displayModal(createComponent);

@@ -19,6 +19,6 @@ class Report extends Model
     }
 
     public function notifications(){
-        return $this->hasMany(User::class);
+        return $this->hasMany(Notification::class);
     }
 }

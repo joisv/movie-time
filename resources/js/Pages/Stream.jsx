@@ -1,49 +1,65 @@
 import CustomModal from "@/Components/CustomModal";
-import GenerateButton from "@/Components/GenerateButton";
 import AuthLayout from "@/Layouts/AuthLayout";
 import { Head, router, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import { IoSendSharp } from 'react-icons/io5'
-import { MdThumbUp, MdOutlineReportGmailerrorred, MdShare, MdDownload } from 'react-icons/md'
+import { MdThumbUp, MdOutlineReportGmailerrorred, MdShare, MdDownload, MdOutlineSettings } from 'react-icons/md'
 import { IoBookmark, } from "react-icons/io5";
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import axios from "axios";
-import { ImSpinner9 } from "react-icons/im";
-import Radio from "@/Components/Radio";
+import { ImSpinner8 } from "react-icons/im";
+import Radio from "@/Pages/Users/Partials/Radio";
+import Download from "./Users/Partials/Download";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import dayjs from "dayjs";
+import relativeTime from 'dayjs/plugin/relativeTime';
 
-export default function Stream({ auth, postdata, post_id }) {
+const isLiked = '#01AED3'
+
+dayjs.extend(relativeTime);
+
+export default function Stream({ auth, postdata }) {
+
     const [isDetail, setIsDetail] = useState(true);
-    const [openModal, setOpenModal] = useState(false);
+    const [open, setOpen] = useState(false);
     const [comments, setComments] = useState([]);
+    const [like, setLike] = useState(false);
+    const [bookmark, setBookmark] = useState(false);
     const [commentsCounts, setCommentsCounts] = useState('');
+    const [modalContent, setModalContent] = useState(null);
+    const [commentLoad, setCommentLoad] = useState(false);
+
     const date = new Date(postdata.release_date);
     const formattedDate = date.toLocaleDateString("en-US");
 
-
     const getComment = async () => {
+        setCommentLoad(true)
         try {
-            const response = await axios.get(route('api.postcomment', post_id))
+            const response = await axios.get(route('api.postcomment', postdata.id))
+            console.log(response);
             if (response.status === 200) {
                 setComments(response.data.comments)
                 setCommentsCounts(response.data.count)
             }
         } catch (error) {
-
+            console.log(error);
+        } finally {
+            setCommentLoad(false)
         }
     }
     const [data, setData] = useState({
         post_id: postdata.id,
-        user_id: auth.user?.id,
         content: ''
     })
-
     async function submitComment(e) {
         e.preventDefault();
         if (auth.user) {
+            setCommentLoad(true)
             try {
                 const response = await axios.post(route('comment.store', data))
+                console.log(response);
                 if (response.status === 200) {
-                    setOpenModal(false);
+                    setOpen(false);
                     getComment();
                     setData(prev => ({
                         ...prev,
@@ -52,6 +68,8 @@ export default function Stream({ auth, postdata, post_id }) {
                 }
             } catch (error) {
                 console.log(error);
+            } finally {
+                setCommentLoad(false)
             }
         } else {
             router.visit(route('login'))
@@ -59,11 +77,10 @@ export default function Stream({ auth, postdata, post_id }) {
     }
 
     async function handleLike() {
-        console.log('halo');
         if (auth.user) {
+            setLike(prev => !prev);
             try {
                 const response = await axios.post(route('post.like', postdata.id))
-                console.log(response);
             } catch (error) {
                 console.log(error);
             }
@@ -71,9 +88,47 @@ export default function Stream({ auth, postdata, post_id }) {
             router.visit(route('login'));
         }
     }
+
+    async function handleBookmark() {
+        setBookmark((prevBookmark) => !prevBookmark);
+        if (auth.user) {
+            try {
+                const response = await axios.post(route('post.bookmark', postdata.id))
+                if (response === 200) {
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            router.visit(route('login'))
+        }
+    }
+    const displayModal = (children) => {
+        setModalContent(children);
+        setOpen(true);
+    };
+
+    const handleReport = () => {
+        const createComponent = <Radio onClose={() => setOpen(false)} itemId={postdata.id} setOpen={setOpen} auth={auth} />;
+        displayModal(createComponent);
+    }
+    const handleDownload = () => {
+        const createComponent = <Download onClose={() => setOpen(false)} setOpen={setOpen} />
+        displayModal(createComponent);
+    }
+
     useEffect(() => {
+        const findLike = postdata.liked_by_users?.findIndex(element => element.id === auth.user?.id)
+        if (findLike > -1) {
+            setLike(true)
+        }
+        const finBookmark = postdata.bookmarked_by_users?.findIndex(el => el.id === auth.user?.id)
+        if (finBookmark > -1) {
+            setBookmark(true)
+        }
         getComment();
     }, [])
+
     return (
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
             <Head title="Stream" />
@@ -88,92 +143,119 @@ export default function Stream({ auth, postdata, post_id }) {
                         ></iframe>
                     </div>
                     {/* title */}
-                    <h1 className="font-medium text-xl sm:text-3xl ml-1 mt-2">{postdata.title}</h1>
-                    <div className="space-y-5 sm:-space-y-5 sm:flex sm:justify-between p-1">
-                        <div className="flex space-x-1 sm:text-base text-sm">
+                    <h1 className="font-medium text-xl sm:text-2xl ml-1 mt-2">{postdata.title}</h1>
+                    <div className="space-y-5 sm:-space-y-0 sm:flex sm:justify-between p-1 items-center">
+                        <div className="flex space-x-1 sm:text-sm text-sm font-extralight opacity-70">
                             <div>{postdata.original_title}</div>
-                            <div>view</div>
+                            <div>{postdata.views}</div>
                             <div>{formattedDate}</div>
                         </div>
-                        <div className="flex space-x-2 justify-between text-sm sm:space-x-4">
-                            <button onClick={() => handleLike()} className="flex w-8 h-fit flex-col gap-1 items-center">
-                                <MdThumbUp size={'100%'} color='#ffffff' />
-                                <span className="lg:hidden">like</span>
+                        <div className="flex space-x-2 justify-between text-sm sm:space-x-4 md:w-[36vw] lg:w-[25vw]">
+                            <button onClick={() => handleLike()} className="flex w-full flex-col gap-1 items-center h-12">
+                                <MdThumbUp size={'100%'} color={like ? isLiked : '#ffffff'} />
+                                <span className="">like</span>
                             </button>
-                            <div className="flex flex-col w-7 h-fit gap-1 items-center">
-                                <IoBookmark size={'100%'} color="#ffffff" />
-                                <span className="lg:hidden">bookmark</span>
+                            <button
+                                type="button"
+                                className="flex flex-col w-full gap-1 items-center h-12"
+                                onClick={() => handleBookmark()}
+                            >
+                                <IoBookmark size={'100%'} color={bookmark ? isLiked : '#ffffff'} />
+                                <span className="">bookmark</span>
+                            </button>
+                            <button
+                                onClick={() => handleReport()}
+                                type="button"
+                                className="flex flex-col w-full gap-1 items-center h-12 text-[#f2cd00]">
+                                <MdOutlineReportGmailerrorred size={'100%'} color="#f2cd00" />
+                                <span className="">report</span>
+                            </button>
+                            <div className="flex flex-col w-full gap-1 items-center h-12">
+                                <MdOutlineSettings size={'100%'} color="#ffffff" />
+                                <span className="">quality</span>
                             </div>
                             <button
-                                onClick={() => setOpenModal(true)}
                                 type="button"
-                                className="flex flex-col w-9 h-fit gap-1 items-center">
-                                <MdOutlineReportGmailerrorred size={'100%'} color="#ffffff" />
-                                <span className="lg:hidden">report</span>
-                            </button>
-                            <div className="flex flex-col w-8 h-fit gap-1 items-center">
-                                <MdShare size={'100%'} color="#ffffff" />
-                                <span className="lg:hidden">share</span>
-                            </div>
-                            <div className="flex flex-col w-10 h-fit gap-1 items-center">
+                                className="flex flex-col w-full gap-1 items-center h-12"
+                                onClick={() => handleDownload()}
+                            >
                                 <MdDownload size={'100%'} color="#ffffff" />
-                                <span className="lg:hidden">download</span>
-                            </div>
+                                <span className="">download</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className="block mt-0 text-text p-1 lg:w-[25%] w-full">
-                    <span className="text-sm font-medium text-primaryBtn sm:text-base">{`Comments ${commentsCounts}`}</span>
-                    <div className="mt-2">
-                        <button
-                            onClick={() => setOpenModal(prev => !prev)}
-                            className="h-14 bg-secondaryBtn text-sm text-accent flex items-center w-full">
-                            <p className="text-base">add comment...</p>
-                        </button>
-                        {/* <hr className="opacity-30"/> */}
+                <div className="block mt-0 text-text p-1 lg:w-[33%] w-full">
+                    <span className="text-sm font-medium text-white sm:text-base">{`Comments ${commentsCounts}`}</span>
+                    <div className="mt-2 space-x-2 flex items-start">
+                        <div className="h-10 w-10 rounded-full overflow-hidden">
+                            <LazyLoadImage
+                                effect='blur'
+                                src={`/storage/${auth.user.avatar}`}
+                                className='w-full h-full object-cover'
+                            />
+                        </div>
+                        <div className="w-full space-y-1">
+                            <h3 className="font-medium">@{auth.user.name}</h3>
+                            <form onSubmit={submitComment}>
+                                <textarea
+                                    id="comment"
+                                    rows="4"
+                                    className="block p-2.5 w-full md:w-[50%] lg:w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Write your thoughts here... (max 500 character)"
+                                    value={data.content}
+                                    onChange={(e) => setData(prev => ({
+                                        ...prev,
+                                        content: e.target.value
+                                    }))}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') { submitComment(e) } }}
+                                />
+                            </form>
+                        </div>
+
                     </div>
                     {/* display comment */}
-                    <div className="space-y-4 mt-4 w-full">
-                        {
-                            comments.map((comment, index) => (
-                                <div className="flex items-center font-medium w-full justify-between" key={index}>
-                                    <div className="space-y-1">
-                                        <p className="text-xs sm:text-sm text-primaryBtn">@{comment.user.name}</p>
-                                        <p className="text-sm sm:text-base text-text opacity-80 font-extralight">{comment.content}</p>
+                    {
+                        commentLoad ? <div className="w-full h-44 flex justify-center items-center">
+                            <ImSpinner8 size={28} color="#ffffff" className="animate-spin" />
+                        </div> : <div className="space-y-4 mt-4 w-full">
+                            {
+                                comments.map((comment, index) => (
+                                    <div className="flex items-center font-medium w-full justify-between  px-1 py-3" key={index}>
+                                        <div className="flex space-x-1 w-full">
+                                            <div className="h-10 w-10 rounded-full overflow-hidden">
+                                                <LazyLoadImage
+                                                    effect='blur'
+                                                    src={`/storage/${comment.user.avatar}`}
+                                                    className='w-full h-full object-cover'
+                                                />
+                                            </div>
+                                            <div className="w-full space-y-1">
+                                                <div className="flex space-x-1 items-center text-primaryBtn ">
+                                                    <p className=" ">@{comment.user.name}</p>
+                                                    <span className="text-xs">. {dayjs(comment.created_at).fromNow()}</span>
+                                                </div>
+                                                <p className=" text-white opacity-80 font-extralight">{comment.content}</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <BsThreeDotsVertical size={15} color="#ffffff" />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <BsThreeDotsVertical size={15} color="#ffffff" />
-                                    </div>
-                                </div>
+                                ))
+                            }
+                        </div>
+                    }
 
-                            ))
-                        }
-                    </div>
+
                 </div>
             </div>
             {/* modal */}
-            <CustomModal open={openModal} onClose={() => setOpenModal(false)}>
-                <Radio onClose={() => setOpenModal(false)} itemId={postdata.id} setOpenModal={setOpenModal} auth={auth}/>
-            </CustomModal>
+            {open && (
+                <CustomModal open={open} onClose={() => setOpen(false)}>
+                    {modalContent}
+                </CustomModal>
+            )}
         </AuthLayout>
     )
 }
-
-
-// <form onSubmit={submitComment}>
-// <div className="w-[85vw] sm:w-[60vw] mb-2 rounded-lg bg-secondaryBtn p-3">
-//     <div className=" bg-secondaryBtn">
-//         <textarea id="comment" rows="4" className="w-full px-0 text-sm text-text bg-secondaryBtn border-0 focus:ring-0"
-//             placeholder="Write a comment..."
-//             value={dataReport.content}
-//             onChange={(e) => setDataReport(prev => ({
-//                 ...prev,
-//                 content: e.target.value
-//             }))}
-//         />
-//     </div>
-//     <button type="submit" className="p-2">
-//         <IoSendSharp size={20} color="#ffffff" />
-//     </button>
-// </div>
-// </form>

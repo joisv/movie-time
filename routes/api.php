@@ -3,10 +3,12 @@
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
+use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\GenerateMovieController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
@@ -62,6 +64,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     })->name('getpost');
     Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
     Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
+    Route::delete('/report/destroy/{id}', [ReportController::class, 'destroy'])->name('api.report.destroy');
     Route::get('/permission/{id}', function (string $id) {
         $roles = Role::all();
         $permission = Permission::where('id', $id)->with('roles')->first();

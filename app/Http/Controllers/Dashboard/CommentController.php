@@ -12,13 +12,12 @@ class CommentController extends Controller
         
         $data = $request->validate([
             'post_id' => 'required',
-            'user_id' => 'required',
-            'content' => 'required'
+            'content' => 'required|max:500'
         ]);
 
         $comment = new Comment();
         $comment->post_id = $data['post_id'];
-        $comment->user_id = $data['user_id'];
+        $comment->user_id = auth()->user()->id;
         $comment->content = $data['content'];
         $comment->save();
 

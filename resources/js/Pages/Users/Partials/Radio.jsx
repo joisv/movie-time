@@ -13,7 +13,7 @@ const data = [
     'Tampilan menjadi tidak responsif'
 ]
 
-export default function Radio({ onClose, itemId, auth, setOpenModal }) {
+export default function Radio({ onClose, itemId, auth, setOpen }) {
 
     const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,7 @@ export default function Radio({ onClose, itemId, auth, setOpenModal }) {
             try {
                 const response = await axios.post(route('report.store', dataReport))
                 if (response.status === 200) {
-                    setOpenModal(false)
+                    setOpen(false)
                 }
             } catch (error) {
                 console.log(error);
@@ -63,7 +63,7 @@ export default function Radio({ onClose, itemId, auth, setOpenModal }) {
                 </button>
                 <button
                     type="button"
-                    className='bg-red-500 text-white rounded-sm w-14 disabled:bg-red-400 flex items-center justify-center  gap-1 p-1'
+                    className='bg-[#f2cd00] text-white rounded-sm w-14 disabled:bg-red-400 flex items-center justify-center  gap-1 p-1'
                     onClick={handleReport}
                     disabled={loading}
                 >

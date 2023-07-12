@@ -46,12 +46,10 @@ Route::get('/', function () {
 
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 Route::get('/stream/{id}', function (string $id) {
-    $data = Post::where('id', $id)->with('likedByUsers', 'genres')->first();
-    $comments = Comment::where('post_id', $data->id)->orderBy('created_at', 'desc')->with('user')->get();
+    $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers')->first();
+    $data->increment('views');
     return Inertia::render('Stream', [
         'postdata' => $data,
-        'comments' => $comments,
-        'post_id' => $data->id
     ]);
 })->name('stream');
 
@@ -103,6 +101,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
     Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
     Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
+    Route::delete('/notifications/destroy/{id}', [UserNotificationsController::class, 'destroy'])->name('usernotifications.destroy');
     
     Route::get('/report/all', [ReportController::class, 'index'])->name('report.index');
     Route::patch('/report/update/{id}', [ReportController::class, 'update'])->name('report.update');

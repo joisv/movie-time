@@ -45,6 +45,8 @@ class ReportController extends Controller
     }
 
     public function update(Request $request,$id){
+        
+        $this->middleware('role:admin');
 
         try {
             $validatedData = $request->validate([
@@ -71,4 +73,14 @@ class ReportController extends Controller
         }
         
     } 
+
+    public function destroy($id)
+    {
+        $this->middleware('role:admin');
+
+        $report = Report::where('id', $id)->first();
+        $report->delete();
+
+        return response()->json('deleted success');
+    }
 }

@@ -14,7 +14,10 @@ class UserNotificationsController extends Controller
 
         $user = auth()->user();
 
-        $data = Notification::where('user_id', $user->id)->orderBy('created_at', 'desc')->with('user', 'request')->get();
+        $data = Notification::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->with('user', 'request', 'report.post') // Menambahkan relasi 'report'
+            ->get();
 
         return Inertia::render('Users/Notifications', [
             'datas' => $data
@@ -28,7 +31,7 @@ class UserNotificationsController extends Controller
             if (auth()->check()) {
                 $notification = Notification::where('request_id', $request->id)->first();
                 $notification->update(['is_read' => true]);
-    
+
                 return response()->json('updated successfully');
             } else {
                 return response()->json('Not authenticated');
@@ -36,5 +39,13 @@ class UserNotificationsController extends Controller
         } catch (\Throwable $th) {
             return response()->json($th);
         }
+    }
+
+    public function destroy($id)
+    {
+        $notification = Notification::findOrFail($id);
+        $notification->delete();
+
+        return redirect()->back()->with('message', 'deleted succesfully');
     }
 }

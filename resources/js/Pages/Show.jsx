@@ -11,7 +11,7 @@ import { MdNoAdultContent } from 'react-icons/md'
 import AuthLayout from '@/Layouts/AuthLayout';
 
 export default function Show({ auth, postdata }) {
-    console.info(postdata);
+    
     const [bookmark, setBookmark] = useState(false);
     const [isDetail, setIsDetail] = useState(true);
     const [isAdult, setIsAdult] = useState('#03dd03')
@@ -26,10 +26,6 @@ export default function Show({ auth, postdata }) {
         if (postdata.adult === 0) {
             setIsAdult('#fe091a')
         }
-        // const finArray = postdata.liked_by_users?.findIndex(element => element.id === auth.user?.id)
-        // if (finArray > -1) {
-        //     setLike(true)
-        // }
         const finBookmark = postdata.bookmarked_by_users?.findIndex(el => el.id === auth.user?.id)
         if (finBookmark > -1) {
             setBookmark(true)

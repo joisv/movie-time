@@ -41,4 +41,6 @@ class AdminRequestController extends Controller
 
         return redirect()->route('adminrequest.index')->with('message', 'comment updated');
     }
+
+
 }
