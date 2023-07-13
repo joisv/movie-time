@@ -2,16 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components{
-    .shadow-bg{
+@layer components {
+    .shadow-bg {
         opacity: 0.8999999761581421;
         background: lightgray 50% / cover no-repeat;
         box-shadow: 0px -22px 52px -4px #080808 inset, 0px -48px 31px 5px rgba(8, 8, 8, 0.80) inset;
     }
-    .hover-bg{
+
+    .hover-bg {
         box-shadow: 0px -80px 30px 10px rgba(0, 153, 187, 0.8) inset;
     }
-    .detail-shadow{
+
+    .detail-shadow {
         background: linear-gradient(0deg, rgba(26, 69, 74, 0.95) 0%, rgba(26, 69, 74, 0.95) 100%), lightgray 50% / cover no-repeat;
         box-shadow: 0px -70px 42px 0px #080808 inset;
     }

@@ -19,7 +19,6 @@ const isLiked = '#01AED3'
 dayjs.extend(relativeTime);
 
 export default function Stream({ auth, postdata }) {
-
     const [isDetail, setIsDetail] = useState(true);
     const [open, setOpen] = useState(false);
     const [comments, setComments] = useState([]);
@@ -36,7 +35,6 @@ export default function Stream({ auth, postdata }) {
         setCommentLoad(true)
         try {
             const response = await axios.get(route('api.postcomment', postdata.id))
-            console.log(response);
             if (response.status === 200) {
                 setComments(response.data.comments)
                 setCommentsCounts(response.data.count)
@@ -113,7 +111,7 @@ export default function Stream({ auth, postdata }) {
         displayModal(createComponent);
     }
     const handleDownload = () => {
-        const createComponent = <Download onClose={() => setOpen(false)} setOpen={setOpen} />
+        const createComponent = <Download onClose={() => setOpen(false)} setOpen={setOpen} datas={postdata.downloads} />
         displayModal(createComponent);
     }
 
@@ -185,14 +183,14 @@ export default function Stream({ auth, postdata }) {
                         </div>
                     </div>
                 </div>
-                <div className="block mt-0 text-text p-1 lg:w-[33%] w-full">
+                <div className="block mt-0 text-text p-1 lg:max-w-[33%] w-full overflow-ellipsis">
                     <span className="text-sm font-medium text-white sm:text-base">{`Comments ${commentsCounts}`}</span>
-                    <div className="mt-2 space-x-2 flex items-start">
-                        <div className="h-10 w-10 rounded-full overflow-hidden">
+                    <div className="mt-2 space-x-1 flex items-start mb-10">
+                        <div className="">
                             <LazyLoadImage
                                 effect='blur'
                                 src={`/storage/${auth.user.avatar}`}
-                                className='w-full h-full object-cover'
+                                className='h-11 w-12 rounded-full object-cover object-top'
                             />
                         </div>
                         <div className="w-full space-y-1">
@@ -218,28 +216,32 @@ export default function Stream({ auth, postdata }) {
                     {
                         commentLoad ? <div className="w-full h-44 flex justify-center items-center">
                             <ImSpinner8 size={28} color="#ffffff" className="animate-spin" />
-                        </div> : <div className="space-y-4 mt-4 w-full">
+                        </div> : <div className="space-y-10 mt-4 w-full">
                             {
                                 comments.map((comment, index) => (
-                                    <div className="flex items-center font-medium w-full justify-between  px-1 py-3" key={index}>
-                                        <div className="flex space-x-1 w-full">
-                                            <div className="h-10 w-10 rounded-full overflow-hidden">
+                                    <div className="flex items-start font-medium w-full justify-between px-1 relative" key={index}>
+                                        <div className="flex justify-end w-full ">
+                                            <div className="absolute left-0">
                                                 <LazyLoadImage
                                                     effect='blur'
                                                     src={`/storage/${comment.user.avatar}`}
-                                                    className='w-full h-full object-cover'
+                                                    className='h-10 w-10 rounded-full object-cover object-top'
                                                 />
                                             </div>
-                                            <div className="w-full space-y-1">
+                                            <div className="w-[85%] space-y-1">
                                                 <div className="flex space-x-1 items-center text-primaryBtn ">
                                                     <p className=" ">@{comment.user.name}</p>
                                                     <span className="text-xs">. {dayjs(comment.created_at).fromNow()}</span>
                                                 </div>
-                                                <p className=" text-white opacity-80 font-extralight">{comment.content}</p>
+                                                <div className="max-w-full ">
+                                                    <p className="text-gray-300 text-sm font-extralight break-all">
+                                                        {comment.content}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <BsThreeDotsVertical size={15} color="#ffffff" />
+                                        <div className="absolute top-0 -right-2 opacity-70">
+                                            <BsThreeDotsVertical size={17} color="#ffffff" />
                                         </div>
                                     </div>
                                 ))
@@ -256,6 +258,9 @@ export default function Stream({ auth, postdata }) {
                     {modalContent}
                 </CustomModal>
             )}
+
         </AuthLayout>
+
+
     )
 }

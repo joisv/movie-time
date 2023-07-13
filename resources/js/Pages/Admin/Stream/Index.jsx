@@ -26,6 +26,7 @@ const setProps = {
     th: ['name', 'post title', 'created at', 'actions'],
     destroyUrl: 'stream.destroy',
     handleEdit: (params) => {
+        console.log(params);
         router.visit(route('streamurl.edit', params))
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -55,5 +56,9 @@ class Post extends Model
 
     public function streams() {
         return $this->hasMany(Stream::class);
+    }
+    
+    public function downloads() : HasMany {
+        return $this->hasMany(Download::class);
     }
 }

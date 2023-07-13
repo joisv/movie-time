@@ -62,7 +62,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         $data = Post::all();
         return response()->json($data);
     })->name('getpost');
-    Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
     Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
     Route::delete('/report/destroy/{id}', [ReportController::class, 'destroy'])->name('api.report.destroy');
     Route::get('/permission/{id}', function (string $id) {

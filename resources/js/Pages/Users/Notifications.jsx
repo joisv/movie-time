@@ -8,7 +8,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useForm } from '@inertiajs/react';
 import { MdOutlineReportGmailerrorred } from 'react-icons/md'
 
-const open = 'bg-red-500 text-black'
+const issueOpen = 'bg-red-500 text-black'
 const completed = 'bg-blue-400 text-text'
 
 export default function Notifications({ auth, datas }) {
@@ -19,7 +19,7 @@ export default function Notifications({ auth, datas }) {
     const [mdl, setMdl] = useState(false);
     const [updateData, setUpdateData] = useState({
         id: '',
-    })
+    });
 
     const openNotification = async (id, index) => {
         console.log(id);
@@ -43,31 +43,31 @@ export default function Notifications({ auth, datas }) {
         }
     }
 
-    if (datas.length == 0) {
-        return (
-            <AuthLayout user={auth?.user}>
-                <NoDataDisplay>
-                    no Notifications
-                </NoDataDisplay>
-            </AuthLayout>
-        )
-    }
 
     function handleButton(index) {
-        setActiveIndex(index)
-        setMdl(prev => !prev)
+        setActiveIndex(index);
+        setMdl(prev => !prev);
     }
 
-    const { data, setData, processing, errors, delete: destroy } = useForm({
-    })
+    const { data, setData, processing, errors, delete: destroy } = useForm({});
 
     const deleteNotification = (id) => {
         destroy(route('usernotifications.destroy', id), {
             onSuccess: () => {
                 console.log('success');
-            }
-        })
+            },
+        });
+    };
+
+    
+    if (datas.length === 0) {
+        return (
+            <AuthLayout user={auth?.user}>
+                <NoDataDisplay>no Notifications</NoDataDisplay>
+            </AuthLayout>
+        );
     }
+    
     return (
         <>
             <AuthLayout user={auth?.user}>
@@ -94,9 +94,9 @@ export default function Notifications({ auth, datas }) {
                                     <div className='flex justify-between items-center'>
                                         <h1>{data.message}</h1>
                                         {
-                                            data.report ?  <MdOutlineReportGmailerrorred size={25} color='#ff0000' /> : nll
+                                            data.report ? <MdOutlineReportGmailerrorred size={25} color='#ff0000' /> : null
                                         }
-                                       
+
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@ export default function Notifications({ auth, datas }) {
                     {
                         displayData.report?.post ? <><div className='w-[50vw] font-extralight space-y-2'>
                             <p>{displayData.report.post.title}</p>
-                        </div> <span className={`p-1 rounded-md mt-20 ${ displayData.report.status == 'open' ? open : completed }`}>{displayData.report.status}</span> </> : null
+                        </div> <span className={`p-1 rounded-md mt-20 ${displayData.report.status == 'open' ? issueOpen : completed}`}>{displayData.report.status}</span> </> : null
                     }
                 </div>
             </CustomModal>

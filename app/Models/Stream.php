@@ -17,7 +17,5 @@ class Stream extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function downloads() : HasMany {
-        return $this->hasMany(Download::class);
-    }
+ 
 }

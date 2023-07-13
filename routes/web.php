@@ -46,7 +46,7 @@ Route::get('/', function () {
 
 Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 Route::get('/stream/{id}', function (string $id) {
-    $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers')->first();
+    $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers', 'streams', 'downloads')->first();
     $data->increment('views');
     return Inertia::render('Stream', [
         'postdata' => $data,
@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         return Inertia::render('Admin/Dashboard');
     })->name('admin');
     // post
+    Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
     Route::post('/post-update/{id}', [PostController::class, 'update'])->name('post.update');

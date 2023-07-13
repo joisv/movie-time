@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('post_id');
             $table->foreignId('user_id');
             $table->boolean('is_new')->default(false);
-            $table->enum('status', ['open', 'close'])->default('open');
+            $table->enum('status', ['open', 'close'])->nullable();
             $table->longText('content');
             $table->timestamps();
         });

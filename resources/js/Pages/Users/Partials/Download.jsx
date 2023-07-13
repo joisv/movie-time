@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 
 const plans = [
@@ -22,10 +22,14 @@ const plans = [
     },
 ]
 
-export default function Download({ onClose, setOpen }) {
+export default function Download({ onClose, setOpen, datas }) {
 
-    const [selected, setSelected] = useState(plans[0])
-    
+    const [selected, setSelected] = useState(datas[0])
+
+    const handleDownload = () => {
+        window.open(selected.url_download, '_blank')
+    }
+
     return (
         <div className="min-w-[40vw] bg-[#1d1d1c] rounded-md p-5">
             <h1 className="text-secondaryAccent font-medium text-base">Quality Download</h1>
@@ -34,18 +38,18 @@ export default function Download({ onClose, setOpen }) {
                     <RadioGroup value={selected} onChange={setSelected}>
                         <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
                         <div className="space-y-2">
-                            {plans.map((plan) => (
+                            {datas.map((download, index) => (
                                 <RadioGroup.Option
-                                    key={plan.name}
-                                    value={plan}
+                                    key={index}
+                                    value={download}
                                     className={({ active, checked }) =>
                                         `${active
                                             ? 'ring-0 ring-white ring-opacity-60 ring-offset-0 ring-offset-sky-300'
                                             : ''
                                         }
-                  ${checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-transparent'
+                                            ${checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-transparent'
                                         }
-                    relative flex cursor-pointer rounded-md px-3 py-2 shadow-md focus:outline-none`
+                                                relative flex cursor-pointer rounded-md px-3 py-2 shadow-md focus:outline-none`
                                     }
                                 >
                                     {({ active, checked }) => (
@@ -58,7 +62,7 @@ export default function Download({ onClose, setOpen }) {
                                                             className={`font-medium  ${checked ? 'text-white' : 'text-gray-400'
                                                                 }`}
                                                         >
-                                                            {plan.name}
+                                                            {download.name_download}
                                                         </RadioGroup.Label>
                                                         <RadioGroup.Description
                                                             as="span"
@@ -66,10 +70,10 @@ export default function Download({ onClose, setOpen }) {
                                                                 }`}
                                                         >
                                                             <span>
-                                                                {plan.ram}/{plan.cpus}
+                                                                {download.url_download}
                                                             </span>{' '}
-                                                            <span aria-hidden="true">&middot;</span>{' '}
-                                                            <span>{plan.disk}</span>
+                                                            {/* <span aria-hidden="true">&middot;</span>{' '}
+                                                            <span>{plan.disk}</span> */}
                                                         </RadioGroup.Description>
                                                     </div>
                                                 </div>
@@ -87,16 +91,16 @@ export default function Download({ onClose, setOpen }) {
                     </RadioGroup>
                 </div>
             </div>
-                    <div className="flex justify-between gap-2 text-white font-medium">
-                        <button 
-                            type='button'
-                            className='w-full p-2 bg-transparent border border-secondaryAccent rounded-sm '
-                            onClick={onClose}
-                        >
-                            cancle
-                            </button>
-                        <button className='w-full p-2 bg-secondaryAccent rounded-sm'>download</button>
-                    </div>
+            <div className="flex justify-between gap-2 text-white font-medium">
+                <button
+                    type='button'
+                    className='w-full p-2 bg-transparent border border-secondaryAccent rounded-sm '
+                    onClick={onClose}
+                >
+                    cancle
+                </button>
+                <button className='w-full p-2 bg-secondaryAccent rounded-sm' onClick={() => handleDownload()}>download</button>
+            </div>
         </div>
     )
 }

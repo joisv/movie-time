@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Download;
 use App\Models\Post;
 use App\Models\Stream;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class StreamController extends Controller
      */
     public function index()
     {
-        $data = Stream::orderBy('created_at', 'desc')->with('post', 'downloads')->paginate(20)->withQueryString();
+        $data = Stream::orderBy('created_at', 'desc')->with('post.downloads')->paginate(20)->withQueryString();
         $posts = Post::all();
         return Inertia::render('Admin/Stream/Index', [
             'datastreams' => $data,
@@ -36,23 +37,45 @@ class StreamController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->streams as $stream) {
-            $newStream = Stream::create([
-                'post_id' => $request->post_id,
-                'name' => $stream['name'],
-                'url' => $stream['url']
-            ]);
-
-            if (isset($request->downloads)) {
-                foreach ($request->downloads as $download) {
-                    $newStream->downloads()->create([
-                        'name_download' => $download['name_download'],
-                        'url_download' => $download['url_download']
-                    ]);
+        $validatedData = $request->validate([
+            'streams.*.name' => 'sometimes|required|string',
+            'streams.*.url' => 'sometimes|required|url',
+            'downloads.*.url_download' => 'sometimes|required|url',
+            'downloads.*.name_download' => 'sometimes|required|string',
+            'post_id' => 'required|exists:posts,id'
+        ]);
+    
+        $post = Post::findOrFail($validatedData['post_id']);
+    
+        if (isset($validatedData['streams'])) {
+            $streamsData = $validatedData['streams'];
+            $streams = [];
+    
+            foreach ($streamsData as $streamData) {
+                if (!empty($streamData['name']) && !empty($streamData['url'])) {
+                    $stream = new Stream($streamData);
+                    $streams[] = $stream;
                 }
             }
+    
+            $post->streams()->saveMany($streams);
         }
-        return response()->json(['message' => 'data berhasil di buat']);
+    
+        if (isset($validatedData['downloads'])) {
+            $downloadsData = $validatedData['downloads'];
+            $downloads = [];
+    
+            foreach ($downloadsData as $downloadData) {
+                if (!empty($downloadData['url_download']) && !empty($downloadData['name_download'])) {
+                    $download = new Download($downloadData);
+                    $downloads[] = $download;
+                }
+            }
+    
+            $post->downloads()->saveMany($downloads);
+        }
+    
+        return redirect()->back()->with('message', 'created successfully');
     }
 
     /**
@@ -68,9 +91,8 @@ class StreamController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Stream::where('id', $id)->first();
-        $post = Post::where('id', $data->post_id)
-            ->with('streams.downloads')->first();
+        $post = Post::where('id', $id)
+            ->with('streams', 'downloads')->first();
         $posts = Post::all();
         return Inertia::render('Admin/Stream/Edit', [
             'datastreams' => $post,
@@ -84,32 +106,48 @@ class StreamController extends Controller
     public function update(Request $request, string $id)
     {
         // dd($request);
-        $request->validate([
-            'post_id' => 'required'
+        $validatedData = $request->validate([
+            'streams.*.name' => 'sometimes|required|string',
+            'streams.*.url' => 'sometimes|required|url',
+            'downloads.*.url_download' => 'sometimes|required|url',
+            'downloads.*.name_download' => 'sometimes|required|string',
         ]);
-
-        $post = Post::find($id);
-
+    
+        $post = Post::findOrFail($id);
+    
+        // Hapus semua streams yang terkait dengan post
         $post->streams()->delete();
-
-        // Update atau tambahkan data streams
-        foreach ($request['streams'] as $streamData) {
-            $newStream = Stream::create([
-                'post_id' => $request['post_id'],
-                'name' => $streamData['name'],
-                'url' => $streamData['url']
-            ]);
-
-            // Buat ulang downloads untuk stream saat ini
-            foreach ($request['downloads'] as $download) {
-                $newStream->downloads()->create([
-                    'name_download' => $download['name_download'],
-                    'url_download' => $download['url_download']
-                ]);
+    
+        // Hapus semua downloads yang terkait dengan post
+        $post->downloads()->delete();
+    
+        // Buat ulang streams yang baru
+        if (isset($validatedData['streams'])) {
+            $streamsData = $validatedData['streams'];
+            $streams = [];
+    
+            foreach ($streamsData as $streamData) {
+                $stream = new Stream($streamData);
+                $streams[] = $stream;
             }
+    
+            $post->streams()->saveMany($streams);
+        }
+    
+        // Buat ulang downloads yang baru
+        if (isset($validatedData['downloads'])) {
+            $downloadsData = $validatedData['downloads'];
+            $downloads = [];
+    
+            foreach ($downloadsData as $downloadData) {
+                $download = new Download($downloadData);
+                $downloads[] = $download;
+            }
+    
+            $post->downloads()->saveMany($downloads);
         }
 
-        return redirect()->route('streamurl.index')->with('message', 'updated succesfully');
+        return redirect()->route('streamurl')->with('message', 'updated successfully');
     }
 
     /**

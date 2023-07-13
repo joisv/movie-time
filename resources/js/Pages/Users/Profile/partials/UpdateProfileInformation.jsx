@@ -4,6 +4,8 @@ import { Transition } from '@headlessui/react';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa'
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 export default function UpdateProfileInformation({ auth }) {
 
@@ -40,12 +42,14 @@ export default function UpdateProfileInformation({ auth }) {
     };
 
     return (
-        <div className='bg-gray-900 p-10 rounded-md'>
+        <section className='p-8 rounded-md'>
             <form onSubmit={submit}>
                 <div className="">
                     <div className="border-white pb-12">
-                        <h2 className="text-base font-semibold leading-7 text-secondaryAccent">Profile</h2>
-                        <p className="mt-1 text-sm leading-6 text-gray-200">Update your account's profile information and email address.</p>
+                        <header>
+                            <h2 className="text-base font-semibold leading-7 text-secondaryAccent">Profile</h2>
+                            <p className="mt-1 text-sm leading-6 text-gray-200">Update your account's profile information and email address.</p>
+                        </header>
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-4">
                                 <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-200">
@@ -58,7 +62,7 @@ export default function UpdateProfileInformation({ auth }) {
                                             name="name"
                                             id="name"
                                             autoComplete="off"
-                                            className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-sm"
+                                            className="block flex-1 border-0 bg-transparent py-2 pl-2 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-md"
                                             placeholder="janesmith"
                                             value={data.name}
                                             onChange={(e) => setData('name', e.target.value)}
@@ -78,7 +82,7 @@ export default function UpdateProfileInformation({ auth }) {
                                             name="email"
                                             id="email"
                                             autoComplete="off"
-                                            className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-sm"
+                                            className="block flex-1 border-0 bg-transparent py-2 pl-2 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-md"
                                             placeholder="janesmith"
                                             value={data.email}
                                             onChange={(e) => setData('email', e.target.value)}
@@ -94,7 +98,21 @@ export default function UpdateProfileInformation({ auth }) {
                                     Avatar
                                 </label>
                                 <div className="mt-2 flex items-center gap-x-3">
-                                    {previewImage ? <img src={previewImage} alt="Preview" className="h-12 w-12 rounded-full object-cover object-top" /> : <FaUserCircle className="h-12 w-12 text-gray-300" aria-hidden="true" />}
+                                    {previewImage ? (
+                                        <img
+                                            src={previewImage}
+                                            alt="Preview"
+                                            className="h-12 w-12 rounded-full object-cover object-top"
+                                        />
+                                    ) : (
+                                        auth.user.avatar ? (
+                                            <LazyLoadImage
+                                                effect="blur"
+                                                src={`/storage/${auth.user.avatar}`}
+                                                className="h-12 w-12 rounded-full object-cover object-top"
+                                            />
+                                        ) : null
+                                    )}
 
                                     <button
                                         type="button"
@@ -122,6 +140,6 @@ export default function UpdateProfileInformation({ auth }) {
                     </div>
                 </div>
             </form>
-        </div>
+        </section>
     )
 }
