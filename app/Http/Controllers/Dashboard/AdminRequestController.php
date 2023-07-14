@@ -20,6 +20,7 @@ class AdminRequestController extends Controller
             'datas' => $data
         ]);
     }
+
     public function update(Request $request, string $id){
 
         $data = ModelsRequest::findOrFail($id);
@@ -27,7 +28,7 @@ class AdminRequestController extends Controller
         $data->save();
 
         $notif = new Notification();
-        $notif->user_id = $request->user_id;
+        $notif->user_id = $data->user_id;
         $notif->is_read = false;
         $notif->request_id = $id;
         if ($request->status === 'completed') {
@@ -39,8 +40,21 @@ class AdminRequestController extends Controller
         }
         $notif->save();
 
-        return redirect()->route('adminrequest.index')->with('message', 'comment updated');
+        return redirect()->route('adminrequest.index')->with('message', 'request updated');
     }
 
+    public function destroy(Request $request, String $id){
 
+        $req = ModelsRequest::findOrFail($id);
+        $req->delete();
+
+        $notif = new Notification();
+        $notif->user_id = $req->user_id;
+        $notif->is_read = false;
+        $notif->request_id = $id;
+        $notif->message = 'your request was deleted by admin';
+        $notif->save();
+        
+        return redirect()->route('adminrequest.index')->with('message', 'request successfully deleted');
+    }
 }

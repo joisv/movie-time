@@ -24,12 +24,12 @@ class UserNotificationsController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, string $id)
     {
         // return response()->json($request);
         try {
             if (auth()->check()) {
-                $notification = Notification::where('request_id', $request->id)->first();
+                $notification = Notification::where('id', $id)->first();
                 $notification->update(['is_read' => true]);
 
                 return response()->json('updated successfully');

@@ -13,6 +13,7 @@ const completed = 'bg-blue-400 text-text'
 
 export default function Notifications({ auth, datas }) {
 
+    
     const [open, setOpen] = useState(false);
     const [displayData, setDisplayData] = useState({});
     const [activeIndex, setActiveIndex] = useState(false);
@@ -22,7 +23,6 @@ export default function Notifications({ auth, datas }) {
     });
 
     const openNotification = async (id, index) => {
-        console.log(id);
         if (datas[index].is_read === 0) {
             setDisplayData(datas[index]);
             setUpdateData(prevdata => ({
@@ -31,7 +31,7 @@ export default function Notifications({ auth, datas }) {
             }));
             setOpen(true);
             try {
-                const response = await axios.patch(route('notification.update'), updateData);
+                const response = await axios.patch(route('notification.update', id));
                 console.log(response);
             } catch (error) {
                 console.log(error);
@@ -59,7 +59,7 @@ export default function Notifications({ auth, datas }) {
         });
     };
 
-    
+    console.log(displayData, datas);
     if (datas.length === 0) {
         return (
             <AuthLayout user={auth?.user}>

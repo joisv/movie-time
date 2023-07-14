@@ -8,29 +8,32 @@ import { Head, router, useForm } from '@inertiajs/react';
 import GenerateButton from '@/Components/GenerateButton';
 import InputError from '@/Components/InputError';
 
-export default function Edit({ streams }) {
+export default function Edit({ downloads }) {
 
     const { data, setData, put, errors, processing } = useForm({
-        streams: streams,
-        post_id: streams[0].post_id
+        downloads: downloads,
+        post_id: downloads[0].post_id
     })
 
-    const addStream = () => {
+    const addDownload = () => {
         setData(prevState => ({
-            ...prevState,
-            streams: [...prevState.streams, {
-                name: '',
-                url: ''
-            }]
+          ...prevState,
+          downloads: [
+            ...prevState.downloads,
+            {
+              name_download: '',
+              url_download: ''
+            }
+          ]
         }));
-    };
+      };
 
-    const removeStream = (index) => {
-        const updatedStream = [...data.streams];
-        updatedStream.splice(index, 1);
+    const removeDownload = (index) => {
+        const updatedDownload = [...data.downloads];
+        updatedDownload.splice(index, 1);
         setData(prevState => ({
             ...prevState,
-            streams: updatedStream
+            downloads: updatedDownload
         }));
     }
     const loadOptions = async (searchValue, callback) => {
@@ -61,12 +64,13 @@ export default function Edit({ streams }) {
     };
     async function submit(e) {
         e.preventDefault();
-        put(route('streamurl.update', data.post_id), {
+        put(route('download.update', data.post_id), {
             onSuccess: () => {
                 console.log('success');
             }
         })
     }
+    console.log(data);
     return (
         <div className='bg-gray-100 min-h-screen' >
             <Head title="Dashboard" />
@@ -76,73 +80,75 @@ export default function Edit({ streams }) {
                     <div className='w-full p-2 rounded-md  items-center max-h-[80vh] '>
                         <form onSubmit={submit} className='md:space-y-5 sm:space-y-2 space-y-1'>
                             <div className="flex space-x-2">
-                                <button type='button' className='p-1 rounded-sm bg-yellow-400 h-fit text-white m-2 flex space-x-1 items-center' onClick={addStream}>
+                                <button type='button' className='p-1 rounded-sm bg-green-400 h-fit text-white m-2 flex space-x-1 items-center' onClick={addDownload}>
                                     <MdAdd size={20} color='#ffffff' />
-                                    stream
+                                    download
                                 </button>
                             </div>
                             <AsyncSelect
                                 loadOptions={loadOptions}
                                 onChange={handleChange}
                                 getOptionLabel={(option) => option.title}
-                                placeholder={data.streams[0].post.title}
+                                placeholder={downloads[0].post.title}
+                                defaultValue={downloads.title}
                             />
                             <InputError message={errors.post_id} />
+                           
                             {
-                                data.streams.map((stream, index) => (
+                               data.downloads.map((download, index) => (
                                     <div className='flex justify-between items-center w-full' key={index}>
                                         <div>
-                                            <InputLabel htmlFor={`url${index}`} value='Url Stream' />
+                                            <InputLabel htmlFor={`url_download${index}`} value='Url Download' />
                                             <TextInput
-                                                id={`url${index}`}
+                                                id={`url_download${index}`}
                                                 type="text"
-                                                name="url"
-                                                value={stream.url}
+                                                name="url_download"
+                                                value={download.url_download}
                                                 className="mt-1 block w-full"
                                                 autoComplete="off"
-                                                isFocused={true}
                                                 required
-                                                placeholder='https://youtube.com'
+                                                placeholder='https://download.com'
                                                 onChange={(e) => {
-                                                    const updateStream = [...data.streams];
-                                                    updateStream[index] = {
-                                                        ...updateStream[index],
-                                                        url: e.target.value,
+                                                    const updatedDownload = [...data.downloads];
+                                                    updatedDownload[index] = {
+                                                        ...updatedDownload[index],
+                                                        url_download: e.target.value,
                                                     };
                                                     setData(prevState => ({
                                                         ...prevState,
-                                                        streams: updateStream
+                                                        downloads: updatedDownload
                                                     }));
                                                 }}
                                             />
-                                            <p className='text-sm text-red-500 font-medium'>{errors[`streams.${index}.url`]}</p>
+                                            <p className='text-sm text-red-500 font-medium'>{errors[`downloads.${index}.url_download`]}</p>
                                         </div>
                                         <div>
-                                            <InputLabel htmlFor={`name${index}`} value='Name Stream' />
+                                            <InputLabel htmlFor={`name_download${index}`} value='Name Download' />
                                             <TextInput
-                                                id={`name${index}`}
+                                                id={`name_download${index}`}
                                                 type="text"
-                                                name="name"
-                                                value={stream.name}
+                                                name="name_download"
+                                                value={download.name_download}
                                                 className="mt-1 block w-full"
                                                 autoComplete="off"
                                                 required
-                                                placeholder={`server ${index + 1}`}
+                                                placeholder='Google drive'
                                                 onChange={(e) => {
-                                                    const updateStream = [...data.streams];
-                                                    updateStream[index] = {
-                                                        ...updateStream[index],
-                                                        name: e.target.value,
+                                                    const updatedDownload = [...data.downloads];
+                                                    updatedDownload[index] = {
+                                                        ...updatedDownload[index],
+                                                        name_download: e.target.value,
                                                     };
                                                     setData(prevState => ({
                                                         ...prevState,
-                                                        streams: updateStream
+                                                        downloads: updatedDownload
                                                     }));
                                                 }}
                                             />
-                                            <p className='text-sm text-red-500 font-medium'>{errors[`streams.${index}.name`]}</p>
+                                            <p className='text-sm text-red-500 font-medium'>{errors[`downloads.${index}.name_download`]}</p>
                                         </div>
-                                        <button type="button" className='px-1 rounded-sm bg-red-400 h-fit text-white' onClick={() => removeStream(index)}>del</button>
+
+                                        <button type="button" className='px-1 rounded-sm bg-red-400 h-fit text-white' onClick={() => removeDownload(index)}>del</button>
                                     </div>
                                 ))
                             }

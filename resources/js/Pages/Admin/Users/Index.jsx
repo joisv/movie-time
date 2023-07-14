@@ -10,8 +10,6 @@ import useHook from '@/hooks/useHook';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Edit from '../Users/Edit';
-// import Create from './Create';
-// import Edit from '../Roles/Edit';
 
 export default function Index({ auth, users }) {
     const { flash } = usePage().props
@@ -37,35 +35,33 @@ export default function Index({ auth, users }) {
         }
     }
 
-    // const handleCreate = () => {
-    //     const createComponent = <Create setOpen={setOpen} />;
-    //     displayModal(createComponent);
-    // };
 
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Users</h2>}
-        >
-            <Head title="Users" />
+        <>
+            <AuthenticatedLayout
+                user={auth.user}
+                header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Users</h2>}
+            >
+                <Head title="Users" />
 
-            <div className="py-12">
-                <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                    {
-                        flash ? flash.message : null
-                    }
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
-                        <GenerateButton className='bg-purple-500' onClick={() => { }} >create</GenerateButton>
-                        <Table datas={filteredDatas} setProps={setProps} />
+                <div className="py-12">
+                    <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
+                        {
+                            flash ? flash.message : null
+                        }
+                        <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
+                            <GenerateButton className='bg-purple-500' onClick={() => { }} >create</GenerateButton>
+                            <Table datas={filteredDatas} setProps={setProps} />
 
+                        </div>
                     </div>
                 </div>
-                {open && (
-                    <CustomModal open={open} onClose={() => setOpen(false)}>
-                        {modalContent}
-                    </CustomModal>
-                )}
-            </div>
-        </AuthenticatedLayout>
+            </AuthenticatedLayout>
+            {open && (
+                <CustomModal open={open} onClose={() => setOpen(false)}>
+                    {modalContent}
+                </CustomModal>
+            )}
+        </>
     )
 }

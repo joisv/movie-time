@@ -122,7 +122,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['notifications' => $data], 200);
     })->name('notification');
 
-    Route::patch('/notification/update', [UserNotificationsController::class, 'update'])->name('notification.update');
+    Route::patch('/notification/update/{id}', [UserNotificationsController::class, 'update'])->name('notification.update');
     
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 });

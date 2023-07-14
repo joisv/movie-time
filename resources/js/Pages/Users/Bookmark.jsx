@@ -1,3 +1,4 @@
+import Card from '@/Components/Card';
 import NoDataDisplay from '@/Components/NoDataDisplay';
 import AuthLayout from '@/Layouts/AuthLayout';
 import React, { useState } from 'react'

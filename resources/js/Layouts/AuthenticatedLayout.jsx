@@ -5,7 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 import { IoHomeOutline, IoGitPullRequestOutline, IoFingerPrintSharp } from "react-icons/io5";
-import { MdPostAdd, MdMovieEdit } from 'react-icons/md'
+import { MdPostAdd, MdMovieEdit, MdOutlineReportGmailerrorred } from 'react-icons/md'
 import { FaUsers, FaUserLock } from 'react-icons/fa'
 import useHook from '@/hooks/useHook';
 import axios from 'axios';
@@ -122,8 +122,8 @@ export default function Authenticated({ user, header, children }) {
                                 </div> : null
                             }
                         </div>
-                        <ResponsiveNavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
-                            Stream
+                        <ResponsiveNavLink href={route('streamdownload')} active={route().current('streamdownload')}>
+                            Episode
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('permissions.index')} active={route().current('permissions.index')}>
                             Permission
@@ -134,6 +134,7 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink href={route('user.index')} active={route().current('user.index')}>
                             Users
                         </ResponsiveNavLink>
+                        
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
@@ -187,9 +188,10 @@ export default function Authenticated({ user, header, children }) {
                         }
 
                     </div>
-                    <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
+
+                    <NavLink href={route('streamdownload')} active={route().current('streamdownload')}>
                         <MdMovieEdit size={23} color='#000000' />
-                        <span className='sm:hidden md:block'>Stream</span>
+                        <span className='sm:hidden md:block'>Episdoe</span>
                     </NavLink>
                     <NavLink href={route('permissions.index')} active={route().current('permissions.index')}>
                         <IoFingerPrintSharp size={23} color='#000000' />
@@ -204,7 +206,7 @@ export default function Authenticated({ user, header, children }) {
                         <span className='sm:hidden md:block'>Users</span>
                     </NavLink>
                     <NavLink href={route('report.index')} active={route().current('report.index')}>
-                        <FaUsers size={23} color='#000000' />
+                        <MdOutlineReportGmailerrorred size={23} color='#000000' />
                         <span className='sm:hidden md:block'>Report</span>
                     </NavLink>
                 </div>

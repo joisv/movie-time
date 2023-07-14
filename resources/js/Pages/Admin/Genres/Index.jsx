@@ -7,10 +7,12 @@ import { useState } from 'react';
 import Create from './Create';
 import Edit from '../Genres/Edit';
 import Pagination from '@/Components/Pagination';
+import useHook from '@/hooks/useHook';
 
 
 export default function Index({ auth, genres }) {
     const [postdata, setPosData] = useState(genres)
+    const { generateGenreMovie, result, loading } = useHook();
     const filteredDatas = genres.data.map(({ id, name, created_at, }) => ({
         id,
         title: name,
@@ -66,6 +68,10 @@ export default function Index({ auth, genres }) {
         return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} />;
     }
 
+    function handleGenerateGenre() {
+        generateGenreMovie()
+    }
+    
     return (
         <>
             <AuthenticatedLayout
@@ -80,6 +86,7 @@ export default function Index({ auth, genres }) {
                             flash ? flash.message : null
                         }
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
+                        <GenerateButton children='genre' disabled={loading} onClick={() => handleGenerateGenre()} className='bg-purple-700' type={'button'} />
                             <GenerateButton className='bg-purple-500' onClick={handleCreate} >create</GenerateButton>
                             {displayData()}
                         </div>

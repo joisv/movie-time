@@ -1,36 +1,30 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, usePage } from '@inertiajs/react'
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import CustomModal from '@/Components/CustomModal';
 import GenerateButton from '@/Components/GenerateButton';
-import { router } from '@inertiajs/react';
+import React, { useState } from 'react'
 import Table from '@/Components/Table';
-import Pagination from '@/Components/Pagination';
-
-
+import { router } from '@inertiajs/react';
 
 const setProps = {
     th: ['name', 'post title', 'created at', 'actions'],
-    destroyUrl: 'stream.destroy',
+    destroyUrl: 'download.destroy',
     handleEdit: (params) => {
         console.log(params);
-        router.visit(route('streamurl.edit', params))
+        router.visit(route('download.edit', params))
     }
 }
 
-export default function Index({ auth, datastreams, setOpen }) {
+export default function Index({ downloads, setOpen }) {
+    const [downloaddata, setDownloadData] = useState(downloads?.data)
 
-    
-    const [streamdata, setStreamData] = useState(datastreams?.data)
-    const filteredDatas = datastreams?.data.map(({ id, name, post, created_at, }) => ({
+    const filteredDatas = downloads?.data.map(({ id, name_download, post, created_at, }) => ({
         id,
-        title: name,
+        title: name_download,
         post_title: post?.title,
         created_at,
     }));
-    const filteredDatasSearch = streamdata.map(({ id, name, post, created_at, }) => ({
+    const filteredDatasSearch = downloaddata.map(({ id, name_download, post, created_at, }) => ({
         id,
-        title: name,
+        title: name_download,
         post_title: post?.title,
         created_at,
     }));
@@ -43,7 +37,7 @@ export default function Index({ auth, datastreams, setOpen }) {
         setSearchTerm(prev => ({ ...prev, search: e.target.value }));
         try {
             const response = await axios.get(route('stream.search', searchTerm))
-            setStreamData(response.data.data)
+            setDownloadData(response.data.data)
         } catch (error) {
             console.log(error);
 
@@ -62,12 +56,8 @@ export default function Index({ auth, datastreams, setOpen }) {
                 className='bg-purple-500 disabled:bg-purple-300'>
                 create
             </GenerateButton>
-            {/* <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                <Table datas={filteredDatas} setProps={setProps} handleSearchChange={handleSearchChange} />
-                            </div> */}
             {displayData()}
             {/* <Pagination data={datastreams} /> */}
-          
         </>
     )
 }

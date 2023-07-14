@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\StreamDownloadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
@@ -16,6 +18,7 @@ use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Stream;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -80,8 +83,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/request/all', [AdminRequestController::class, 'index'])->name('adminrequest.index');
     Route::patch('/request/store', [AdminRequestController::class, 'store'])->name('adminrequest.store');
     Route::patch('/request/update/{id}', [AdminRequestController::class, 'update'])->name('adminrequest.update');
-    // episodes
-    Route::resource('/episodes', StreamController::class)->names('streamurl');
+    Route::delete('/request/destroy/{id}', [AdminRequestController::class, 'destroy'])->name('adminrequest.destroy');
     // permissions
     Route::resource('/permissions', PermissionController::class)->names('permissions');
     Route::post('/permissions/{permission}/roles', [PermissionController::class, 'assignRole'])->name('permissions.role');
@@ -95,6 +97,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.roles');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.remove');
+
+    Route::get('/stream-download', [ StreamDownloadController::class, 'index' ])->name('streamdownload');
+    Route::get('/download/edit/{id}', [DownloadController::class, 'edit'])->name('download.edit');
+    Route::put('/download/update/{id}', [DownloadController::class, 'update'])->name('download.update');
+    Route::delete('/download/destroy/{id}', [DownloadController::class, 'destroy'])->name('download.destroy');
 });
 
 

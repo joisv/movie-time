@@ -91,12 +91,9 @@ class StreamController extends Controller
      */
     public function edit(string $id)
     {
-        $post = Post::where('id', $id)
-            ->with('streams', 'downloads')->first();
-        $posts = Post::all();
+        $stream = Stream::where('id', $id)->with('post')->get();
         return Inertia::render('Admin/Stream/Edit', [
-            'datastreams' => $post,
-            'posts' => $posts
+            'streams' => $stream,
         ]);
     }
 
@@ -105,21 +102,15 @@ class StreamController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request);
         $validatedData = $request->validate([
             'streams.*.name' => 'sometimes|required|string',
             'streams.*.url' => 'sometimes|required|url',
-            'downloads.*.url_download' => 'sometimes|required|url',
-            'downloads.*.name_download' => 'sometimes|required|string',
         ]);
     
         $post = Post::findOrFail($id);
     
         // Hapus semua streams yang terkait dengan post
         $post->streams()->delete();
-    
-        // Hapus semua downloads yang terkait dengan post
-        $post->downloads()->delete();
     
         // Buat ulang streams yang baru
         if (isset($validatedData['streams'])) {
@@ -133,21 +124,8 @@ class StreamController extends Controller
     
             $post->streams()->saveMany($streams);
         }
-    
-        // Buat ulang downloads yang baru
-        if (isset($validatedData['downloads'])) {
-            $downloadsData = $validatedData['downloads'];
-            $downloads = [];
-    
-            foreach ($downloadsData as $downloadData) {
-                $download = new Download($downloadData);
-                $downloads[] = $download;
-            }
-    
-            $post->downloads()->saveMany($downloads);
-        }
 
-        return redirect()->route('streamurl')->with('message', 'updated successfully');
+        return redirect()->route('streamdownload')->with('message', 'updated stream successfully');
     }
 
     /**
@@ -156,7 +134,6 @@ class StreamController extends Controller
     public function destroy(string $id)
     {
         $data = Stream::findOrfail($id);
-        $data->downloads()->delete();
         $data->delete();
 
         return response()->json('sucees');
