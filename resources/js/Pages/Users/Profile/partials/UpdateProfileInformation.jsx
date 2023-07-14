@@ -1,9 +1,11 @@
+import AuthInput from '@/Components/AuthInput';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Transition } from '@headlessui/react';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { FaUserCircle } from 'react-icons/fa'
+import { FaUserCircle, FaUser } from 'react-icons/fa'
+import { MdAlternateEmail } from 'react-icons/md'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
@@ -56,8 +58,17 @@ export default function UpdateProfileInformation({ auth }) {
                                     Name
                                 </label>
                                 <div className="mt-2">
-                                    <div className="flex rounded-md shadow-sm  sm:max-w-md">
-                                        <input
+                                    <AuthInput
+                                        placeholder='Name'
+                                        type='text'
+                                        id='name'
+                                        icon={<FaUser size={'80%'} color='rgb(156 163 175)' />}
+                                        autoComplete="name"
+                                        value={data.name}
+                                        isFocused={true}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                    />
+                                    {/* <input
                                             type="text"
                                             name="name"
                                             id="name"
@@ -66,8 +77,7 @@ export default function UpdateProfileInformation({ auth }) {
                                             placeholder="janesmith"
                                             value={data.name}
                                             onChange={(e) => setData('name', e.target.value)}
-                                        />
-                                    </div>
+                                        /> */}
                                     <InputError message={errors.name} />
                                 </div>
                             </div>
@@ -76,19 +86,15 @@ export default function UpdateProfileInformation({ auth }) {
                                     Email
                                 </label>
                                 <div className="mt-2">
-                                    <div className="flex rounded-md shadow-sm  sm:max-w-md">
-                                        <input
-                                            type="text"
-                                            name="email"
-                                            id="email"
-                                            autoComplete="off"
-                                            className="block flex-1 border-0 bg-transparent py-2 pl-2 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-md"
-                                            placeholder="janesmith"
-                                            value={data.email}
-                                            onChange={(e) => setData('email', e.target.value)}
-                                        />
-
-                                    </div>
+                                    <AuthInput
+                                        placeholder='User'
+                                        type='email'
+                                        id='email'
+                                        value={data.email}
+                                        icon={<MdAlternateEmail size={'100%'} color='rgb(156 163 175)' />}
+                                        autoComplete="email"
+                                        onChange={(e) => setData('email', e.target.value)}
+                                    />
                                     <InputError message={errors.email} />
                                 </div>
                             </div>
@@ -111,8 +117,8 @@ export default function UpdateProfileInformation({ auth }) {
                                                 src={`/storage/${auth.user.avatar}`}
                                                 className="h-12 w-12 rounded-full object-cover object-top"
                                             />
-                                        ) : null
-                                    )}
+                                        ) : <FaUserCircle size={40} color='#ffffff' />
+                                    )} 
 
                                     <button
                                         type="button"

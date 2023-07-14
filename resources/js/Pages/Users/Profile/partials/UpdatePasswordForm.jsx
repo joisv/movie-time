@@ -5,6 +5,8 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
+import AuthInput from '@/Components/AuthInput';
+import { MdAlternateEmail, MdOutlineLockPerson } from 'react-icons/md'
 
 export default function UpdatePasswordForm({ className = '' }) {
     const passwordInput = useRef();
@@ -35,9 +37,8 @@ export default function UpdatePasswordForm({ className = '' }) {
             },
         });
     };
-
     return (
-        <section className={`p-8 ${ className }`}>
+        <section className={`p-8 ${className}`}>
             <header>
                 <h2 className="text-lg font-medium text-secondaryAccent">Update Password</h2>
 
@@ -47,53 +48,54 @@ export default function UpdatePasswordForm({ className = '' }) {
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">
-                <div >
+                <div className='sm:w-[65%] w-full'>
                     <label htmlFor="current_password" className="block text-sm font-medium leading-6 text-gray-200">
                         Current Password
                     </label>
-                    <input
-                        name="current_password"
+                    <AuthInput
+                        placeholder='Password'
+                        type='password'
+                        icon={<MdOutlineLockPerson size={'100%'} color='rgb(156 163 175)' />}
                         id="current_password"
-                        autoComplete="off"
-                        className="block flex-1 border-0 bg-transparent py-1.5 pl-1.5 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-md w-1/2"
-                        ref={currentPasswordInput}
+                        name="current_password"
                         value={data.current_password}
+                        autoComplete="off"
                         onChange={(e) => setData('current_password', e.target.value)}
-                        type="password"
                     />
 
                     <InputError message={errors.current_password} className="mt-2" />
                 </div>
 
-                <div>
+                <div className='sm:w-[65%] w-full'>
                     <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-200">
-                    New Password
+                        New Password
                     </label>
-                    <input
-                        name="password"
+                    <AuthInput
+                        placeholder='Password'
+                        type='password'
+                        icon={<MdOutlineLockPerson size={'100%'} color='rgb(156 163 175)' />}
                         id="password"
-                        autoComplete="new-password"
-                        className="block flex-1 border-0 bg-transparent py-1.5 pl-1.5 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-md w-1/2"
-                        ref={passwordInput}
+                        name="password"
                         value={data.password}
+                        autoComplete="new-password"
                         onChange={(e) => setData('password', e.target.value)}
-                        type="password"
                     />
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-2"/>
                 </div>
 
-                <div>
+                <div className='sm:w-[65%] w-full'>
                     <label htmlFor="password_confirmation" className="block text-sm font-medium leading-6 text-gray-200">
-                    Confirm Password
+                        Confirm Password
                     </label>
-                    <input
-                        name="password_confirmation"
+                    <AuthInput
+                        placeholder='Confirm password'
+                        type='password'
+                        icon={<MdOutlineLockPerson size={'100%'} color='rgb(156 163 175)' />}
                         id="password_confirmation"
-                        autoComplete="new-password_confirmation"
-                        className="block flex-1 border-0 bg-transparent py-1.5 pl-1.5 text-gray-200 placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 rounded-md w-1/2"
+                        name="password_confirmation"
                         value={data.password_confirmation}
+                        autoComplete="new-password_confirmation"
                         onChange={(e) => setData('password_confirmation', e.target.value)}
-                        type="password"
                     />
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
