@@ -87,7 +87,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // permissions
     Route::resource('/permissions', PermissionController::class)->names('permissions');
     Route::post('/permissions/{permission}/roles', [PermissionController::class, 'assignRole'])->name('permissions.role');
-    Route::delete('/permissions/{permission}/roles/{role}', [PermissionController::class, 'removeRole'])->name('               ');
+    Route::delete('/permissions/{permission}/roles/{role}', [PermissionController::class, 'removeRole'])->name('permissions.role.remove');
     // roles
     Route::resource('/roles', RoleController::class)->names('roles');
     Route::post('/roles/{role}/permissions', [RoleController::class, 'givePermission'])->name('givepermission');
@@ -108,6 +108,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
     Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
+    Route::delete('/request/destroy/{id}', [UserRequestController::class, 'destroy'])->name('request.destroy');
     Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
     Route::delete('/notifications/destroy/{id}', [UserNotificationsController::class, 'destroy'])->name('usernotifications.destroy');
     

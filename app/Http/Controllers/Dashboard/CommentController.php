@@ -8,8 +8,12 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function store(Request $request){
-        
+
+    private $increment = 2;
+
+    public function store(Request $request)
+    {
+
         $data = $request->validate([
             'post_id' => 'required',
             'content' => 'required|max:500'
@@ -22,6 +26,18 @@ class CommentController extends Controller
         $comment->save();
 
         return response()->json('berhsil comment');
-
     }
+
+    public function postComment(string $id)
+    {
+        $comments = Comment::where('post_id', $id)->orderBy('created_at', 'desc')->with('user')->paginate();
+        $comments_count = Comment::where('post_id', $id)->count();
+
+        return response()->json([
+            'comments' => $comments,
+            'count' => $comments_count,
+        ]);
+    }
+
+   
 }

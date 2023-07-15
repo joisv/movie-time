@@ -34,11 +34,13 @@ export default function Index({ auth, reports }) {
         search: ''
     })
 
+
     const handleSearchChange = async (e) => {
         setSearchTerm(prev => ({ ...prev, search: e.target.value }));
         try {
-            const response = await axios.get(route('search', searchTerm))
-            setPosData(response.data)
+            const response = await axios.get(route('report.search', searchTerm))
+            console.log(response);
+            setPosData(response.data.data)
         } catch (error) {
             console.log(error);
 
@@ -57,12 +59,18 @@ export default function Index({ auth, reports }) {
         status,
         created_at,
     }));
-    //   const filteredDatasSearch = postdata.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
+    const filteredDatasSearch = postdata?.map(({ id, post, user, status, created_at }) => ({
+        id,
+        title: post.title,
+        user: user.name,
+        status,
+        created_at,
+    }));
 
     function displayData() {
-        // const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;
+        const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;
 
-        return <Table datas={filteredDatas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} />;
+        return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} />;
     }
 
     return (

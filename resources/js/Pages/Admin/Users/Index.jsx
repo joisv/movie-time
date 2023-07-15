@@ -28,7 +28,7 @@ export default function Index({ auth, users }) {
     };
     const setProps = {
         th: ['name', 'email', 'actions'],
-        destroyUrl: 'roles.destroy',
+        destroyUrl: 'user.destroy',
         handleEdit: (params) => {
             const createComponent = <Edit open={open} setOpen={setOpen} params={params} />;
             displayModal(createComponent);

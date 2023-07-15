@@ -1,18 +1,23 @@
-import CustomModal from "@/Components/CustomModal";
-import AuthLayout from "@/Layouts/AuthLayout";
 import { Head, router, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import { MdThumbUp, MdOutlineReportGmailerrorred, MdShare, MdDownload, MdOutlineSettings } from 'react-icons/md'
+import axios from "axios";
+
+import CustomModal from "@/Components/CustomModal";
+import AuthLayout from "@/Layouts/AuthLayout";
+import ServerOption from "./Users/Partials/ServerOption";
+import Download from "./Users/Partials/Download";
+import Radio from "@/Pages/Users/Partials/Radio";
+
+import { MdThumbUp, MdOutlineReportGmailerrorred, MdDownload, MdOutlineSettings } from 'react-icons/md'
 import { IoBookmark, } from "react-icons/io5";
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import axios from "axios";
 import { ImSpinner8 } from "react-icons/im";
-import Radio from "@/Pages/Users/Partials/Radio";
-import Download from "./Users/Partials/Download";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import 'react-lazy-load-image-component/src/effects/blur.css';
 import dayjs from "dayjs";
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { FaUserCircle } from "react-icons/fa";
+import InputError from "@/Components/InputError";
 
 const isLiked = '#01AED3'
 
@@ -27,6 +32,8 @@ export default function Stream({ auth, postdata }) {
     const [commentsCounts, setCommentsCounts] = useState('');
     const [modalContent, setModalContent] = useState(null);
     const [commentLoad, setCommentLoad] = useState(false);
+    const [res, setRes] = useState([]);
+    const [ err, setErr ] = useState('')
 
     const date = new Date(postdata.release_date);
     const formattedDate = date.toLocaleDateString("en-US");
@@ -36,11 +43,12 @@ export default function Stream({ auth, postdata }) {
         try {
             const response = await axios.get(route('api.postcomment', postdata.id))
             if (response.status === 200) {
-                setComments(response.data.comments)
+                setRes(response.data)
+                setComments(response.data.comments.data)
                 setCommentsCounts(response.data.count)
             }
         } catch (error) {
-            console.log(error);
+           setErr(error.response.data.message)
         } finally {
             setCommentLoad(false)
         }
@@ -55,7 +63,6 @@ export default function Stream({ auth, postdata }) {
             setCommentLoad(true)
             try {
                 const response = await axios.post(route('comment.store', data))
-                console.log(response);
                 if (response.status === 200) {
                     setOpen(false);
                     getComment();
@@ -65,7 +72,7 @@ export default function Stream({ auth, postdata }) {
                     }))
                 }
             } catch (error) {
-                console.log(error);
+                setErr(error.response.data.message)
             } finally {
                 setCommentLoad(false)
             }
@@ -111,9 +118,34 @@ export default function Stream({ auth, postdata }) {
         displayModal(createComponent);
     }
     const handleDownload = () => {
-        const createComponent = <Download onClose={() => setOpen(false)} setOpen={setOpen} datas={postdata.downloads} />
+        const createComponent = <Download onClose={() => setOpen(false)} datas={postdata.downloads} />
         displayModal(createComponent);
     }
+
+    const [serverState, setServerState] = useState('');
+
+    function server(newServerState) {
+        setServerState(newServerState);
+    }
+
+    const handleQuality = () => {
+        const createComponent = <ServerOption onClose={() => setOpen(false)} datas={postdata.streams} setServer={server} />
+        displayModal(createComponent);
+    }
+
+    const loadMore = async () => {
+        try {
+            const respo = await axios.get(res?.comments.next_page_url);
+            console.log(respo);
+            if (respo.status === 200) {
+                const newComments = [...comments, ...respo.data.comments.data];
+                setComments(newComments);
+                setRes(respo.data);
+            }
+        } catch (error) {
+            throw new Error(error);
+        }
+    };
 
     useEffect(() => {
         const findLike = postdata.liked_by_users?.findIndex(element => element.id === auth.user?.id)
@@ -126,7 +158,7 @@ export default function Stream({ auth, postdata }) {
         }
         getComment();
     }, [])
-
+    console.log(err);
     return (
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
             <Head title="Stream" />
@@ -168,10 +200,10 @@ export default function Stream({ auth, postdata }) {
                                 <MdOutlineReportGmailerrorred size={'100%'} color="#f2cd00" />
                                 <span className="">report</span>
                             </button>
-                            <div className="flex flex-col w-full gap-1 items-center h-12">
+                            <button type="button" className="flex flex-col w-full gap-1 items-center h-12" onClick={() => handleQuality()}>
                                 <MdOutlineSettings size={'100%'} color="#ffffff" />
                                 <span className="">quality</span>
-                            </div>
+                            </button>
                             <button
                                 type="button"
                                 className="flex flex-col w-full gap-1 items-center h-12"
@@ -183,18 +215,20 @@ export default function Stream({ auth, postdata }) {
                         </div>
                     </div>
                 </div>
-                <div className="block mt-0 text-text p-1 lg:max-w-[33%] w-full overflow-ellipsis">
+                <div className="block mt-0 text-text p-1 lg:max-w-[31%] w-full overflow-ellipsis">
                     <span className="text-sm font-medium text-white sm:text-base">{`Comments ${commentsCounts}`}</span>
-                    <div className="mt-2 space-x-1 flex items-start mb-10">
+                    <div className="mt-2 space-x-2 flex items-start mb-10">
                         <div className="">
-                            <LazyLoadImage
-                                effect='blur'
-                                src={`/storage/${auth.user.avatar}`}
-                                className='h-11 w-12 rounded-full object-cover object-top'
-                            />
+                            {
+                                auth.user.avatar ? <LazyLoadImage
+                                    effect='blur'
+                                    src={`/storage/${auth.user?.avatar}`}
+                                    className='h-10 w-10 rounded-full object-cover object-top'
+                                /> : <FaUserCircle size={40} color='#ffffff' />
+                            }
                         </div>
                         <div className="w-full space-y-1">
-                            <h3 className="font-medium">@{auth.user.name}</h3>
+                            <h3 className="font-medium mb-5">@{auth.user ? auth.user?.name : 'guest'}</h3>
                             <form onSubmit={submitComment}>
                                 <textarea
                                     id="comment"
@@ -208,6 +242,7 @@ export default function Stream({ auth, postdata }) {
                                     }))}
                                     onKeyDown={(e) => { if (e.key === 'Enter') { submitComment(e) } }}
                                 />
+                                <InputError message={err} className="mt-2"/>
                             </form>
                         </div>
 
@@ -222,15 +257,17 @@ export default function Stream({ auth, postdata }) {
                                     <div className="flex items-start font-medium w-full justify-between px-1 relative" key={index}>
                                         <div className="flex justify-end w-full ">
                                             <div className="absolute left-0">
-                                                <LazyLoadImage
-                                                    effect='blur'
-                                                    src={`/storage/${comment.user.avatar}`}
-                                                    className='h-10 w-10 rounded-full object-cover object-top'
-                                                />
+                                                {
+                                                    comment.user?.avatar ? <LazyLoadImage
+                                                        effect='blur'
+                                                        src={`/storage/${comment.user?.avatar}`}
+                                                        className='h-10 w-10 rounded-full object-cover object-top'
+                                                    /> : <FaUserCircle size={35} color='#ffffff' />
+                                                }
                                             </div>
                                             <div className="w-[85%] space-y-1">
                                                 <div className="flex space-x-1 items-center text-primaryBtn ">
-                                                    <p className=" ">@{comment.user.name}</p>
+                                                    <p className=" ">@{comment.user?.name}</p>
                                                     <span className="text-xs">. {dayjs(comment.created_at).fromNow()}</span>
                                                 </div>
                                                 <div className="max-w-full ">
@@ -240,11 +277,25 @@ export default function Stream({ auth, postdata }) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="absolute top-0 -right-2 opacity-70">
+                                        {/* <div className="absolute top-0 -right-2 opacity-70">
                                             <BsThreeDotsVertical size={17} color="#ffffff" />
-                                        </div>
+                                        </div> */}
                                     </div>
                                 ))
+                            }
+                            {
+                                res.comments?.next_page_url != null ? <div className="w-full flex items-center justify-center">
+                                    <button
+                                        type="button"
+                                        className=" text-white bg-secondaryAccent  hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-base px-5 py-2 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex justify-center gap-1 items-center min-w-[13vw]"
+                                        onClick={loadMore}
+                                    >
+                                        load more
+                                        {/* {
+                                                     processing ? <ImSpinner8 size={24} color='#ffffff' className='animate-spin' /> : 'Login Now'
+                                                 } */}
+                                    </button>
+                                </div> : null
                             }
                         </div>
                     }

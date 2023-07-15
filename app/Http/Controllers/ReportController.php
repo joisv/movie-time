@@ -83,4 +83,26 @@ class ReportController extends Controller
 
         return response()->json('deleted success');
     }
+
+    public function search(Request $request)
+    {
+        $data = Report::query()
+        ->when($request->input('search'), function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('content', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('post', function ($query) use ($search) {
+                        $query->where('title', 'like', '%' . $search . '%');
+                    });
+            });
+        })
+        ->with('user', 'post')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
+        
+        return response()->json($data);
+    }
 }

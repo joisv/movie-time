@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 
 import CustomTextInput from '@/Components/CustomTextInput'
 import PrimaryButton from '@/Components/PrimaryButton'
-import { Head, useForm } from '@inertiajs/react'
+import { Head, useForm, usePage } from '@inertiajs/react'
 import { formatDateTime } from '@/Helper/formatDate'
 import AuthLayout from '@/Layouts/AuthLayout'
 import CustomModal from '@/Components/CustomModal'
 import NoDataDisplay from '@/Components/NoDataDisplay'
 
 export default function Request({ auth, datas }) {
-
+  
+  const { flash } = usePage().props
   const [open, setOpen] = useState(false);
-  const { data, setData, processing, post, reset } = useForm({
+  const { data, setData, processing, post, reset, delete:destroy } = useForm({
     content: '',
     user_id: auth?.user.id,
     status: 'pending'
@@ -58,6 +59,9 @@ export default function Request({ auth, datas }) {
                     <th scope="col" className="px-6 py-3">
                       Status
                     </th>
+                    <th scope="col" className="px-6 py-3">
+                      action
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -77,6 +81,9 @@ export default function Request({ auth, datas }) {
                           <div className={`px-1 w-fit ${data.status == 'pending' ? 'bg-yellow-300 text-black' : data.status == 'completed' ? 'bg-green-400 text-text' : 'bg-red-400 text-text'}`}>
                             {data.status}
                           </div>
+                        </td>
+                        <td className="px-6 py-4">
+                        <button type="button" onClick={() => { if(confirm('delete this request ?')) destroy(route('request.destroy', data.id)) }} className='text-red-500'>delete</button>
                         </td>
                       </tr>
 

@@ -55,7 +55,7 @@ export default function Index({ auth, datas }) {
 
     const setProps = {
         th: ['requester ', 'content', 'created_at', 'status', 'actions'],
-        destroyUrl: 'adminrequest.destroy',
+        // destroyUrl: 'adminrequest.destroy',
         handleEdit: (params) => {
             const createComponent = <Edit id={params} onClose={() => setOpen(false)}/>;
             displayModal(createComponent);

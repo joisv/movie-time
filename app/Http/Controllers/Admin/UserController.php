@@ -39,13 +39,13 @@ class UserController extends Controller
         return back()->with('message', 'Role not exists.');
     }
 
-    public function destroy(User $user)
+    public function destroy(string $id)
     {
-        if ($user->hasRole('admin')) {
-            return back()->with('message', 'you are admin.');
-        }
+        $this->middleware('role:admin');
+        $user = User::findOrFail($id);
+
         $user->delete();
 
-        return back()->with('message', 'User deleted.');
+        return response()->json('berhasil');
     }
 }

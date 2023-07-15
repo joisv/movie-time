@@ -69,11 +69,6 @@ export default function Download({ onClose, setOpen, datas }) {
                                                             className={`inline ${checked ? 'text-sky-100' : 'text-gray-500'
                                                                 }`}
                                                         >
-                                                            <span>
-                                                                {download.url_download}
-                                                            </span>{' '}
-                                                            {/* <span aria-hidden="true">&middot;</span>{' '}
-                                                            <span>{plan.disk}</span> */}
                                                         </RadioGroup.Description>
                                                     </div>
                                                 </div>

@@ -43,18 +43,5 @@ class AdminRequestController extends Controller
         return redirect()->route('adminrequest.index')->with('message', 'request updated');
     }
 
-    public function destroy(Request $request, String $id){
-
-        $req = ModelsRequest::findOrFail($id);
-        $req->delete();
-
-        $notif = new Notification();
-        $notif->user_id = $req->user_id;
-        $notif->is_read = false;
-        $notif->request_id = $id;
-        $notif->message = 'your request was deleted by admin';
-        $notif->save();
-        
-        return redirect()->route('adminrequest.index')->with('message', 'request successfully deleted');
-    }
+  
 }

@@ -141,9 +141,19 @@ class StreamController extends Controller
 
     public function search(Request $request)
     {
-        $data = Stream::query()->when($request->input('search'), function ($query, $search) {
-            $query->where('name', 'like', '%' . $search . '%');
-        })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        $data = Stream::query()
+        ->when($request->input('search'), function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('post', function ($query) use ($search) {
+                        $query->where('title', 'like', '%' . $search . '%');
+                    });
+            });
+        })
+        ->with('post')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
 
         return response()->json($data);
     }

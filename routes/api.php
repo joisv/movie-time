@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
@@ -41,14 +42,7 @@ use Spatie\Permission\Models\Role;
 // });
 
 // Route::get('/post-show/{id}', [PostController::class, 'showByApi'])->name('api.post.show');
-Route::get('/post-comment/{id}', function(string $id) {
-    $comments = Comment::where('post_id', $id)->orderBy('created_at', 'desc')->with('user')->get();
-    $comments_count = $comments->count();
-    return response()->json([
-        'comments' => $comments,
-        'count' => $comments_count
-    ]);
-})->name('api.postcomment');
+Route::get('/post-comment/{id}', [CommentController::class, 'postComment'])->name('api.postcomment');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');
@@ -57,11 +51,13 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/search', [PostController::class, 'search'])->name('search');
     Route::get('/search/genres', [GenreController::class, 'search'])->name('search.genres');
     Route::get('/search/stream', [StreamController::class, 'search'])->name('stream.search');
+    Route::get('/search/report', [ReportController::class, 'search'])->name('report.search');
     Route::get('/get-post', function () {
 
         $data = Post::all();
         return response()->json($data);
     })->name('getpost');
+    Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
     Route::delete('/report/destroy/{id}', [ReportController::class, 'destroy'])->name('api.report.destroy');
     Route::get('/permission/{id}', function (string $id) {
