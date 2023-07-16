@@ -11,6 +11,7 @@ import axios from 'axios';
 import Dropdown from '@/Components/Dropdown';
 import ProfileUser from '@/Components/ProfileUser';
 import ResponsiveMenu from '@/Components/ResponsiveMenu';
+import { MdMenu } from 'react-icons/md';
 
 const active = 'bg-secondaryAccent bg-opacity-70 border-r-4 border-secondaryAccent font-semibold '
 
@@ -246,7 +247,9 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
       </div>
       <main className={`justify-end sm:absolute sm:right-0 sm:top-10 sm:p-3 min-h-screen ease-in duration-150 ${isDetail ? 'w-full' : 'md:w-[83.6%] sm:w-[91%]'}`}>
         {
-          width ? <button className='fixed text-red-500 bottom-2 right-2' onClick={() => setNavbar(true)}>menu</button> : null
+          width ? <button type="button" className={`fixed bottom-2 right-2 p-1 z-20`} onClick={() => setNavbar(true)}>
+            <MdMenu size={35} color='#ffffff' />
+          </button> : null
         }
         {children}
       </main>

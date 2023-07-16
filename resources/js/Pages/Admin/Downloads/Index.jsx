@@ -36,7 +36,7 @@ export default function Index({ downloads, setOpen }) {
     const handleSearchChange = async (e) => {
         setSearchTerm(prev => ({ ...prev, search: e.target.value }));
         try {
-            const response = await axios.get(route('stream.search', searchTerm))
+            const response = await axios.get(route('download.search', searchTerm))
             setDownloadData(response.data.data)
         } catch (error) {
             console.log(error);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
@@ -52,6 +53,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/search/genres', [GenreController::class, 'search'])->name('search.genres');
     Route::get('/search/stream', [StreamController::class, 'search'])->name('stream.search');
     Route::get('/search/report', [ReportController::class, 'search'])->name('report.search');
+    Route::get('/search/download', [DownloadController::class, 'search'])->name('download.search');
     Route::get('/get-post', function () {
 
         $data = Post::all();

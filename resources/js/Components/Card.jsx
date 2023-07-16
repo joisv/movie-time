@@ -56,7 +56,7 @@ export default function Card({ item }) {
           </div>
         </div>
         <div>
-          <div className='flex space-x-1'>
+          <div className='flex space-x-1 text-start'>
             <h1 className="text-text text-base font-medium">{item?.title.substring(0, 20) + '...'}</h1>
           </div>
           <p className='text-primaryBtn font-light text-xs text-start'>{formattedDate}</p>

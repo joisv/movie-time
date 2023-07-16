@@ -34,15 +34,15 @@ export default function Register() {
         <GuestLayout>
             <Head title="Register" />
 
-            <header className='max-w-screen-sm w-full h-fit flex items-center space-x-4'>
+            <header className='max-w-screen-sm w-full h-fit flex items-center space-x-4 p-2'>
                 <div className='w-full'>
                     <h1 className='text-3xl font-semibold text-white my-8'>Register ?</h1>
                 </div>
-                <div className="w-2/3 ">
+                <div className="w-2/3 hidden sm:block">
                     <h1 className='text-3xl font-semibold text-white my-8'>Already registered ?</h1>
                 </div>
             </header>
-            <div className="flex space-x-4">
+            <div className="sm:flex sm:space-x-4 p-2">
                 <div className='w-full'>
                     <form onSubmit={submit}>
                         <div className="space-y-2 mb-5">
@@ -105,7 +105,10 @@ export default function Register() {
                         </div>
                     </form>
                 </div>
-                <div className='w-2/3 h-32 '>
+                <div className='sm:w-2/3 h-32 w-full'>
+                    <div className=" block sm:hidden ">
+                        <h1 className='text-3xl font-semibold text-white my-8'>Already registered ?</h1>
+                    </div>
                     <div className="flex h-fit">
                         <button type="button" className=" text-white bg-secondaryAccent  hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-base px-5 py-2 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => router.visit('login')}>Login Now</button>
                     </div>

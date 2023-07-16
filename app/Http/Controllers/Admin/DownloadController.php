@@ -54,4 +54,23 @@ class DownloadController extends Controller
 
         return response()->json('sucees');
     }
+    
+    public function search(Request $request)
+    {
+        $data = Download::query()
+        ->when($request->input('search'), function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('name_download', 'like', '%' . $search . '%')
+                    ->orWhereHas('post', function ($query) use ($search) {
+                        $query->where('title', 'like', '%' . $search . '%');
+                    });
+            });
+        })
+        ->with('post')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->withQueryString();
+
+        return response()->json($data);
+    }
 }

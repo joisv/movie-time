@@ -7,6 +7,7 @@ import useHook from '@/hooks/useHook';
 
 const open = 'bg-red-500 text-black'
 const completed = 'bg-blue-400 text-text'
+const pending =  'bg-yelloww-400 text-black'
 
 export default function Table({ datas, handleSearchChange, searchTerm, setProps }) {
 
@@ -41,7 +42,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
             <div className="flex items-center justify-between pb-4">
                 <div className="flex items-center justify-between pb-4 w-full mt-1">
                     <div className="flex space-x-2 items-center">
-                        <div>
+                        {/* <div>
                             <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button" onClick={() => setAction(prev => !prev)}>
                                 <span className="sr-only">Action button</span>
                                 Action
@@ -52,7 +53,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
                                     <div href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete User</div>
                                 </button> : null
                             }
-                        </div>
+                        </div> */}
                     </div>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -103,7 +104,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
                                 {Object.entries(post).map(([key, value]) => (
                                     <React.Fragment key={key}>
                                         {key === 'status' ? <td className='px-6 py-4'>
-                                            <span className={`h-fit p-1 rounded-md ${value === 'open' ? open : value === 'close' ? completed : 'bg-red-400 text-text'}`}>
+                                            <span className={`h-fit p-1 rounded-md ${value === 'open' ? open : value === 'close' ? completed : value === 'completed' ? completed : value === 'pending' ? pending : value === 'release' ? open : 'bg-transparent'}`}>
                                                 {value}
                                             </span>
                                         </td> :

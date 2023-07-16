@@ -1,10 +1,5 @@
 import { useEffect } from 'react';
-import Checkbox from '@/Components/Checkbox';
 import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import { ImSpinner8 } from "react-icons/im";
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { MdAlternateEmail, MdOutlineLockPerson, MdErrorOutline } from 'react-icons/md'
@@ -34,19 +29,19 @@ export default function Login({ status, canResetPassword }) {
         <GuestLayout>
             <Head title="Log in" />
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
-            <header className='max-w-screen-sm w-full h-fit flex items-center space-x-4'>
+            <header className='max-w-screen-sm w-full h-fit sm:flex items-center sm:space-x-4 p-2'>
                 <div className='w-full'>
                     <h1 className='text-3xl font-semibold text-white my-8'>Login ?</h1>
                 </div>
-                <div className="w-2/3 ">
+                <div className="w-2/3 hidden sm:block">
                     <h1 className='text-3xl font-semibold text-white my-8'>No account yet ?</h1>
                 </div>
             </header>
-            <div className={`p-3 gap-2 font-medium bg-sky-500 h-10 absolute top-10 flex items-center justify-center ease-in duration-200 ${ hasErrors ? 'translate-y-[40%]' : '-translate-y-[200%]' }`}>
+            <div className={`p-3 gap-2 font-medium bg-sky-500 h-10 absolute top-10 flex items-center justify-center ease-in duration-200 ${hasErrors ? 'translate-y-[40%]' : '-translate-y-[200%]'}`}>
                 <MdErrorOutline size={20} color='#ffffff' />
                 Something went wrong
             </div>
-            <div className="flex space-x-4">
+            <div className="sm:flex sm:space-x-4 p-2">
                 <div className='w-full'>
                     <form onSubmit={submit}>
                         <div className="space-y-2 mb-5">
@@ -90,7 +85,10 @@ export default function Login({ status, canResetPassword }) {
                         </div>
                     </form>
                 </div>
-                <div className='w-2/3 h-32 '>
+                <div className='sm:w-2/3 h-32 w-full'>
+                    <div className="w-2/3 sm:hidden block">
+                        <h1 className='text-3xl font-semibold text-white my-8'>No account yet ?</h1>
+                    </div>
                     <div className="flex h-fit">
                         <button type="button" className=" text-white bg-secondaryAccent  hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-base px-5 py-2 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => router.visit('register')}>Regiter Now</button>
                     </div>

@@ -8,7 +8,7 @@ import ServerOption from "./Users/Partials/ServerOption";
 import Download from "./Users/Partials/Download";
 import Radio from "@/Pages/Users/Partials/Radio";
 
-import { MdThumbUp, MdOutlineReportGmailerrorred, MdDownload, MdOutlineSettings } from 'react-icons/md'
+import { MdThumbUp, MdOutlineReportGmailerrorred, MdDownload, MdOutlineSettings, MdMenu } from 'react-icons/md'
 import { IoBookmark, } from "react-icons/io5";
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { ImSpinner8 } from "react-icons/im";
@@ -161,8 +161,11 @@ export default function Stream({ auth, postdata }) {
     console.log(err);
     return (
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
+            <button type="button" className={`absolute -top-7  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
+                <MdMenu size={25} color='#ffffff'/>
+            </button>
             <Head title="Stream" />
-            <div className="lg:flex lg:gap-2 lg:relative">
+            <div className="lg:flex lg:gap-2 lg:relative space-y-6 sm:space-y-0">
                 <div className="max-w-screen-lg w-full lg:w-[80%]  top-0 sm:relative text-text">
                     <div className="w-full relative" style={{ paddingBottom: '56.25%' }}>
                         <iframe
@@ -173,7 +176,7 @@ export default function Stream({ auth, postdata }) {
                         ></iframe>
                     </div>
                     {/* title */}
-                    <h1 className="font-medium text-xl sm:text-2xl ml-1 mt-2">{postdata.title}</h1>
+                    <h1 className="font-medium text-base sm:text-2xl ml-1 mt-2">{postdata.title}</h1>
                     <div className="space-y-5 sm:-space-y-0 sm:flex sm:justify-between p-1 items-center">
                         <div className="flex space-x-1 sm:text-sm text-sm font-extralight opacity-70">
                             <div>{postdata.original_title}</div>
@@ -216,11 +219,14 @@ export default function Stream({ auth, postdata }) {
                     </div>
                 </div>
                 <div className="block mt-0 text-text p-1 lg:max-w-[31%] w-full overflow-ellipsis">
+                    <div className="px-1 py-2 text-text text-xs font-medium opacity-75">
+                        <h4>Comments must be polite, relevant, and free from illegal content or inappropriate promotions according to our guidelines.</h4>
+                    </div>
                     <span className="text-sm font-medium text-white sm:text-base">{`Comments ${commentsCounts}`}</span>
                     <div className="mt-2 space-x-2 flex items-start mb-10">
                         <div className="">
                             {
-                                auth.user.avatar ? <LazyLoadImage
+                                auth.user?.avatar ? <LazyLoadImage
                                     effect='blur'
                                     src={`/storage/${auth.user?.avatar}`}
                                     className='h-10 w-10 rounded-full object-cover object-top'
