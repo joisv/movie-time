@@ -27,7 +27,7 @@ export default function Index({ auth, datastreams, downloads }) {
                                             <Tab as={Fragment} key={index}>
                                                 {({ selected }) => (
                                                     <button
-                                                        className={` w-fit h-fit p-1 rounded-sm text-base focus:ring-0 focus:border-0 border-0 ring-0 font-medium p-3 ${selected ? 'bg-purple-500 text-white' : 'bg-white text-black'}`}
+                                                        className={` w-fit h-fit p-2 rounded-md text-base focus:ring-0 focus:border-0 border-0 ring-0 font-medium ${selected ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
 
                                                     >
                                                         {tab}

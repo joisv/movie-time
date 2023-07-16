@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\StreamDownloadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
+use App\Http\Controllers\Dashboard\AnalitycsController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
@@ -34,34 +35,10 @@ use Inertia\Inertia;
 |
 */
 // guest
-Route::get('/', function () {
-
-    $datas = Post::orderBy('created_at', 'desc')->get();
-
-    return Inertia::render('Home', [
-        'datas' => $datas,
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->name('home');
-
-Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
-Route::get('/stream/{id}', function (string $id) {
-    $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers', 'streams', 'downloads')->first();
-    $data->increment('views');
-    return Inertia::render('Stream', [
-        'postdata' => $data,
-    ]);
-})->name('stream');
-
-// admin
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+ // admin
+ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // admin dashboard
-    Route::get('/', function () {
-        return Inertia::render('Admin/Dashboard');
-    })->name('admin');
+    Route::get('/', [AnalitycsController::class, 'index'])->name('admin');
     // post
     Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
@@ -103,39 +80,65 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('/download/update/{id}', [DownloadController::class, 'update'])->name('download.update');
     Route::delete('/download/destroy/{id}', [DownloadController::class, 'destroy'])->name('download.destroy');
 });
+Route::middleware('last_activity')->group(function(){
 
+    Route::get('/', function () {
 
-Route::middleware('auth')->group(function () {
-    Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
-    Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
-    Route::delete('/request/destroy/{id}', [UserRequestController::class, 'destroy'])->name('request.destroy');
-    Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
-    Route::delete('/notifications/destroy/{id}', [UserNotificationsController::class, 'destroy'])->name('usernotifications.destroy');
+        $datas = Post::orderBy('created_at', 'desc')->get();
     
-    Route::get('/report/all', [ReportController::class, 'index'])->name('report.index');
-    Route::patch('/report/update/{id}', [ReportController::class, 'update'])->name('report.update');
-
-    Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
-    Route::post('/user-profile/update', [UserProfileController::class, 'update'])->name('userprofile.update');
-
-    Route::get('/history', [UserHistoryController::class, 'index'])->name('history.index');
-
-    Route::get('/bookmark', function () {
-        $data = auth()->user()->bookmarkedPosts;
-
-        return Inertia::render('Users/Bookmark', [
-            'bookmarks' => $data
+        return Inertia::render('Home', [
+            'datas' => $datas,
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
         ]);
-    })->name('bookmark');
-
-    Route::get('/like', function () {
-        $data = auth()->user()->likedPosts;
-
-        return Inertia::render('Users/Like', [
-            'likes' => $data
+    })->name('home');
+    
+    Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+    Route::get('/stream/{id}', function (string $id) {
+        $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers', 'streams', 'downloads')->first();
+        $data->increment('views');
+        return Inertia::render('Stream', [
+            'postdata' => $data,
         ]);
-    })->name('like');
+    })->name('stream');
+    
+    
+    Route::middleware('auth')->group(function () {
+        Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
+        Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
+        Route::delete('/request/destroy/{id}', [UserRequestController::class, 'destroy'])->name('request.destroy');
+        Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
+        Route::delete('/notifications/destroy/{id}', [UserNotificationsController::class, 'destroy'])->name('usernotifications.destroy');
+        
+        Route::get('/report/all', [ReportController::class, 'index'])->name('report.index');
+        Route::patch('/report/update/{id}', [ReportController::class, 'update'])->name('report.update');
+    
+        Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
+        Route::post('/user-profile/update', [UserProfileController::class, 'update'])->name('userprofile.update');
+    
+        Route::get('/history', [UserHistoryController::class, 'index'])->name('history.index');
+    
+        Route::get('/bookmark', function () {
+            $data = auth()->user()->bookmarkedPosts;
+    
+            return Inertia::render('Users/Bookmark', [
+                'bookmarks' => $data
+            ]);
+        })->name('bookmark');
+    
+        Route::get('/like', function () {
+            $data = auth()->user()->likedPosts;
+    
+            return Inertia::render('Users/Like', [
+                'likes' => $data
+            ]);
+        })->name('like');
+    });
+
 });
+
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Users/Dashboard');
 // })->name('dashboard');
