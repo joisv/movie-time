@@ -105,6 +105,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/report-status', [ AnalitycsController::class, 'reportStatus' ])->name('reportstatus');
     Route::get('/post-most', [ AnalitycsController::class, 'mostmovie' ])->name('mostmovie');
     Route::get('/post/views/bydays', [ AnalitycsController::class, 'postViewByDays' ])->name('post.bydays');
+    Route::get('/post/views/weeks', [ AnalitycsController::class, 'postViewByWeeks' ])->name('post.byweeks');
+    Route::get('/post/views/month', [ AnalitycsController::class, 'postViewByMonth' ])->name('post.bymonth');
 });
 
 Route::middleware('auth:sanctum')->group(function () {

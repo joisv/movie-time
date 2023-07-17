@@ -12,26 +12,23 @@ const tabs = ['Views', 'Likes']
 
 const OptionsCard = ({ posts, loading }) => {
     return (
-        <div>
+        <div className='bg-gray-900 h-full p-3 rounded-sm'>
             {
                 posts?.map((post, index) => (
 
-                    <ul className=" h-full space-y-3" key={index}>
+                    <ul className=" h-[8vh] space-y-3 " key={index}>
                         <li >
                             <div className="flex items-center space-x-4 ">
                                 <div className="flex-shrink-0">
                                     <img className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-gray-900 truncate ">
+                                    <p className="text-sm font-medium text-gray-300 truncate ">
                                         {shortSentence(post.title, 5)}
                                     </p>
                                     <p className="text-sm text-gray-500 truncate ">
                                         {formatDateTime(post.created_at)}
                                     </p>
-                                </div>
-                                <div className="inline-flex items-center text-base font-semibold text-gray-900 ">
-                                    {post.views ?  post.views : post.like ? post.like : null}
                                 </div>
                             </div>
                         </li>
@@ -67,13 +64,13 @@ export default function MostFavoriteMovie() {
 
     if(loading){
         return(
-            <div className="p-1 border border-gray-400 rounded-md w-[40%] h-[25vh] flex items-center justify-center">
+            <div className="p-1 border border-gray-400 rounded-md w-full h-[25vh] flex items-center justify-center">
                 <ImSpinner8 size={20} color='rgb(17 24 39)' className='animate-spin'/>
             </div>
         )
     }
     return (
-        <div className='p-1 h-full border border-gray-400 rounded-md w-full'>
+        <div className='p-1 h-full rounded-md w-full'>
             <Tab.Group>
                 <Tab.List>
                     <div className="space-x-2 py-3">
@@ -82,7 +79,7 @@ export default function MostFavoriteMovie() {
                                 <Tab as={Fragment} key={index}>
                                     {({ selected }) => (
                                         <button
-                                            className={` w-fit h-fit p-2 rounded-md text-base focus:ring-0 focus:border-0 border-0 ring-0 font-medium ${selected ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
+                                            className={` w-fit h-fit p-2 rounded-md text-base focus:ring-0 focus:border-0 border-0 ring-0 font-medium ${selected ? 'bg-gray-800 text-white' : 'bg-gray-300 text-black'}`}
                                         >
                                             {tab}
                                         </button>

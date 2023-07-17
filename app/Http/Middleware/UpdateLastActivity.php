@@ -20,7 +20,10 @@ class UpdateLastActivity
     {
         if (Auth::check() && $request->method() !== 'OPTIONS') {
             $user = Auth::user();
-            $user->update(['last_activity' => Carbon::now()]);
+            $user->update([
+                'last_activity' => Carbon::now(),
+                'is_online' => true
+            ]);
         }
 
         return $next($request);

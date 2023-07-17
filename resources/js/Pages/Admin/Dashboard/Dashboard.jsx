@@ -17,10 +17,9 @@ export default function Dashboard({ auth, dates, viewsData }) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 ">
                     <div className="min-h-[110vh] overflow-hidden shadow-sm sm:rounded-md p-2 flex flex-col space-y-3 bg-white">
-                        <div className="sm:grid sm:grid-cols-3 gap-3 ">
+                        <div className="sm:grid sm:grid-cols-3 gap-3">
                             <MostFavoriteMovie />
                             <UserActivity />
-                            {/* <PopularMovieOrderByViews posts={postByViews} /> */}
                             <PostIssue />
                         </div>
                         <MostWatchedMovie />

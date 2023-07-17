@@ -74,8 +74,9 @@ class AnalitycsController extends Controller
         }
     }
 
-    public function postViewByDays(){
-      
+    public function postViewByDays()
+    {
+
         $today = Carbon::today();
         $sixDaysAgo = Carbon::today()->subDays(6);
 
@@ -87,6 +88,48 @@ class AnalitycsController extends Controller
             $views = Post::whereBetween('updated_at', [$startOfDay, $endOfDay])
                 ->sum('views');
             $dates[] = $date->format('l');
+            $viewsData[] = $views;
+        }
+
+        return response()->json([
+            'dates' => $dates,
+            'viewsData' => $viewsData
+        ]);
+    }
+    public function postViewByWeeks()
+    {
+        $fourWeeksAgo = Carbon::today()->subWeeks(8);
+
+        $dates = [];
+        $viewsData = [];
+
+        for ($i = 0; $i < 8; $i++) {
+            $startOfWeek = $fourWeeksAgo->copy()->addWeeks($i)->startOfWeek();
+            $endOfWeek = $fourWeeksAgo->copy()->addWeeks($i)->endOfWeek();
+            $views = Post::whereBetween('updated_at', [$startOfWeek, $endOfWeek])
+                ->sum('views');
+            $dates[] = 'Week ' . ($i + 1);
+            $viewsData[] = $views;
+        }
+
+        return response()->json([
+            'dates' => $dates,
+            'viewsData' => $viewsData
+        ]);
+    }
+    public function postViewByMonth()
+    {
+        $oneMonthAgo = Carbon::today()->subMonth();
+
+        $dates = [];
+        $viewsData = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            $startOfMonth = $oneMonthAgo->copy()->addMonths($i)->startOfMonth();
+            $endOfMonth = $oneMonthAgo->copy()->addMonths($i)->endOfMonth();
+            $views = Post::whereBetween('updated_at', [$startOfMonth, $endOfMonth])
+                ->sum('views');
+            $dates[] = $startOfMonth->format('F Y');
             $viewsData[] = $views;
         }
 
