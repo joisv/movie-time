@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function PopularMovieOrderByViews({ posts }) {
     return (
-        <div className='w-full p-1 h-full border border-gray-600 rounded-md'>
+        <div className='w-full p-1 h-full border border-gray-400 rounded-md'>
             <header>
                 <h1 className='text-lg font-semibold'>Popular Movie</h1>
             </header>

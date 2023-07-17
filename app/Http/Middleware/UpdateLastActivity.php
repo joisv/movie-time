@@ -18,21 +18,9 @@ class UpdateLastActivity
 
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()) {
+        if (Auth::check() && $request->method() !== 'OPTIONS') {
             $user = Auth::user();
             $user->update(['last_activity' => Carbon::now()]);
-
-            $lastActivity = $user->last_activity;
-
-            // Batas waktu inaktif (contoh: 5 menit)
-            $inactiveThreshold = Carbon::now()->subMinutes(5);
-
-            // Cek apakah pengguna aktif atau tidak
-            $isActive = $lastActivity > $inactiveThreshold;
-
-            if ($isActive) {
-                $user->update(['is_online' => true]);
-            } 
         }
 
         return $next($request);

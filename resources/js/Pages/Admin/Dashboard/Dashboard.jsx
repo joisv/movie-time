@@ -4,9 +4,9 @@ import PopularMovieOrderByViews from './partials/PopularMovieOrderByViews';
 import UserActivity from './partials/UserActivity';
 import PostIssue from './partials/PostIssue';
 import MostFavoriteMovie from './partials/MostFavoriteMovie';
-import MostWatchedMovie from './partials/MostWatchedMovie';
+import { MostWatchedMovie } from './partials/MostWatchedMovie';
 
-export default function Dashboard({ auth, postByViews }) {
+export default function Dashboard({ auth, dates, viewsData }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -16,16 +16,14 @@ export default function Dashboard({ auth, postByViews }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 ">
-                    <div className="bg-transparent overflow-hidden shadow-sm sm:rounded-md min-h-screen p-2 space-y-4">
-                        <div className="sm:flex justify-between sm:space-x-3 sm:h-[50vh]">
-                            <PopularMovieOrderByViews posts={postByViews} />
+                    <div className="min-h-[110vh] overflow-hidden shadow-sm sm:rounded-md p-2 flex flex-col space-y-3 bg-white">
+                        <div className="sm:grid sm:grid-cols-3 gap-3 ">
+                            <MostFavoriteMovie />
                             <UserActivity />
+                            {/* <PopularMovieOrderByViews posts={postByViews} /> */}
                             <PostIssue />
                         </div>
-                        <div className="sm:flex sm:space-x-3">
-                            <MostFavoriteMovie />
-                            <MostWatchedMovie />
-                        </div>
+                        <MostWatchedMovie />
                     </div>
                 </div>
             </div>

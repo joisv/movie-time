@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
+use App\Http\Controllers\Dashboard\AnalitycsController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
@@ -38,11 +39,6 @@ use Spatie\Permission\Models\Role;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-// Route::get('/post-show/{id}', [PostController::class, 'showByApi'])->name('api.post.show');
 Route::get('/post-comment/{id}', [CommentController::class, 'postComment'])->name('api.postcomment');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
@@ -103,6 +99,12 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         $req = ModelsRequest::where('is_new', true)->count();
         return response()->json($req);
     })->name('api.request.count');
+
+
+    Route::get('/user-count', [ AnalitycsController::class, 'userCount' ])->name('usercount');
+    Route::get('/report-status', [ AnalitycsController::class, 'reportStatus' ])->name('reportstatus');
+    Route::get('/post-most', [ AnalitycsController::class, 'mostmovie' ])->name('mostmovie');
+    Route::get('/post/views/bydays', [ AnalitycsController::class, 'postViewByDays' ])->name('post.bydays');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
