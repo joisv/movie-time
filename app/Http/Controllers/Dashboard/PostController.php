@@ -79,9 +79,10 @@ class PostController extends Controller
       return redirect()->route('post.index')->with('success', 'Created successfully');
    }
 
-   public function show(string $id)
+   public function show(string $slug)
    {
-      $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers')->first();
+      $data = Post::where('slug', $slug)->with('likedByUsers', 'genres', 'bookmarkedByUsers')->first();
+      
       // $comments = Comment::where('slug', $slug)->orderBy('created_at', 'desc')->with('user')->get();
 
       return Inertia::render('Show', [

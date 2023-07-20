@@ -23,8 +23,7 @@ export default function Card({ item }) {
   const formattedDate = date.toLocaleDateString("en-US");
 
   const handleCard = async () => {
-    console.log('trigered');
-    router.visit(route('post.show', item.id))
+    router.visit(route('post.show', item.slug))
     if (auth.user) {
       try {
         const response = await axios.post(route('history.store', data))

@@ -14,6 +14,7 @@ use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\GenerateMovieController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
 use App\Models\Comment;
@@ -41,6 +42,8 @@ use Spatie\Permission\Models\Role;
 */
 
 Route::get('/post-comment/{id}', [CommentController::class, 'postComment'])->name('api.postcomment');
+Route::get('/banner/poster', [HomeController::class, 'getBanner'])->name('get.banner');
+Route::get('/banner/visit', [BannerController::class, 'visit'])->name('banner.visit');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');

@@ -1,19 +1,12 @@
-import React, { useState } from 'react'
 import AuthLayout from '@/Layouts/AuthLayout'
-import axios from 'axios';
-import { Link } from '@inertiajs/react';
-import useHook from '@/hooks/useHook';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { SwiperSlide } from 'swiper/react';
 import { IoPlay } from 'react-icons/io5'
-import { FaStarOfLife } from 'react-icons/fa'
 
-import 'swiper/css';
-import 'swiper/css/virtual';
-import { Autoplay, Navigation, Pagination, Virtual, } from 'swiper';
 import GenerateButton from '@/Components/GenerateButton';
 import { shortSentence } from '@/Helper/shortSentence';
-import Card from '@/Components/Card';
 import DisplayMovieWithSlide from './HomePartials/DisplayMovieWithSlide';
+import BannerSlider from './HomePartials/BannerSlider';
+import SwiperAuto from '@/Components/SwiperAuto';
 
 const img = [
   '../../Gravity.jpg',
@@ -24,30 +17,17 @@ const img = [
   '../../Moana-Movie-Poster-landscape.jpg',
 ]
 
-
-
 export default function Home({ popularMovie, auth, recently_added }) {
 
   return (
     <AuthLayout user={auth?.user} isDetail={false}>
-      <Swiper
-        modules={[Virtual, Autoplay]}
-        spaceBetween={50}
-        slidesPerView={1}
-        centeredSlides={true}
-        autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
-        }}
-        loop={true}
-        virtual
-      >
-        {img.map((img, index) => (
+      <SwiperAuto>
+        {img.map((data, index) => (
           <SwiperSlide key={index} virtualIndex={index} >
             <div
-              className='w-full sm:h-[60vh] h-[45vh] bg-cover shadow-bg rounded-sm flex flex-col justify-center sm:px-14 px-3'
+              className={`bg-cover bg-center rounded-sm flex flex-col justify-center sm:px-14 sm:h-[60vh] h-[45vh] shadow-bg w-full`}
               style={{
-                backgroundImage: `url(${img})`
+                backgroundImage: `url(storage/${data})`
               }}
             >
               <div className='text-text mt-20 sm:space-y-2 space-y-1'>
@@ -72,10 +52,11 @@ export default function Home({ popularMovie, auth, recently_added }) {
             </div>
           </SwiperSlide>
         ))}
-      </Swiper>
+      </SwiperAuto>
       <div className="space-y-3">
         <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
         <DisplayMovieWithSlide title='Latest Movie' datas={recently_added} />
+        <BannerSlider />
       </div>
     </AuthLayout>
   )

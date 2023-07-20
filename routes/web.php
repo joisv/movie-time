@@ -90,12 +90,13 @@ use Inertia\Inertia;
     Route::post('/banner/store', [BannerController::class, 'store'])->name('banner.store');
     Route::delete('/banner/destroy/{id}', [BannerController::class, 'destroy'])->name('banner.destroy');
     Route::post('/banner/update/{id}', [BannerController::class, 'update'])->name('banner.update');
+    
 });
 Route::middleware('last_activity')->group(function(){
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
     
-    Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+    Route::get('/post/{posts:slug}', [PostController::class, 'show'])->name('post.show');
     Route::get('/stream/{id}', function (string $id) {
         $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers', 'streams', 'downloads')->first();
         $data->increment('views');
@@ -103,6 +104,8 @@ Route::middleware('last_activity')->group(function(){
             'postdata' => $data,
         ]);
     })->name('stream');
+
+   
     
     Route::middleware('auth')->group(function () {
         Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
@@ -134,6 +137,8 @@ Route::middleware('last_activity')->group(function(){
                 'likes' => $data
             ]);
         })->name('like');
+
+
     });
 
 });

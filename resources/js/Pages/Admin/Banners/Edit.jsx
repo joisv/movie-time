@@ -70,7 +70,7 @@ export default function Edit({ onClose, params, base_url }) {
 
         reader.readAsDataURL(imageFile);
     };
-
+    console.log(data);
     return (
         <div className='bg-white w-[50vh] p-3 rounded-lg shadow-2xl min-h-[20vh]'>
             {
@@ -111,6 +111,8 @@ export default function Edit({ onClose, params, base_url }) {
                                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload Banner</label>
                                 <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" onChange={handleImageChange} />
                                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG or GIF (MAX. 2048).</p>
+
+                                <InputError message={errors.banner_img} />
                             </div>
                             {prevBanner ? (
                                 <img
