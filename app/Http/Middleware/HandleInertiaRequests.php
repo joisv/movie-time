@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -42,6 +43,9 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
+            'web_name' => [
+                'name' => fn () => Settings::first()
+            ]
         ]);
     }
 }

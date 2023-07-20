@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -50,6 +51,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/search/stream', [StreamController::class, 'search'])->name('stream.search');
     Route::get('/search/report', [ReportController::class, 'search'])->name('report.search');
     Route::get('/search/download', [DownloadController::class, 'search'])->name('download.search');
+    Route::get('/search/user', [UserController::class, 'search'])->name('user.search');
     Route::get('/get-post', function () {
 
         $data = Post::all();
@@ -94,12 +96,17 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
             'report' => $report,
         ]);
     })->name('api.report.show');
+    Route::get('/banner/edit/{id}', [BannerController::class, 'edit'])->name('api.banner.edit');
 
     Route::get('/request/count', function(){
         $req = ModelsRequest::where('is_new', true)->count();
         return response()->json($req);
     })->name('api.request.count');
 
+    Route::get('/report/count/is-new', function(){
+        $req = Report::where('is_new', true)->count();
+        return response()->json($req);
+    })->name('api.usereport.count');
 
     Route::get('/user-count', [ AnalitycsController::class, 'userCount' ])->name('usercount');
     Route::get('/report-status', [ AnalitycsController::class, 'reportStatus' ])->name('reportstatus');

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StreamDownloadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dashboard\AdminRequestController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
@@ -79,21 +82,18 @@ use Inertia\Inertia;
     Route::get('/download/edit/{id}', [DownloadController::class, 'edit'])->name('download.edit');
     Route::put('/download/update/{id}', [DownloadController::class, 'update'])->name('download.update');
     Route::delete('/download/destroy/{id}', [DownloadController::class, 'destroy'])->name('download.destroy');
+
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings/store', [SettingController::class, 'store'])->name('settings.store');
+
+    Route::get('/banner', [BannerController::class, 'index'])->name('banner.index');
+    Route::post('/banner/store', [BannerController::class, 'store'])->name('banner.store');
+    Route::delete('/banner/destroy/{id}', [BannerController::class, 'destroy'])->name('banner.destroy');
+    Route::post('/banner/update/{id}', [BannerController::class, 'update'])->name('banner.update');
 });
 Route::middleware('last_activity')->group(function(){
 
-    Route::get('/', function () {
-
-        $datas = Post::orderBy('created_at', 'desc')->get();
-    
-        return Inertia::render('Home', [
-            'datas' => $datas,
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-            'laravelVersion' => Application::VERSION,
-            'phpVersion' => PHP_VERSION,
-        ]);
-    })->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
     
     Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
     Route::get('/stream/{id}', function (string $id) {
@@ -103,7 +103,6 @@ Route::middleware('last_activity')->group(function(){
             'postdata' => $data,
         ]);
     })->name('stream');
-    
     
     Route::middleware('auth')->group(function () {
         Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');

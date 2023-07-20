@@ -13,6 +13,7 @@ import { Autoplay, Navigation, Pagination, Virtual, } from 'swiper';
 import GenerateButton from '@/Components/GenerateButton';
 import { shortSentence } from '@/Helper/shortSentence';
 import Card from '@/Components/Card';
+import DisplayMovieWithSlide from './HomePartials/DisplayMovieWithSlide';
 
 const img = [
   '../../Gravity.jpg',
@@ -23,64 +24,10 @@ const img = [
   '../../Moana-Movie-Poster-landscape.jpg',
 ]
 
-const breakpoints = {
-  240: {
-    slidesPerView: 2,
-    spaceBetween: 80,
-  },
-  300: {
-    slidesPerView: 3,
-    spaceBetween: 120
-  },
-  330: {
-    slidesPerView: 3,
-    spaceBetween: 90
-  },
-  400: {
-    slidesPerView: 3,
-    spaceBetween: 75
-  },
-  480: {
-    slidesPerView: 4,
-    spaceBetween: 100
-  },
-  620: {
-    slidesPerView: 3,
-    spaceBetween: 30
-  },
-  738: {
-    slidesPerView: 4,
-    spaceBetween: 100
-  },
-  768: {
-    slidesPerView: 4,
-    spaceBetween: 20
-  },
-  1024: {
-    slidesPerView: 5,
-    spaceBetween: 10
-  },
-  1280: {
-    slidesPerView: 6,
-    spaceBetween: 10
-  },
-};
 
-export default function Home({ datas, auth }) {
 
-  const { setHistory } = useHook();
+export default function Home({ popularMovie, auth, recently_added }) {
 
-  const [dataHistory, setDataHistory] = useState({
-    post_id: '',
-    user_id: auth.user?.id,
-  });
-
-  const useHistory = async (post_id) => {
-    if (auth.user) {
-      setDataHistory(prev => prev.post_id = post_id);
-      setHistory(dataHistory);
-    }
-  }
   return (
     <AuthLayout user={auth?.user} isDetail={false}>
       <Swiper
@@ -126,18 +73,9 @@ export default function Home({ datas, auth }) {
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className='p-2'>
-        <h1 className='text-primaryBtn text-2xl font-semibold py-3'>Popular Movie</h1>
-        <Swiper
-          navigation={true}
-          breakpoints={breakpoints}
-        >
-          {datas.map((item, index) => (
-            <SwiperSlide key={index}>
-              <Card item={item} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <div className="space-y-3">
+        <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
+        <DisplayMovieWithSlide title='Latest Movie' datas={recently_added} />
       </div>
     </AuthLayout>
   )

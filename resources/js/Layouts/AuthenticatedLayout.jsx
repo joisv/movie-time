@@ -5,34 +5,44 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 import { IoHomeOutline, IoGitPullRequestOutline, IoFingerPrintSharp } from "react-icons/io5";
-import { MdPostAdd, MdMovieEdit, MdOutlineReportGmailerrorred } from 'react-icons/md'
+import { MdPostAdd, MdMovieEdit, MdOutlineReportGmailerrorred, MdSettings } from 'react-icons/md'
 import { FaUsers, FaUserLock } from 'react-icons/fa'
 import useHook from '@/hooks/useHook';
 import axios from 'axios';
+import { BiMoneyWithdraw } from 'react-icons/bi';
 
 const act = 'rgb(255 255 255)'
 const def = ''
 
+const getRequestCount = async (param) => {
+    try {
+        const response = await axios.get(param);
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-    const [requestCount, setRequestCount] = useState('');
-    const [iconActive, setIconActive] = useState('');
+    const [requestCount, setRequestCount] = useState(null);
+    const [reportCount, setReportCount] = useState(null);
+    const [iconActive, setIconActive] = useState(route().current());
+
 
     useEffect(() => {
-        const isActive = route().current();
-        setIconActive(isActive)
 
-        const getRequestCount = async () => {
-            try {
-                const response = await axios.get(route('api.request.count'))
-                if (response.status === 200) {
-                    setRequestCount(response.data)
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getRequestCount();
+        (async () => {
+            const [requestCount, reportCount] = await Promise.all([
+                getRequestCount(route('api.request.count')),
+                getRequestCount(route('api.usereport.count')),
+            ]);
+
+            setRequestCount(requestCount);
+            setReportCount(reportCount);
+        })();
     }, [])
 
     return (
@@ -160,8 +170,8 @@ export default function Authenticated({ user, header, children }) {
                 </div>
             </nav>
 
-            <div className="flex space-x-1 w-full sm:space-y-10">
-                <div className="sm:relative md:w-[23vw] sm:w-[10vw]">
+            <div className="flex space-x-1 w-full sm:space-y-10 sm:relative">
+                <div className=" md:w-[23vw] sm:w-[10vw] bg-red-500">
                     <div className="hidden sm:flex flex-col md:w-[20vw] sm:w-fit min-h-screen space-y-1 bg-gray-950 p-4 text-gray-400 sm:fixed top-16">
                         <NavLink href={route('admin')} active={route().current('admin')}>
                             <IoHomeOutline color={iconActive === 'admin' ? act : def} size={22} />
@@ -202,13 +212,28 @@ export default function Authenticated({ user, header, children }) {
                             <FaUserLock color={iconActive === 'roles.index' ? act : def} size={22} />
                             <span className='sm:hidden md:block'>Roles</span>
                         </NavLink>
+                        <NavLink href={route('banner.index')} active={route().current('banner.index')}>
+                            <BiMoneyWithdraw color={iconActive === 'banner.index' ? act : def} size={22} />
+                            <span className='sm:hidden md:block'>Banner</span>
+                        </NavLink>
                         <NavLink href={route('user.index')} active={route().current('user.index')}>
                             <FaUsers size={23} color={iconActive === 'user.index' ? act : def} />
                             <span className='sm:hidden md:block'>Users</span>
                         </NavLink>
-                        <NavLink href={route('report.index')} active={route().current('report.index')}>
-                            <MdOutlineReportGmailerrorred size={23} color={iconActive === 'report.index' ? act : def} />
-                            <span className='sm:hidden md:block'>Report</span>
+                        <div className='relative'>
+                            <NavLink href={route('report.index')} active={route().current('report.index')}>
+                                <MdOutlineReportGmailerrorred size={23} color={iconActive === 'report.index' ? act : def} />
+                                <span className='sm:hidden md:block'>Report</span>
+                            </NavLink>
+                            {
+                                reportCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
+                                    <span className='sm:hidden md:block'>{reportCount}</span>
+                                </div> : null
+                            }
+                        </div>
+                        <NavLink href={route('settings.index')} active={route().current('settings.index')}>
+                            <MdSettings size={23} color={iconActive === 'settings.index' ? act : def} />
+                            <span className='sm:hidden md:block'>Settings</span>
                         </NavLink>
                     </div>
                 </div>

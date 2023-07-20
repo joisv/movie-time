@@ -48,4 +48,14 @@ class UserController extends Controller
 
         return response()->json('berhasil');
     }
+
+    public function search(Request $request)
+    {
+        $data = User::query()->when($request->input('search'), function ($query, $search) {
+            $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%');
+        })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
+        return response()->json($data);
+    }
 }

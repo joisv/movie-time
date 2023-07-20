@@ -7,9 +7,9 @@ import useHook from '@/hooks/useHook';
 
 const open = 'bg-red-500 text-black'
 const completed = 'bg-blue-400 text-text'
-const pending =  'bg-yelloww-400 text-black'
+const pending = 'bg-yelloww-400 text-black'
 
-export default function Table({ datas, handleSearchChange, searchTerm, setProps }) {
+export default function Table({ datas, handleSearchChange, searchTerm, setProps, base_url }) {
 
     const { destroy: deleteById, loading, result: response, err } = useHook();
     const { data, setData, delete: bulkDelete, errors } = useForm({
@@ -18,7 +18,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
     const [action, setAction] = useState(false);
 
     const destroy = (id) => {
-        
+
         if (confirm('sure')) bulkDelete(route(setProps?.destroyUrl, id));
     }
     const handleCheckboxChange = (e, id) => {
@@ -28,32 +28,11 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
             setData('postId', data.postId.filter(postId => postId !== id));
         }
     };
-    const handleBulkDelete = () => {
-        if (confirm('sure ? ')) {
-            bulkDelete(route(setProps?.bulkDeleteUrl, data.postId), {
-                onSuccess: () => {
-                    setData('postId', [])
-                }
-            })
-        }
-    }
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div className="flex items-center justify-between pb-4">
                 <div className="flex items-center justify-between pb-4 w-full mt-1">
                     <div className="flex space-x-2 items-center">
-                        {/* <div>
-                            <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button" onClick={() => setAction(prev => !prev)}>
-                                <span className="sr-only">Action button</span>
-                                Action
-                                <svg className="w-3 h-3 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            {
-                                action ? <button id="dropdownAction" className="z-10 absolute block shadow-2xl bg-white divide-y divide-gray-100 rounded-lg w-44 dark:bg-gray-700 dark:divide-gray-600" onClick={() => handleBulkDelete()}>
-                                    <div href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete User</div>
-                                </button> : null
-                            }
-                        </div> */}
                     </div>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -107,13 +86,15 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps 
                                             <span className={`h-fit p-1 rounded-md ${value === 'open' ? open : value === 'close' ? completed : value === 'completed' ? completed : value === 'pending' ? pending : value === 'release' ? open : 'bg-transparent'}`}>
                                                 {value}
                                             </span>
+                                        </td> : key === 'banner_img' ? <td className='px-6 py-4'>
+                                            <img src={`${base_url}/storage/${value}`} className='w-12 h-12 rounded-full object-cover object-center' />
                                         </td> :
                                             key === 'id' ? <td className="hidden">
                                                 {value}
                                             </td> :
 
                                                 key === 'title' ? (
-                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 ">
                                                         {value}
                                                     </th>
                                                 ) : key === 'created_at' ? (

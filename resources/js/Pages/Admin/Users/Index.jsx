@@ -15,12 +15,7 @@ export default function Index({ auth, users }) {
     const { flash } = usePage().props
     const [open, setOpen] = useState(false)
     const [modalContent, setModalContent] = useState(null);
-
-    const filteredDatas = users.map(({ id, name, email }) => ({
-        id,
-        title: name,
-        email,
-    }));
+    const [searchdata, setSearchData] = useState(users)
 
     const displayModal = (children) => {
         setModalContent(children);
@@ -35,7 +30,33 @@ export default function Index({ auth, users }) {
         }
     }
 
+    const [searchTerm, setSearchTerm] = useState({
+        search: ''
+    })
 
+    const handleSearchChange = async (e) => {
+        setSearchTerm(prev => ({ ...prev, search: e.target.value }));
+        try {
+            const response = await axios.get(route('user.search', searchTerm))
+            setSearchData(response.data)
+        } catch (error) {
+            console.log(error);
+
+        }
+    };
+    const filteredDatas = users.map(({ id, name, email }) => ({
+        id,
+        title: name,
+        email,
+    }));
+    const filteredDatasSearch = searchdata.data?.map(({ id, name, email }) => ({id, title: name, email }));
+
+    function displayData() {
+        const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;
+    
+        return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} />;
+      }
+     
     return (
         <>
             <AuthenticatedLayout
@@ -51,7 +72,7 @@ export default function Index({ auth, users }) {
                         }
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                             <GenerateButton className='bg-purple-500' onClick={() => { }} >create</GenerateButton>
-                            <Table datas={filteredDatas} setProps={setProps} />
+                           {displayData()}
 
                         </div>
                     </div>
