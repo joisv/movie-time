@@ -44,6 +44,7 @@ use Spatie\Permission\Models\Role;
 Route::get('/post-comment/{id}', [CommentController::class, 'postComment'])->name('api.postcomment');
 Route::get('/banner/poster', [HomeController::class, 'getBanner'])->name('get.banner');
 Route::get('/banner/visit', [BannerController::class, 'visit'])->name('banner.visit');
+Route::get('/search/movie', [HomeController::class, 'searchMovie'])->name('search.movie');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');

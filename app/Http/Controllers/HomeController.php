@@ -23,11 +23,20 @@ class HomeController extends Controller
         ]);
     }
 
-    public function getBanner(){
+    public function getBanner()
+    {
 
         $banners = Banner::all();
 
         return response()->json($banners);
-        
+    }
+
+    public function searchMovie(Request $request)
+    {
+        $data = Post::query()->when($request->input('search'), function ($query, $search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        })->orderBy('created_at', 'desc')->get();
+
+        return response()->json($data);
     }
 }

@@ -7,7 +7,6 @@ import { Link } from '@inertiajs/react';
 import { IoHomeOutline, IoGitPullRequestOutline, IoFingerPrintSharp } from "react-icons/io5";
 import { MdPostAdd, MdMovieEdit, MdOutlineReportGmailerrorred, MdSettings } from 'react-icons/md'
 import { FaUsers, FaUserLock } from 'react-icons/fa'
-import useHook from '@/hooks/useHook';
 import axios from 'axios';
 import { BiMoneyWithdraw } from 'react-icons/bi';
 

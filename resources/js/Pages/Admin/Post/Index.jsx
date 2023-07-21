@@ -10,6 +10,7 @@ import axios from 'axios';
 import Table from '@/Components/Table';
 import CustomModal from '@/Components/CustomModal';
 import Pagination from '@/Components/Pagination';
+import useDebounce from '@/hooks/useDebounce';
 
 
 
@@ -43,17 +44,27 @@ export default function Index({ auth, posts }) {
   }
   const [searchTerm, setSearchTerm] = useState({
     search: ''
-  })
+  });
 
-  const handleSearchChange = async (e) => {
-    setSearchTerm(prev => ({ ...prev, search: e.target.value }));
+  const debouncedSearchTerm = useDebounce(searchTerm.search, 1000);
+  useEffect(() => {
+    getData(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
+
+  const getData = async (searchTerm) => {
     try {
-      const response = await axios.get(route('search', searchTerm))
-      setPosData(response.data)
+      const response = await axios.get(route('search', { search: searchTerm }));
+      setPosData(response.data);
     } catch (error) {
       console.log(error);
-
     }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(prev => ({
+      ...prev,
+      search: e.target.value
+    }));
   };
 
   const filteredDatas = posts.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));

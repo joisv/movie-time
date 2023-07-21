@@ -12,6 +12,7 @@ import Dropdown from '@/Components/Dropdown';
 import ProfileUser from '@/Components/ProfileUser';
 import ResponsiveMenu from '@/Components/ResponsiveMenu';
 import { MdMenu } from 'react-icons/md';
+import Search from '@/Components/Search';
 
 const active = 'bg-secondaryAccent bg-opacity-70 border-r-4 border-secondaryAccent font-semibold '
 
@@ -36,7 +37,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
   return (
     <div className='max-w-screen-2xl relative w-full min-h-screen '>
       {/* desktop */}
-      <div className={`sm:flex w-full hidden `}>
+      <div className={`sm:flex w-full hidden`}>
         <div className={` h-screen lg:px-3 md:p-1 sm:p-2 fixed py-1 sm:w-fit md:w-[17%] text-text flex flex-col items-center lg:space-y-4 ease-in duration-150 ${isDetail ? '-translate-x-full' : ''}`}>
           <div className='flex items-center w-full p-3 text-lg font-semibold sm:hidden md:block'>
             <h1>Auth Layout</h1>
@@ -112,7 +113,10 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
             </ul>
           </nav>
         </div>
-        <div className={`h-10  p-3 w-full flex flex-col items-end `}>
+        <div className={`p-3 w-full flex justify-between `}>
+          <div className={`w-[36vw] ease-in duration-150 ${ isDetail ? 'ml-10' : 'ml-[20vw]' }`}>
+            <Search />
+          </div>
           <div className='flex space-x-3 text-text items-center '>
             {
               user ? <>
@@ -168,7 +172,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
                 </Link>
               </>
             }
-
+            
           </div>
         </div>
       </div>
@@ -245,7 +249,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
           </ul>
         </div>
       </div>
-      <main className={`justify-end sm:absolute sm:right-0 sm:top-10 sm:p-3 min-h-screen ease-in duration-150 ${isDetail ? 'w-full' : 'md:w-[83.6%] sm:w-[91%]'}`}>
+      <main className={`justify-end sm:absolute sm:right-0 sm:top-12 sm:p-3 min-h-screen ease-in duration-150 ${isDetail ? 'w-full' : 'md:w-[83.6%] sm:w-[91%]'}`}>
         {
           width ? <button type="button" className={`fixed bottom-2 right-2 p-1 z-20`} onClick={() => setNavbar(true)}>
             <MdMenu size={35} color='#ffffff' />
