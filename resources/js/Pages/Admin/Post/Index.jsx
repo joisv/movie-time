@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import useHook from '@/hooks/useHook';
+import { Head, router, usePage } from '@inertiajs/react';
 import GenerateButton from '@/Components/GenerateButton';
 import InputError from '@/Components/InputError';
-import Create from './Create';
 
-import axios from 'axios';
 import Table from '@/Components/Table';
-import CustomModal from '@/Components/CustomModal';
 import Pagination from '@/Components/Pagination';
 import useDebounce from '@/hooks/useDebounce';
-
-
+import useHooks from '@/hooks/useHooks';
 
 const setProps = {
   th: ['title', 'tmdb_id', 'created_at', 'status', 'actions'],
@@ -28,37 +23,33 @@ export default function Index({ auth, posts }) {
   const { flash } = usePage().props
   const [tmdbId, setTmdbId] = useState(null);
   const [postdata, setPosData] = useState(posts)
-  const [err, setErr] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { data, post, loading, err } = useHooks();
+  const { data: searchDebouncedValue, get: getData, loading: loadingSearch, err: errorSearch } = useHooks();
 
   async function handleGenerate() {
-    setLoading(true)
-    try {
-      const response = await axios.post(route('generate', tmdbId))
-      console.log(response);
-    } catch (error) {
-      setErr(error.response.data)
-    } finally {
-      setLoading(false)
-    }
+    post(route('generate', tmdbId),{
+      onSuccess: () => {
+        router.reload();
+      },
+      onError: () => {
+        console.log(err);
+      }
+    })
   }
   const [searchTerm, setSearchTerm] = useState({
     search: ''
   });
 
   const debouncedSearchTerm = useDebounce(searchTerm.search, 1000);
-  useEffect(() => {
-    getData(debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
 
-  const getData = async (searchTerm) => {
-    try {
-      const response = await axios.get(route('search', { search: searchTerm }));
-      setPosData(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    getData(route('search', { search: debouncedSearchTerm }),{
+      onSuccess: () => {
+        setPosData(searchDebouncedValue.data);
+      },
+    });
+  }, [debouncedSearchTerm]);
+  
 
   const handleSearchChange = (e) => {
     setSearchTerm(prev => ({
@@ -68,7 +59,7 @@ export default function Index({ auth, posts }) {
   };
 
   const filteredDatas = posts.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
-  const filteredDatasSearch = postdata.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
+  const filteredDatasSearch = postdata?.data?.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
 
   function displayData() {
     const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;

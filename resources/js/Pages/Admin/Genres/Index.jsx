@@ -2,17 +2,16 @@ import CustomModal from '@/Components/CustomModal';
 import GenerateButton from '@/Components/GenerateButton';
 import Table from '@/Components/Table';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Create from './Create';
 import Edit from '../Genres/Edit';
 import Pagination from '@/Components/Pagination';
-import useHook from '@/hooks/useHook';
+import useHooks from '@/hooks/useHooks';
 
 
 export default function Index({ auth, genres }) {
     const [postdata, setPosData] = useState(genres)
-    const { generateGenreMovie, result, loading } = useHook();
     const filteredDatas = genres.data.map(({ id, name, created_at, }) => ({
         id,
         title: name,
@@ -68,10 +67,16 @@ export default function Index({ auth, genres }) {
         return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} />;
     }
 
-    function handleGenerateGenre() {
-        generateGenreMovie()
-    }
+    const { data, loading, get, err } = useHooks()
     
+    function handleGenerateGenre() {
+        get(route('generate.genre'),{
+            onSuccess: () => {
+                router.reload();
+            }
+        })
+    }
+    console.log(err);
     return (
         <>
             <AuthenticatedLayout

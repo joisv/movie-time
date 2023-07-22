@@ -8,43 +8,58 @@ export default function useHooks() {
     const [data, setData] = useState({});
     const [err, setErr] = useState('');
 
-    const isError = (error) => {
+    const onSuccess = (response, callback) => {
+        setData(response)
+    }
+
+    const onError = (error, callback) => {
         const validationErrors = error?.response?.data?.errors;
         setErr(validationErrors)
     }
 
-    const get = async (param) => {
+    const get = async (param, { onSuccess, onError }) => {
         setLoading(true)
         setErr('')
         try {
-            const res = await axios.get(param)
-            setData(res.data)
+            const response = await axios.get(param)
+            if (response.status === 200) {
+                setData(response)
+                onSuccess()
+            }
+
         } catch (error) {
-            isError(error)
+            const validationErrors = error?.response?.data;
+            setErr(validationErrors)
+            onError()
         } finally {
             setLoading(false);
         }
     }
-    const post = async (param) => {
+    const post = async (param, { onSuccess, onError }) => {
         setLoading(true)
         setErr('')
         try {
-            const res = await axios.post(param)
-            setData(res)
+            const response = await axios.post(param)
+            if (response.status === 200) {
+                setData(response)
+                onSuccess()
+            }
+
         } catch (error) {
-            isError(error)
+            const validationErrors = error?.response?.data;
+            setErr(validationErrors)
+            onError()
         } finally {
             setLoading(false);
         }
-
     }
     const destroy = async (param) => {
         setLoading(true)
         try {
-            const res = await axios.delete(param)
-            setData(res)
+            const response = await axios.delete(param)
+            setData(response)
         } catch (error) {
-            isError(error)
+            onError(error)
         } finally {
             setLoading(false);
         }

@@ -9,7 +9,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 const base = '12'
 
 export default function Card({ item }) {
-
+  
   const { auth } = usePage().props
   const [isHover, setIsHover] = useState(false);
   const [data, setData] = useState({

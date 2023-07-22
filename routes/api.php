@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
+use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\GenerateMovieController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
@@ -45,6 +46,7 @@ Route::get('/post-comment/{id}', [CommentController::class, 'postComment'])->nam
 Route::get('/banner/poster', [HomeController::class, 'getBanner'])->name('get.banner');
 Route::get('/banner/visit', [BannerController::class, 'visit'])->name('banner.visit');
 Route::get('/search/movie', [HomeController::class, 'searchMovie'])->name('search.movie');
+Route::get('/genre/all', [ExploreController::class, 'getGenres'])->name('get.genre');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');

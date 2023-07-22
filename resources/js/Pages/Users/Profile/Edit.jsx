@@ -38,7 +38,6 @@ export default function Edit({ auth }) {
           <Tab.Panel>
             <UpdatePasswordForm />
           </Tab.Panel>
-          <Tab.Panel>Content 2</Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
 

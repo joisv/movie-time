@@ -20,9 +20,10 @@ export default function Search() {
                     type="search"
                     id="default-search"
                     className="block w-full pl-10 text-sm text-text border border-gray-500 rounded-md bg-secondaryBtn focus:ring-secondaryAccent focus:border-secondaryAccent "
-                    placeholder="Search Mockups, Logos..."
+                    placeholder="Search movie by title"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
+                    autoComplete="off"
                 />
             </div>
             <List 

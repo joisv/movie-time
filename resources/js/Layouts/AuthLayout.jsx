@@ -11,7 +11,7 @@ import axios from 'axios';
 import Dropdown from '@/Components/Dropdown';
 import ProfileUser from '@/Components/ProfileUser';
 import ResponsiveMenu from '@/Components/ResponsiveMenu';
-import { MdMenu } from 'react-icons/md';
+import { MdMenu, MdOutlineExplore } from 'react-icons/md';
 import Search from '@/Components/Search';
 
 const active = 'bg-secondaryAccent bg-opacity-70 border-r-4 border-secondaryAccent font-semibold '
@@ -43,12 +43,20 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
             <h1>Auth Layout</h1>
           </div>
           <nav className='w-full '>
-            <ul className=''>
+            <ul className='space-y-1'>
               <li>
                 <Link href='/'>
                   <div className={`p-2 hover:bg-secondaryAccent ease-in duration-150 rounded-sm w-full flex sm:space-x-1 md:space-x-2 lg:space-x-4 font-medium cursor-pointer ${current === 'home' ? active : ''}`}>
                     <IoHomeOutline color='#f5f5f5' size={22} />
                     <span className='sm:hidden md:block md:text-sm lg:block'>Home</span>
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link href={route('explore.index')}>
+                  <div className={`p-2 hover:bg-secondaryAccent ease-in duration-150 rounded-sm w-full flex sm:space-x-1 md:space-x-2 lg:space-x-4 font-medium cursor-pointer ${current === 'explore.index' ? active : ''}`}>
+                    <MdOutlineExplore color='#f5f5f5' size={22} />
+                    <span className='sm:hidden md:block md:text-sm lg:block'>Explore</span>
                   </div>
                 </Link>
               </li>
@@ -148,7 +156,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
                       </Dropdown.Trigger>
 
                       <Dropdown.Content>
-                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                        {/* <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link> */}
                         <Dropdown.Link href={route('logout')} method="post" as="button">
                           Log Out
                         </Dropdown.Link>

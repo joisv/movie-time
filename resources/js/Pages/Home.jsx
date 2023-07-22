@@ -53,7 +53,7 @@ export default function Home({ popularMovie, auth, recently_added }) {
           </SwiperSlide>
         ))}
       </SwiperAuto>
-      <div className="space-y-3">
+      <div className="space-y-3 sm:p-0 p-2">
         <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
         <DisplayMovieWithSlide title='Latest Movie' datas={recently_added} />
         <BannerSlider />

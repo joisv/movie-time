@@ -9,15 +9,15 @@ const breakpoints = {
     },
     300: {
       slidesPerView: 3,
-      spaceBetween: 120
+      spaceBetween: 50
     },
     330: {
       slidesPerView: 3,
-      spaceBetween: 90
+      spaceBetween: 40
     },
     400: {
       slidesPerView: 3,
-      spaceBetween: 75
+      spaceBetween: 55
     },
     480: {
       slidesPerView: 4,
@@ -33,15 +33,27 @@ const breakpoints = {
     },
     768: {
       slidesPerView: 4,
-      spaceBetween: 20
+      spaceBetween: 50
+    },
+    584: {
+      slidesPerView: 4,
+      spaceBetween: 10
+    },
+    622: {
+      slidesPerView: 4,
+      spaceBetween: 10
+    },
+    640: {
+      slidesPerView: 3,
+      spaceBetween: 3
     },
     1024: {
       slidesPerView: 5,
       spaceBetween: 10
     },
     1280: {
-      slidesPerView: 6,
-      spaceBetween: 10
+      slidesPerView: 7,
+      spaceBetween: 80
     },
   };
 

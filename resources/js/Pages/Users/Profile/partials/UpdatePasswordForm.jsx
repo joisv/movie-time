@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput';
 import { useForm } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
 import AuthInput from '@/Components/AuthInput';
-import { MdAlternateEmail, MdOutlineLockPerson } from 'react-icons/md'
+import { MdOutlineLockPerson } from 'react-icons/md'
 
 export default function UpdatePasswordForm({ className = '' }) {
     const passwordInput = useRef();

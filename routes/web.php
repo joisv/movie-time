@@ -15,6 +15,7 @@ use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
 use App\Http\Controllers\Dashboard\UserRequestController;
+use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
@@ -105,7 +106,7 @@ Route::middleware('last_activity')->group(function(){
         ]);
     })->name('stream');
 
-   
+   Route::get('/explore', [ExploreController::class, 'index'])->name('explore.index');
     
     Route::middleware('auth')->group(function () {
         Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');

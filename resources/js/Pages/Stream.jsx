@@ -136,7 +136,6 @@ export default function Stream({ auth, postdata }) {
     const loadMore = async () => {
         try {
             const respo = await axios.get(res?.comments.next_page_url);
-            console.log(respo);
             if (respo.status === 200) {
                 const newComments = [...comments, ...respo.data.comments.data];
                 setComments(newComments);
@@ -158,7 +157,6 @@ export default function Stream({ auth, postdata }) {
         }
         getComment();
     }, [])
-    console.log(err);
     return (
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
             <button type="button" className={`absolute -top-7  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>

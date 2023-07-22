@@ -1,6 +1,6 @@
-import useHook from '@/hooks/useHook';
+
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ImSpinner9 } from "react-icons/im";
 
 const data = [

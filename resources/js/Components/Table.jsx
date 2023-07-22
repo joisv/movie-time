@@ -3,7 +3,7 @@ import { Link, useForm } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import GenerateButton from './GenerateButton';
 import React, { useState } from 'react';
-import useHook from '@/hooks/useHook';
+import useHooks from '@/hooks/useHooks';
 
 const open = 'bg-red-500 text-black'
 const completed = 'bg-blue-400 text-text'
@@ -11,7 +11,7 @@ const pending = 'bg-yelloww-400 text-black'
 
 export default function Table({ datas, handleSearchChange, searchTerm, setProps, base_url }) {
 
-    const { destroy: deleteById, loading, result: response, err } = useHook();
+    const { destroy: deleteById, loading, data: response, err } = useHooks();
     const { data, setData, delete: bulkDelete, errors } = useForm({
         postId: []
     })
