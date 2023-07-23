@@ -11,9 +11,10 @@ import { MdNoAdultContent, MdMenu } from 'react-icons/md'
 import AuthLayout from '@/Layouts/AuthLayout';
 import useHooks from '@/hooks/useHooks';
 import { ImSpinner8 } from 'react-icons/im';
+import Recomendation from './Recomendation';
 
 export default function Show({ auth, postdata }) {
-
+    console.log(postdata);
     const { data , post, loading, err } = useHooks()
     const [bookmark, setBookmark] = useState(false);
     const [isDetail, setIsDetail] = useState(true);
@@ -65,7 +66,7 @@ export default function Show({ auth, postdata }) {
             </button>
             <div style={{
                 backgroundImage: `url(/storage/${postdata.backdrop_path ? postdata.backdrop_path : postdata.poster_path})`
-            }} className='sm:w-full h-[70vh] sm:bg-cover bg-center detail-shadow relative'>
+            }} className='sm:w-full sm:h-[70vh] h-[45vh] sm:bg-cover bg-center detail-shadow relative'>
                 <div className="flex sm:items-center w-full h-full backdrop-blur-sm backdrop-brightness-50 sm:px-8 sm:space-x-4 px-2">
                     <div className='md:w-52 sm:w-32 rounded-md overflow-hidden shadow-2xl hidden sm:block'>
                         <LazyLoadImage
@@ -122,6 +123,7 @@ export default function Show({ auth, postdata }) {
                     <MdNoAdultContent size={30} color={isAdult} />
                 </div>
             </div>
+            <Recomendation isDetail={isDetail}/>
         </AuthLayout>
 
     )

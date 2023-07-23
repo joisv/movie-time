@@ -43,14 +43,17 @@ export default function Index({ auth, posts }) {
   const debouncedSearchTerm = useDebounce(searchTerm.search, 1000);
 
   useEffect(() => {
-    getData(route('search', { search: debouncedSearchTerm }),{
-      onSuccess: () => {
-        setPosData(searchDebouncedValue.data);
-      },
-    });
+    if(debouncedSearchTerm){
+      getData(route('search', { search: debouncedSearchTerm }),{
+        onSuccess: () => {
+          console.log('akdjakdjh');
+          setPosData(searchDebouncedValue);
+        },
+      });
+    }
   }, [debouncedSearchTerm]);
   
-
+  // console.log(postdata);
   const handleSearchChange = (e) => {
     setSearchTerm(prev => ({
       ...prev,

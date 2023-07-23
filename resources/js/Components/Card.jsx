@@ -16,6 +16,7 @@ export default function Card({ item }) {
     user_id: auth.user?.id,
     post_id: item.id
   })
+  console.log(item.poster_path);
 
   const vote = parseFloat(item.vote_average)
   const voteFix = vote.toFixed(1)
@@ -39,7 +40,7 @@ export default function Card({ item }) {
         <div className="relative sm:w-40 sm:h-60 w-32 h-44 cursor-pointer">
           <LazyLoadImage
             alt={item.poster_path}
-            src={`storage/${item.poster_path}`}
+            src={`/storage/${item.poster_path}`}
             className={`absolute w-full h-full object-cover rounded-md ${isHover ? 'opacity-60' : ''}`}
           />
           <div className='absolute px-3 py-1 bg-secondaryBtn -top-0 shadow-2xl -right-2 flex justify-center space-x-1'>

@@ -1,40 +1,34 @@
 import axios from "axios";
+import { useEffect } from "react";
 import { useState } from "react";
 
 
 export default function useHooks() {
 
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState({});
+    const [data, setData] = useState([]);
     const [err, setErr] = useState('');
 
-    const onSuccess = (response, callback) => {
-        setData(response)
-    }
-
-    // const onError = (error, callback) => {
-    //     const validationErrors = error?.response?.data?.errors;
-    //     setErr(validationErrors)
-    // }
 
     const get = async (param, { onSuccess, onError }) => {
-        setLoading(true)
-        setErr('')
-        try {
-            const response = await axios.get(param)
-            setData(response)
-            if (response.status === 200) {
-                onSuccess()
-            }
+        setLoading(true);
+        setErr('');
 
+        try {
+            const response = await axios.get(param);
+            console.log(response);
+            if (response.status === 200) {
+                setData(response.data);
+                onSuccess();
+            }
         } catch (error) {
             const validationErrors = error?.response?.data;
-            setErr(validationErrors)
-            onError()
+            setErr(validationErrors);
+            onError();
         } finally {
             setLoading(false);
         }
-    }
+    };
     const post = async (param, { onSuccess, onError }) => {
         setLoading(true)
         setErr('')
@@ -53,7 +47,7 @@ export default function useHooks() {
             setLoading(false);
         }
     }
-    const destroy = async (param,  { onSuccess, onError }) => {
+    const destroy = async (param, { onSuccess, onError }) => {
         setLoading(true)
         try {
             const response = await axios.delete(param)
@@ -66,6 +60,9 @@ export default function useHooks() {
 
     }
 
+    // useEffect(() => {
+    //     console.log(data);
+    // }, [data]);
 
     return {
         err,

@@ -13,6 +13,7 @@ import ProfileUser from '@/Components/ProfileUser';
 import ResponsiveMenu from '@/Components/ResponsiveMenu';
 import { MdMenu, MdOutlineExplore } from 'react-icons/md';
 import Search from '@/Components/Search';
+import useHooks from '@/hooks/useHooks';
 
 const active = 'bg-secondaryAccent bg-opacity-70 border-r-4 border-secondaryAccent font-semibold '
 
@@ -20,19 +21,15 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
   const current = route().current()
   const { screen, width } = checkScreen()
   const [navbar, setNavbar] = useState(false);
-  const [notifications, setNotifications] = useState('');
+  const { data: notifications, loading, err, get } = useHooks()
 
-  async function getNotifications() {
-    try {
-      const response = await axios.get(route('notification'));
-      setNotifications(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
   useEffect(() => {
     screen(640)
-    if (user) getNotifications()
+    if (user) get(route('notification'),{
+      onSuccess: () => {
+        console.log('succes');
+      }
+    })
   }, []);
   return (
     <div className='max-w-screen-2xl relative w-full min-h-screen '>

@@ -34,8 +34,6 @@ class PostController extends Controller
 
    public function store(Request $request)
    {
-      // dd($request);
-      // $validatedData = $request->all();
       $validatedData = $request->validate([
          'adult' => 'boolean',
          'backdrop_path' => 'nullable|string',

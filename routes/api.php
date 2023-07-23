@@ -3,30 +3,24 @@
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\GenreController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Dashboard\AdminRequestController;
 use App\Http\Controllers\Dashboard\AnalitycsController;
 use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
 use App\Http\Controllers\Dashboard\UserNotificationsController;
-use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\GenerateMovieController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RecomendationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
-use App\Models\Comment;
 use App\Models\Genre;
 use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Report;
 use App\Models\Request as ModelsRequest;
-use App\Models\Stream;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -47,6 +41,7 @@ Route::get('/banner/poster', [HomeController::class, 'getBanner'])->name('get.ba
 Route::get('/banner/visit', [BannerController::class, 'visit'])->name('banner.visit');
 Route::get('/search/movie', [HomeController::class, 'searchMovie'])->name('search.movie');
 Route::get('/genre/all', [ExploreController::class, 'getGenres'])->name('get.genre');
+Route::get('/recomendation-movies', [RecomendationController::class, 'getRecomendation'])->name('recomendation.movies');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');

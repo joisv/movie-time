@@ -8,6 +8,8 @@ import DisplayMovieWithSlide from './HomePartials/DisplayMovieWithSlide';
 import BannerSlider from './HomePartials/BannerSlider';
 import SwiperAuto from '@/Components/SwiperAuto';
 import { Head, usePage } from '@inertiajs/react';
+import { MdMenu } from 'react-icons/md';
+import { useState } from 'react';
 
 const img = [
   '../../Gravity.jpg',
@@ -20,8 +22,9 @@ const img = [
 
 export default function Home({ popularMovie, auth, recently_added }) {
   const { web_name } = usePage().props
+  const [isDetail, setIsDetail] = useState(false);
   return (
-    <AuthLayout user={auth?.user} isDetail={false}>
+    <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail} >
       <Head>
         <title>Home</title>
         <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
@@ -29,6 +32,9 @@ export default function Home({ popularMovie, auth, recently_added }) {
         <meta property="og:description" content="Halaman Home adalah pintu gerbang utama bagi pengguna untuk memulai perjalanan mereka di situs kami. Di sini, pengguna akan menemukan beragam film dan acara TV terbaru yang tersedia untuk streaming. Dengan tampilan yang sederhana dan intuitif, pengguna dapat dengan mudah menelusuri koleksi film dan acara TV berdasarkan kategori, popularitas, atau tahun rilis. Selain itu, kami menyediakan rekomendasi khusus berdasarkan preferensi pengguna dan film favorit mereka. Halaman Home adalah tempat yang sempurna untuk memulai petualangan hiburan mereka" />
         <meta property="og:url" content={window.location.url} />
       </Head>
+      <button type="button" className={`absolute -top-8  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
+        <MdMenu size={25} color='#ffffff' />
+      </button>
       <SwiperAuto>
         {img.map((data, index) => (
           <SwiperSlide key={index} virtualIndex={index} >
@@ -62,8 +68,8 @@ export default function Home({ popularMovie, auth, recently_added }) {
         ))}
       </SwiperAuto>
       <div className="space-y-3 sm:p-0 p-2">
-        <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
-        <DisplayMovieWithSlide title='Latest Movie' datas={recently_added} />
+        <DisplayMovieWithSlide isDetail={isDetail} title='Popular Movie' datas={popularMovie} />
+        <DisplayMovieWithSlide  isDetail={isDetail} title='Latest Movie' datas={recently_added} />
         <BannerSlider />
       </div>
     </AuthLayout>

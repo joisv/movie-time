@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\UserRequestController;
 use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecomendationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
 use App\Http\Controllers\UserProfileController;
@@ -39,8 +40,8 @@ use Inertia\Inertia;
 |
 */
 // guest
- // admin
- Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+// admin
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // admin dashboard
     Route::get('/', [AnalitycsController::class, 'index'])->name('admin');
     // post
@@ -48,7 +49,7 @@ use Inertia\Inertia;
     Route::get('/stream/edit/{id}', [StreamController::class, 'edit'])->name('stream.edit');
     Route::put('/stream/update/{id}', [StreamController::class, 'update'])->name('stream.update');
     Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
-    
+
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
     Route::post('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
@@ -83,7 +84,7 @@ use Inertia\Inertia;
     Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.roles');
     Route::delete('/users/{user}/roles/{role}', [UserController::class, 'removeRole'])->name('users.roles.remove');
 
-    Route::get('/stream-download', [ StreamDownloadController::class, 'index' ])->name('streamdownload');
+    Route::get('/stream-download', [StreamDownloadController::class, 'index'])->name('streamdownload');
     Route::get('/download/edit/{id}', [DownloadController::class, 'edit'])->name('download.edit');
     Route::put('/download/update/{id}', [DownloadController::class, 'update'])->name('download.update');
     Route::delete('/download/destroy/{id}', [DownloadController::class, 'destroy'])->name('download.destroy');
@@ -95,12 +96,11 @@ use Inertia\Inertia;
     Route::post('/banner/store', [BannerController::class, 'store'])->name('banner.store');
     Route::delete('/banner/destroy/{id}', [BannerController::class, 'destroy'])->name('banner.destroy');
     Route::post('/banner/update/{id}', [BannerController::class, 'update'])->name('banner.update');
-    
 });
-Route::middleware('last_activity')->group(function(){
+Route::middleware('last_activity')->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    
+
     Route::get('/post/{posts:slug}', [PostController::class, 'show'])->name('post.show');
 
     Route::get('/stream/{id}', function (string $id) {
@@ -111,42 +111,39 @@ Route::middleware('last_activity')->group(function(){
         ]);
     })->name('stream');
 
-   Route::get('/explore', [ExploreController::class, 'index'])->name('explore.index');
-    
+    Route::get('/explore', [ExploreController::class, 'index'])->name('explore.index');
+
     Route::middleware('auth')->group(function () {
         Route::get('/request', [UserRequestController::class, 'index'])->name('request.index');
         Route::post('/request/store', [UserRequestController::class, 'store'])->name('request.store');
         Route::delete('/request/destroy/{id}', [UserRequestController::class, 'destroy'])->name('request.destroy');
         Route::get('/notifications', [UserNotificationsController::class, 'index'])->name('usernotifications.index');
         Route::delete('/notifications/destroy/{id}', [UserNotificationsController::class, 'destroy'])->name('usernotifications.destroy');
-        
+
         Route::get('/report/all', [ReportController::class, 'index'])->name('report.index');
         Route::patch('/report/update/{id}', [ReportController::class, 'update'])->name('report.update');
-    
+
         Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
         Route::post('/user-profile/update', [UserProfileController::class, 'update'])->name('userprofile.update');
-    
+
         Route::get('/history', [UserHistoryController::class, 'index'])->name('history.index');
-    
+
         Route::get('/bookmark', function () {
             $data = auth()->user()->bookmarkedPosts;
-    
+
             return Inertia::render('Users/Bookmark', [
                 'bookmarks' => $data
             ]);
         })->name('bookmark');
-    
+
         Route::get('/like', function () {
             $data = auth()->user()->likedPosts;
-    
+
             return Inertia::render('Users/Like', [
                 'likes' => $data
             ]);
         })->name('like');
-
-
     });
-
 });
 
 // Route::get('/dashboard', function () {
