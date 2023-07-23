@@ -29,6 +29,7 @@ export default function BannerSlider() {
             ]);
 
             setDatas(response)
+            console.log(response);
             const bannerImg = response.map(item => item.banner_img)
             setImg(bannerImg)
         })();
@@ -55,7 +56,7 @@ export default function BannerSlider() {
                     <div
                         className={`bg-contain bg-no-repeat bg-center rounded-sm flex flex-col justify-center sm:px-14 px-3 min-h-[25vh] h-full w-full cursor-pointer`}
                         style={{
-                            backgroundImage: `url(storage/${data.banner_img})`
+                            backgroundImage: `url(/storage/${data.banner_img})`
                         }}
                         onClick={() => isRedirect(data.redirect_to)}
                     >

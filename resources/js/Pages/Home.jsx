@@ -68,8 +68,8 @@ export default function Home({ popularMovie, auth, recently_added }) {
         ))}
       </SwiperAuto>
       <div className="space-y-3 sm:p-0 p-2">
-        <DisplayMovieWithSlide isDetail={isDetail} title='Popular Movie' datas={popularMovie} />
-        <DisplayMovieWithSlide  isDetail={isDetail} title='Latest Movie' datas={recently_added} />
+        <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
+        <DisplayMovieWithSlide  title='Latest Movie' datas={recently_added} />
         <BannerSlider />
       </div>
     </AuthLayout>
