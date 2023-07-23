@@ -21,9 +21,9 @@ class SettingController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255|required',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'name' => 'required|string|max:255|required',
+            'icon' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         if ($validator->fails()) {

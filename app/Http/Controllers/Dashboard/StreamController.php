@@ -102,15 +102,17 @@ class StreamController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // dd($request->id);
         $validatedData = $request->validate([
             'streams.*.name' => 'sometimes|required|string',
-            'streams.*.url' => 'sometimes|required|url',
+            'streams.*.url' => 'sometimes|required|url|max:2000',
+            'id' => 'required'
         ]);
     
         $post = Post::findOrFail($id);
     
         // Hapus semua streams yang terkait dengan post
-        $post->streams()->delete();
+       $this->destroy($request->id);
     
         // Buat ulang streams yang baru
         if (isset($validatedData['streams'])) {
@@ -136,7 +138,7 @@ class StreamController extends Controller
         $data = Stream::findOrfail($id);
         $data->delete();
 
-        return response()->json('sucees');
+        return redirect()->back()->with('message', 'deleted successfully');
     }
 
     public function search(Request $request)

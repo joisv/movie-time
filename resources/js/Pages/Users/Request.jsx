@@ -9,10 +9,10 @@ import CustomModal from '@/Components/CustomModal'
 import NoDataDisplay from '@/Components/NoDataDisplay'
 
 export default function Request({ auth, datas }) {
-  
+
   const { flash } = usePage().props
   const [open, setOpen] = useState(false);
-  const { data, setData, processing, post, reset, delete:destroy } = useForm({
+  const { data, setData, processing, post, reset, delete: destroy } = useForm({
     content: '',
     user_id: auth?.user.id,
     status: 'pending'
@@ -27,11 +27,17 @@ export default function Request({ auth, datas }) {
       }
     })
   }
-
+  const { web_name } = usePage().props
   return (
     <>
       <AuthLayout user={auth?.user}>
-        <Head title='request' />
+        <Head>
+          <title>Request</title>
+          <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+          <meta property="og:title" content="Request" />
+          <meta property="og:description" content="Halaman Request memungkinkan pengguna untuk berinteraksi lebih langsung dengan platform kami. Mereka dapat mengajukan permintaan untuk film atau acara TV tertentu yang ingin mereka lihat tersedia di situs kami. Tim kami akan berusaha untuk memenuhi permintaan tersebut dan menyediakan konten yang diminati oleh para pengguna." />
+          <meta property="og:url" content={window.location.url} />
+        </Head>
         <div className=' text-text p-4 space-y-6'>
           <div className='sm:flex block sm:justify-between space-y-2'>
             <h1 className='text-text text-lg font-semibold'>Request page</h1>
@@ -83,7 +89,7 @@ export default function Request({ auth, datas }) {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                        <button type="button" onClick={() => { if(confirm('delete this request ?')) destroy(route('request.destroy', data.id)) }} className='text-red-500'>delete</button>
+                          <button type="button" onClick={() => { if (confirm('delete this request ?')) destroy(route('request.destroy', data.id)) }} className='text-red-500'>delete</button>
                         </td>
                       </tr>
 

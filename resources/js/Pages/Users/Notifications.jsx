@@ -5,7 +5,7 @@ import axios from 'axios';
 import AuthLayout from '@/Layouts/AuthLayout';
 import NoDataDisplay from '@/Components/NoDataDisplay';
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { MdOutlineReportGmailerrorred } from 'react-icons/md'
 
 const issueOpen = 'bg-red-500 text-black'
@@ -13,7 +13,7 @@ const completed = 'bg-blue-400 text-text'
 
 export default function Notifications({ auth, datas }) {
 
-    
+
     const [open, setOpen] = useState(false);
     const [displayData, setDisplayData] = useState({});
     const [activeIndex, setActiveIndex] = useState(false);
@@ -50,6 +50,7 @@ export default function Notifications({ auth, datas }) {
     }
 
     const { data, setData, processing, errors, delete: destroy } = useForm({});
+    const { web_name } = usePage().props
 
     const deleteNotification = (id) => {
         destroy(route('usernotifications.destroy', id), {
@@ -59,18 +60,31 @@ export default function Notifications({ auth, datas }) {
         });
     };
 
-    console.log(displayData, datas);
     if (datas.length === 0) {
         return (
             <AuthLayout user={auth?.user}>
+                <Head>
+                    <title>Notifications</title>
+                    <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                    <meta property="og:title" content="Notifications" />
+                    <meta property="og:description" content="Pemberitahuan tentang film atau acara TV baru yang dirilis, pembaruan, atau rekomendasi berdasarkan preferensi pengguna." />
+                    <meta property="og:url" content={window.location.url} />
+                </Head>
+                <h1 className='text-text text-lg font-semibold'>Notifications page</h1>
                 <NoDataDisplay>no Notifications</NoDataDisplay>
             </AuthLayout>
         );
     }
-    
     return (
         <>
             <AuthLayout user={auth?.user}>
+                <Head>
+                    <title>Notifications</title>
+                    <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                    <meta property="og:title" content="Notifications" />
+                    <meta property="og:description" content="Pemberitahuan tentang film atau acara TV baru yang dirilis, pembaruan, atau rekomendasi berdasarkan preferensi pengguna." />
+                    <meta property="og:url" content={window.location.url} />
+                </Head>
                 <div className='h-screen bg-secondaryBtn p-4 space-y-2'>
                     <h1 className='text-text text-lg font-semibold'>Notifications page</h1>
                     {

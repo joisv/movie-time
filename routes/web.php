@@ -45,6 +45,10 @@ use Inertia\Inertia;
     Route::get('/', [AnalitycsController::class, 'index'])->name('admin');
     // post
     Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
+    Route::get('/stream/edit/{id}', [StreamController::class, 'edit'])->name('stream.edit');
+    Route::put('/stream/update/{id}', [StreamController::class, 'update'])->name('stream.update');
+    Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
+    
     Route::get('/post', [PostController::class, 'index'])->name('post.index');
     Route::get('/post-edit/{id}', [PostController::class, 'edit'])->name('post.edit');
     Route::post('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
@@ -98,6 +102,7 @@ Route::middleware('last_activity')->group(function(){
     Route::get('/', [HomeController::class, 'index'])->name('home');
     
     Route::get('/post/{posts:slug}', [PostController::class, 'show'])->name('post.show');
+
     Route::get('/stream/{id}', function (string $id) {
         $data = Post::where('id', $id)->with('likedByUsers', 'genres', 'bookmarkedByUsers', 'streams', 'downloads')->first();
         $data->increment('views');

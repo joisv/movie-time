@@ -1,4 +1,4 @@
-import { Head, router, useForm } from "@inertiajs/react";
+import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -24,6 +24,7 @@ const isLiked = '#01AED3'
 dayjs.extend(relativeTime);
 
 export default function Stream({ auth, postdata }) {
+    const { web_name } = usePage().props
     const [isDetail, setIsDetail] = useState(true);
     const [open, setOpen] = useState(false);
     const [comments, setComments] = useState([]);
@@ -33,7 +34,9 @@ export default function Stream({ auth, postdata }) {
     const [modalContent, setModalContent] = useState(null);
     const [commentLoad, setCommentLoad] = useState(false);
     const [res, setRes] = useState([]);
-    const [ err, setErr ] = useState('')
+    const [err, setErr] = useState('')
+    const [ dataServer, setDataServer ] = useState(postdata.streams)
+  
 
     const date = new Date(postdata.release_date);
     const formattedDate = date.toLocaleDateString("en-US");
@@ -48,7 +51,7 @@ export default function Stream({ auth, postdata }) {
                 setCommentsCounts(response.data.count)
             }
         } catch (error) {
-           setErr(error.response.data.message)
+            setErr(error.response.data.message)
         } finally {
             setCommentLoad(false)
         }
@@ -122,17 +125,6 @@ export default function Stream({ auth, postdata }) {
         displayModal(createComponent);
     }
 
-    const [serverState, setServerState] = useState('');
-
-    function server(newServerState) {
-        setServerState(newServerState);
-    }
-
-    const handleQuality = () => {
-        const createComponent = <ServerOption onClose={() => setOpen(false)} datas={postdata.streams} setServer={server} />
-        displayModal(createComponent);
-    }
-
     const loadMore = async () => {
         try {
             const respo = await axios.get(res?.comments.next_page_url);
@@ -157,19 +149,36 @@ export default function Stream({ auth, postdata }) {
         }
         getComment();
     }, [])
+
+    const [serverState, setServerState] = useState(dataServer[0].url);
+
+    const handleQuality = () => {
+        const createComponent = <ServerOption  onClose={() => setOpen(false)} datas={dataServer} selected={serverState} onChange={handleChange}/>
+        displayModal(createComponent);
+    }
+
+    const handleChange = (value) => {
+        setServerState(value.url);
+
+    };
     return (
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
+            <Head>
+                <title>Stream</title>
+                <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                <meta property="og:title" content="Stream" />
+                <meta property="og:description" content="Halaman Video Stream adalah tempat di mana pengguna dapat menikmati konten hiburan secara langsung melalui streaming. Di halaman ini, film atau acara TV yang dipilih oleh pengguna akan diputar secara real-time. Halaman ini dilengkapi dengan antarmuka pemutaran video yang memungkinkan kontrol seperti play, pause, stop, kontrol volume, dan pemutaran mundur atau maju. Pengguna juga dapat menemukan tombol untuk mengatur kualitas video jika tersedia dalam berbagai resolusi. Selain itu, terdapat opsi untuk menampilkan subtitle atau bahasa audio alternatif jika didukung. Halaman Video Stream memberikan pengalaman menonton yang nyaman dan menyenangkan bagi pengguna." />
+                <meta property="og:url" content={window.location.url} />
+            </Head>
             <button type="button" className={`absolute -top-7  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
-                <MdMenu size={25} color='#ffffff'/>
+                <MdMenu size={25} color='#ffffff' />
             </button>
-            <Head title="Stream" />
             <div className="lg:flex lg:gap-2 lg:relative space-y-6 sm:space-y-0">
                 <div className="max-w-screen-lg w-full lg:w-[80%]  top-0 sm:relative text-text">
                     <div className="w-full relative" style={{ paddingBottom: '56.25%' }}>
                         <iframe
                             className="absolute top-0 left-0 w-full h-full"
-                            src="https://www.youtube.com/embed/jfKfPfyJRdk"
-                            title="Video Player"
+                            src={serverState}
                             allowFullScreen
                         ></iframe>
                     </div>
@@ -246,7 +255,7 @@ export default function Stream({ auth, postdata }) {
                                     }))}
                                     onKeyDown={(e) => { if (e.key === 'Enter') { submitComment(e) } }}
                                 />
-                                <InputError message={err} className="mt-2"/>
+                                <InputError message={err} className="mt-2" />
                             </form>
                         </div>
 

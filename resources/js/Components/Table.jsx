@@ -18,7 +18,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps,
     const [action, setAction] = useState(false);
 
     const destroy = (id) => {
-
+        console.log(setProps.destroyUrl);
         if (confirm('sure')) bulkDelete(route(setProps?.destroyUrl, id));
     }
     const handleCheckboxChange = (e, id) => {

@@ -21,7 +21,7 @@ export default function WebInformations({ web }) {
     logo: false,
   })
   const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
-    name: web.name,
+    name: web?.name,
     icon: '',
     logo: ''
   })
@@ -84,9 +84,9 @@ export default function WebInformations({ web }) {
                   <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                     <input
                       type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
+                      name="name"
+                      id="name"
+                      autoComplete="name"
                       className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                       placeholder="Youre website name"
                       onChange={(e) => setData('name', e.target.value)}
@@ -99,7 +99,7 @@ export default function WebInformations({ web }) {
               <div className="col-span-full">
                 <div>
                   <label htmlFor="photo" className="block text-sm font-medium leading-6 ">
-                    icon
+                    favicon
                   </label>
                   <div className="mt-2 flex items-center gap-x-3">
                     {previewIcon ? (
@@ -109,10 +109,10 @@ export default function WebInformations({ web }) {
                         className="h-12 w-12 rounded-full object-cover object-top"
                       />
                     ) : (
-                      web.icon ? (
+                      web?.icon ? (
                         <LazyLoadImage
                           effect="blur"
-                          src={`/storage/${web.icon}`}
+                          src={`/storage/${web?.icon}`}
                           className="h-12 w-12 rounded-full object-cover object-top"
                         />
                       ) : <FaUserCircle size={40} color='#ffffff' />
@@ -123,6 +123,7 @@ export default function WebInformations({ web }) {
                         className="rounded-md bg-white w-20 p-2 h-fit text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 relative"
                       >
                         <input type="file" name="icon" id="icon" className='opacity-0 w-full h-full absolute' onChange={handleImageChange} />
+                        <InputError message={errors.icon} />
                         Change
                       </button>
                       <div
@@ -153,13 +154,13 @@ export default function WebInformations({ web }) {
                       <img
                         src={previewLogo}
                         alt="Preview"
-                        className="h-12 w-12 rounded-full object-top"
+                        className="h-12 w-32 object-contain"
                       />
                     ) : (
-                      web.icon ? (
+                      web?.icon ? (
                         <LazyLoadImage
                           effect="blur"
-                          src={`/storage/${web.logo}`}
+                          src={`/storage/${web?.logo}`}
                           className="h-12 w-32 object-contain "
                         />
                       ) : <FaUserCircle size={40} color='#ffffff' />
@@ -170,6 +171,7 @@ export default function WebInformations({ web }) {
                         className="rounded-md bg-white w-20 p-2 h-fit text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 relative"
                       >
                         <input type="file" name="logo" id="logo" className='opacity-0 w-full h-full absolute' onChange={handleImageChange} />
+                        <InputError message={errors.logo} />
                         Change
                       </button>
                       <div

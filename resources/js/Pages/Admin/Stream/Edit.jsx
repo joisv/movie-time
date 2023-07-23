@@ -11,10 +11,10 @@ import InputError from '@/Components/InputError';
 export default function Edit({ streams }) {
 
     const { data, setData, put, errors, processing } = useForm({
+        id: streams[0].id,
         streams: streams,
         post_id: streams[0].post_id
     })
-
     const addStream = () => {
         setData(prevState => ({
             ...prevState,
@@ -61,7 +61,7 @@ export default function Edit({ streams }) {
     };
     async function submit(e) {
         e.preventDefault();
-        put(route('streamurl.update', data.post_id), {
+        put(route('stream.update', data.post_id), {
             onSuccess: () => {
                 console.log('success');
             }

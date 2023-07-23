@@ -12,18 +12,18 @@ export default function useHooks() {
         setData(response)
     }
 
-    const onError = (error, callback) => {
-        const validationErrors = error?.response?.data?.errors;
-        setErr(validationErrors)
-    }
+    // const onError = (error, callback) => {
+    //     const validationErrors = error?.response?.data?.errors;
+    //     setErr(validationErrors)
+    // }
 
     const get = async (param, { onSuccess, onError }) => {
         setLoading(true)
         setErr('')
         try {
             const response = await axios.get(param)
+            setData(response)
             if (response.status === 200) {
-                setData(response)
                 onSuccess()
             }
 
@@ -40,8 +40,8 @@ export default function useHooks() {
         setErr('')
         try {
             const response = await axios.post(param)
+            setData(response)
             if (response.status === 200) {
-                setData(response)
                 onSuccess()
             }
 
@@ -53,7 +53,7 @@ export default function useHooks() {
             setLoading(false);
         }
     }
-    const destroy = async (param) => {
+    const destroy = async (param,  { onSuccess, onError }) => {
         setLoading(true)
         try {
             const response = await axios.delete(param)

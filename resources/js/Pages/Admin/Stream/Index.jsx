@@ -1,6 +1,5 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, usePage } from '@inertiajs/react'
-import { useEffect, useState } from 'react';
+
+import { useState } from 'react';
 import axios from 'axios';
 import GenerateButton from '@/Components/GenerateButton';
 import { router } from '@inertiajs/react';
@@ -14,7 +13,7 @@ const setProps = {
     destroyUrl: 'stream.destroy',
     handleEdit: (params) => {
         console.log(params);
-        router.visit(route('streamurl.edit', params))
+        router.visit(route('stream.edit', params))
     }
 }
 

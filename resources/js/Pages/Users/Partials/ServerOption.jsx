@@ -1,42 +1,30 @@
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 
-const plans = [
-    {
-        name: 'Startup',
-        ram: '12GB',
-        cpus: '6 CPUs',
-        disk: '160 GB SSD disk',
-    },
-    {
-        name: 'Business',
-        ram: '16GB',
-        cpus: '8 CPUs',
-        disk: '512 GB SSD disk',
-    },
-    {
-        name: 'Enterprise',
-        ram: '32GB',
-        cpus: '12 CPUs',
-        disk: '1024 GB SSD disk',
-    },
-]
+export default function ServerOption({  onClose, datas, selected, onChange }) {
+    const [ checked, setChecked ] = useState(null)
 
-export default function ServerOption({ onClose, datas, setServer }) {
-
-    const [selected, setSelected] = useState(datas[0])
-
-    const handleDownload = () => {
-        setServer(selected.url)
-        onClose();
-    }
-
+    useEffect(() => {
+        const selectedOption = datas.find((option) => option.url === selected);
+        if (selectedOption) {
+          setChecked(selectedOption);
+        }
+    },[])
+    
+    const handleChange = (value) => {
+        const selectedOption = datas.find((option) => option.url === value.url);
+        if (selectedOption) {
+          onChange(selectedOption);
+          setChecked(selectedOption)
+        }
+      };
+        
     return (
         <div className="min-w-[40vw] bg-[#1d1d1c] rounded-md p-5">
             <h1 className="text-secondaryAccent font-medium text-base">Server Options</h1>
             <div className="w-full py-5">
                 <div className="mx-auto w-full max-w-md">
-                    <RadioGroup value={selected} onChange={setSelected}>
+                    <RadioGroup value={checked} onChange={handleChange}>
                         <RadioGroup.Label className="sr-only">Server size</RadioGroup.Label>
                         <div className="space-y-2">
                             {datas.map((download, index) => (
@@ -93,9 +81,8 @@ export default function ServerOption({ onClose, datas, setServer }) {
                     className='w-full p-2 bg-transparent border border-secondaryAccent rounded-sm '
                     onClick={onClose}
                 >
-                    cancle
+                    close
                 </button>
-                <button className='w-full p-2 bg-secondaryAccent rounded-sm' onClick={() => handleDownload()}>download</button>
             </div>
         </div>
     )

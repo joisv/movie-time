@@ -1,4 +1,4 @@
-import { Head, router } from '@inertiajs/react'
+import { Head, router, usePage } from '@inertiajs/react'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -9,9 +9,12 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { MdNoAdultContent, MdMenu } from 'react-icons/md'
 
 import AuthLayout from '@/Layouts/AuthLayout';
+import useHooks from '@/hooks/useHooks';
+import { ImSpinner8 } from 'react-icons/im';
 
 export default function Show({ auth, postdata }) {
-    
+
+    const { data , post, loading, err } = useHooks()
     const [bookmark, setBookmark] = useState(false);
     const [isDetail, setIsDetail] = useState(true);
     const [isAdult, setIsAdult] = useState('#03dd03')
@@ -33,34 +36,41 @@ export default function Show({ auth, postdata }) {
     }, [])
 
     async function handleBookmark() {
-        setBookmark((prevBookmark) => !prevBookmark);
+        
         if (auth.user) {
-            try {
-                const response = await axios.post(route('post.bookmark', postdata.id))
-                console.log(response);
-                if (response === 200) {
+            post(route('post.bookmark', postdata.id),{
+                onSuccess: () => {
+                    setBookmark((prevBookmark) => !prevBookmark);
+                },
+                onError: () => {
+                    console.log(err);
                 }
-            } catch (error) {
-                console.log(error);
-            }
+            })
         } else {
             router.visit(route('login'))
         }
     }
+    const { web_name } = usePage().props
     return (
         <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail}>
-            <Head title="Welcome" />
+            <Head>
+                <title>Detail</title>
+                <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                <meta property="og:title" content="Detail" />
+                <meta property="og:description" content="Halaman Detail menampilkan informasi lengkap tentang film atau acara TV tertentu. Di halaman ini, pengguna dapat menemukan sinopsis, rating, genre, sutradara, pemeran utama, tahun rilis, dan informasi lain yang relevan. Gambaran singkat tentang konten dan trailer film atau acara TV juga dapat ditampilkan di sini. Selain itu, pengguna memiliki pilihan untuk menyimpan film ini ke daftar Bookmark, memberikan Like, atau mengajukan permintaan jika konten tidak tersedia. Halaman Detail adalah tempat untuk mengeksplorasi lebih dalam tentang sebuah karya hiburan sebelum menonton." />
+                <meta property="og:url" content={window.location.url} />
+            </Head>
             <button type="button" className={`absolute -top-8  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
-                <MdMenu size={25} color='#ffffff'/>
+                <MdMenu size={25} color='#ffffff' />
             </button>
             <div style={{
-                backgroundImage: `url(/storage/${ postdata.backdrop_path})`
+                backgroundImage: `url(/storage/${postdata.backdrop_path ? postdata.backdrop_path : postdata.poster_path})`
             }} className='sm:w-full h-[70vh] sm:bg-cover bg-center detail-shadow relative'>
                 <div className="flex sm:items-center w-full h-full backdrop-blur-sm backdrop-brightness-50 sm:px-8 sm:space-x-4 px-2">
                     <div className='md:w-52 sm:w-32 rounded-md overflow-hidden shadow-2xl hidden sm:block'>
                         <LazyLoadImage
                             effect='blur'
-                            src={`/storage/${postdata.backdrop_path}`}
+                            src={`/storage/${postdata.poster_path ? postdata.poster_path : postdata.backdrop_path}`}
                             className='w-full h-full'
                         />
                     </div>
@@ -86,8 +96,14 @@ export default function Show({ auth, postdata }) {
                                 <IoPlay color='white' size={20} />
                                 <span >watch</span>
                             </button>
-                            <button onClick={() => handleBookmark()} type="button" className={` rounded-md px-2 py-1 text-white mt-3 md:text-xl sm:text-lg text-lg flex items-center gap-1 ${bookmark ? 'bg-secondaryAccent' : 'bg-transparent'}`}>
-                                <IoBookmarkOutline color='white' size={20} />
+                            <button 
+                                disabled={loading}
+                                onClick={() => handleBookmark()} 
+                                type="button" 
+                                className={` rounded-md px-2 py-1 text-white mt-3 md:text-xl sm:text-lg text-lg flex items-center gap-1 disabled:opacity-50 ${bookmark ? 'bg-secondaryAccent' : 'bg-transparent'}`}>
+                                {
+                                    loading ? <ImSpinner8 size={18} color='#ffffff' className='animate-spin'/> :  <IoBookmarkOutline color='white' size={20} />
+                                }
                                 <span >bookmark</span>
                             </button>
                         </div>
