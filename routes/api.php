@@ -1,15 +1,29 @@
 <?php
 
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\DownloadController;
+use App\Http\Controllers\Admin\GenreController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Dashboard\AnalitycsController;
+use App\Http\Controllers\Dashboard\CommentController;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\Dashboard\StreamController;
+use App\Http\Controllers\Dashboard\UserNotificationsController;
+use App\Http\Controllers\ExploreController;
 use App\Http\Controllers\GenerateMovieController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RecomendationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserHistoryController;
 use App\Models\Genre;
 use App\Models\Notification;
 use App\Models\Post;
-use Illuminate\Http\Request;
+use App\Models\Report;
+use App\Models\Request as ModelsRequest;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,60 +36,102 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/post-comment/{id}', [CommentController::class, 'postComment'])->name('api.postcomment');
+Route::get('/banner/poster', [HomeController::class, 'getBanner'])->name('get.banner');
+Route::get('/banner/visit', [BannerController::class, 'visit'])->name('banner.visit');
+Route::get('/search/movie', [HomeController::class, 'searchMovie'])->name('search.movie');
+Route::get('/genre/all', [ExploreController::class, 'getGenres'])->name('get.genre');
+Route::get('/recomendation-movies', [RecomendationController::class, 'getRecomendation'])->name('recomendation.movies');
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');
+    Route::post('/genereate-movie/{id}', [GenerateMovieController::class, 'generate'])->name('generate');
+    Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
+    Route::get('/search', [PostController::class, 'search'])->name('search');
+    Route::get('/search/genres', [GenreController::class, 'search'])->name('search.genres');
+    Route::get('/search/stream', [StreamController::class, 'search'])->name('stream.search');
+    Route::get('/search/report', [ReportController::class, 'search'])->name('report.search');
+    Route::get('/search/download', [DownloadController::class, 'search'])->name('download.search');
+    Route::get('/search/user', [UserController::class, 'search'])->name('user.search');
+    Route::get('/get-post', function () {
+
+        $data = Post::all();
+        return response()->json($data);
+    })->name('getpost');
+    Route::delete('/users/destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::delete('/report/destroy/{id}', [ReportController::class, 'destroy'])->name('api.report.destroy');
+    Route::get('/permission/{id}', function (string $id) {
+        $roles = Role::all();
+        $permission = Permission::where('id', $id)->with('roles')->first();
+        return response()->json([
+            'permissions' => $permission,
+            'roles' => $roles
+        ]);
+    })->name('api.permission.show');
+    Route::get('/roles/{id}', function (string $id) {
+        $permissions =  Permission::all();
+        $role = Role::where('id', $id)->with('permissions')->first();
+        return response()->json([
+            'role' => $role,
+            'permissions' => $permissions
+        ]);
+    })->name('api.roles.show');
+    Route::get('/user/{id}', function (string $id) {
+        $roles =  Role::all();
+        $user = User::where('id', $id)->with('roles')->first();
+        return response()->json([
+            'user' => $user,
+            'roles' => $roles
+        ]);
+    })->name('api.user.show');
+    Route::get('/genre/{id}', function (string $id) {
+        $genre = Genre::where('id', $id)->first();
+        return response()->json([
+            'genre' => $genre,
+        ]);
+    })->name('api.genre.show');
+    Route::get('/report/{id}', function (string $id) {
+        $report = Report::where('id', $id)->with('post', 'user')->first();
+        return response()->json([
+            'report' => $report,
+        ]);
+    })->name('api.report.show');
+    Route::get('/banner/edit/{id}', [BannerController::class, 'edit'])->name('api.banner.edit');
+
+    Route::get('/request/count', function(){
+        $req = ModelsRequest::where('is_new', true)->count();
+        return response()->json($req);
+    })->name('api.request.count');
+
+    Route::get('/report/count/is-new', function(){
+        $req = Report::where('is_new', true)->count();
+        return response()->json($req);
+    })->name('api.usereport.count');
+
+    Route::get('/user-count', [ AnalitycsController::class, 'userCount' ])->name('usercount');
+    Route::get('/report-status', [ AnalitycsController::class, 'reportStatus' ])->name('reportstatus');
+    Route::get('/post-most', [ AnalitycsController::class, 'mostmovie' ])->name('mostmovie');
+    Route::get('/post/views/bydays', [ AnalitycsController::class, 'postViewByDays' ])->name('post.bydays');
+    Route::get('/post/views/weeks', [ AnalitycsController::class, 'postViewByWeeks' ])->name('post.byweeks');
+    Route::get('/post/views/month', [ AnalitycsController::class, 'postViewByMonth' ])->name('post.bymonth');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-
-    Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.postlike');
+    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
+    Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.like');
     Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
-    
     Route::post('/report-post', [ReportController::class, 'store'])->name('report.store');
 
-    Route::get('/notification', function() {
+    Route::get('/notification', function () {
         $user = auth()->user();
         $data = Notification::where('user_id', $user->id)
-        ->where('is_read', false)
-        ->count();
+            ->where('is_read', false)
+            ->count();
 
         return response()->json(['notifications' => $data], 200);
     })->name('notification');
 
-    Route::put('/notification/update', function(Request $request) {
-        
-        try {
-            $user = auth()->user();
-
-            if( $user->id == $request->user_id ){
-
-                $data = Notification::findOrfail($request->id);
-                $data->is_read = true;
-                $data->save();
-
-                return response()->json(['message' => 'berhasil'], 200);
-            }
-
-        } catch (\Throwable $th) {
-            return response()->json('something went wrong');
-        }
-    })->name('notification.update');
-
-    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
+    Route::patch('/notification/update/{id}', [UserNotificationsController::class, 'update'])->name('notification.update');
     
-    Route::post('/genereate-movie/{id}',[GenerateMovieController::class, 'generate'])->name('generate');
-    Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
-
-    Route::get('/search', [PostController::class, 'search'])->name('search');
-
-    Route::get('/get-post', function() {
-        
-        $data = Post::all();
-        return response()->json($data);
-
-    })->name('getpost');
-
-
-    Route::post('/stream/store', [StreamController::class, 'store'])->name('stream.store');
-    Route::delete('/stream/destroy/{id}', [StreamController::class, 'destroy'])->name('stream.destroy');
+    Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
 });

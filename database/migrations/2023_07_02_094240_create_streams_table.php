@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id');
             $table->string('name');
-            $table->string('url');
+            $table->longText('url');
             $table->timestamps();
         });
     }

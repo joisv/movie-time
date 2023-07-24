@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
-import Checkbox from '@/Components/Checkbox';
 import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { ImSpinner8 } from "react-icons/im";
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { MdAlternateEmail, MdOutlineLockPerson, MdErrorOutline } from 'react-icons/md'
+import AuthInput from '@/Components/AuthInput';
+import Toggle from '@/Components/Toggle';
 
 export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { web_name } = usePage().props
+    const { data, setData, post, processing, errors, reset, hasErrors } = useForm({
         email: '',
         password: '',
         remember: false,
@@ -28,70 +28,79 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
-
+            <Head>
+                <title>Log in</title>
+                <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                <meta property="og:title" content="Login" />
+                <meta property="og:description" content="Halaman login adalah tempat di mana pengguna dapat login" />
+                <meta property="og:url" content={window.location.url} />
+            </Head>
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
-
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
+            <header className='max-w-screen-sm w-full h-fit sm:flex items-center sm:space-x-4 p-2'>
+                <div className='w-full'>
+                    <h1 className='text-3xl font-semibold text-white my-8'>Login ?</h1>
                 </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
+                <div className="w-2/3 hidden sm:block">
+                    <h1 className='text-3xl font-semibold text-white my-8'>No account yet ?</h1>
                 </div>
-
-                <div className="block mt-4">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
-                        />
-                        <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                    </label>
+            </header>
+            <div className={`p-3 gap-2 font-medium bg-sky-500 h-10 absolute top-10 flex items-center justify-center ease-in duration-200 ${hasErrors ? 'translate-y-[40%]' : '-translate-y-[200%]'}`}>
+                <MdErrorOutline size={20} color='#ffffff' />
+                Something went wrong
+            </div>
+            <div className="sm:flex sm:space-x-4 p-2">
+                <div className='w-full'>
+                    <form onSubmit={submit}>
+                        <div className="space-y-2 mb-5">
+                            <AuthInput
+                                placeholder='Email'
+                                type='email'
+                                id='email'
+                                value={data.email}
+                                icon={<MdAlternateEmail size={'100%'} color='rgb(156 163 175)' />}
+                                autoComplete="email"
+                                isFocused={true}
+                                onChange={(e) => setData('email', e.target.value)}
+                            />
+                            <AuthInput
+                                placeholder='Password'
+                                type='password'
+                                icon={<MdOutlineLockPerson size={'100%'} color='rgb(156 163 175)' />}
+                                id="password"
+                                name="password"
+                                value={data.password}
+                                autoComplete="current-password"
+                                onChange={(e) => setData('password', e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-5">
+                            <Toggle
+                                name="remember"
+                                setData={setData}
+                            />
+                            <div className="flex">
+                                <button
+                                    disabled={processing}
+                                    type="submit"
+                                    className=" text-white bg-secondaryAccent  hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-base px-5 py-2 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex justify-center gap-1 items-center min-w-[13vw]"
+                                >
+                                    {
+                                        processing ? <ImSpinner8 size={24} color='#ffffff' className='animate-spin' /> : 'Login Now'
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
-
-                    <PrimaryButton className="ml-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                <div className='sm:w-2/3 h-32 w-full'>
+                    <div className="w-2/3 sm:hidden block">
+                        <h1 className='text-3xl font-semibold text-white my-8'>No account yet ?</h1>
+                    </div>
+                    <div className="flex h-fit">
+                        <button type="button" className=" text-white bg-secondaryAccent  hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-base px-5 py-2 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => router.visit('register')}>Regiter Now</button>
+                    </div>
                 </div>
-            </form>
+            </div>
         </GuestLayout>
     );
 }

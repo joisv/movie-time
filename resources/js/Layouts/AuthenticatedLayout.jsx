@@ -1,38 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
+import { IoHomeOutline, IoGitPullRequestOutline, IoFingerPrintSharp } from "react-icons/io5";
+import { MdPostAdd, MdMovieEdit, MdOutlineReportGmailerrorred, MdSettings } from 'react-icons/md'
+import { FaUsers, FaUserLock } from 'react-icons/fa'
+import axios from 'axios';
+import { BiMoneyWithdraw } from 'react-icons/bi';
+
+const act = 'rgb(255 255 255)'
+const def = ''
+
+const getRequestCount = async (param) => {
+    try {
+        const response = await axios.get(param);
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [requestCount, setRequestCount] = useState(null);
+    const [reportCount, setReportCount] = useState(null);
+    const [iconActive, setIconActive] = useState(route().current());
+
+
+    useEffect(() => {
+
+        (async () => {
+            const [requestCount, reportCount] = await Promise.all([
+                getRequestCount(route('api.request.count')),
+                getRequestCount(route('api.usereport.count')),
+            ]);
+
+            setRequestCount(requestCount);
+            setReportCount(reportCount);
+        })();
+    }, [])
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="bg-white border-b border-gray-100 sm:relative">
+                <div className=" mx-auto px-4 sm:px-6 lg:px-8 sm:fixed top-0 z-50 right-0 w-full sm:bg-white">
                     <div className="flex justify-between h-16">
-                        <div className="flex">
+                        <div className="flex h-16">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
                                     <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
-                            </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink href={route('admin')} active={route().current('admin')}>
-                                    Dashboard
-                                </NavLink>
-                                <NavLink href={route('post')} active={route().current('post')}>
-                                    Post
-                                </NavLink>
-                                <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
-                                    Request
-                                </NavLink>
-                                <NavLink href={route('streamurl.index')} active={route().current('streamurl.index')}>
-                                    Stream
-                                </NavLink>
                             </div>
                         </div>
 
@@ -104,6 +125,32 @@ export default function Authenticated({ user, header, children }) {
                         <ResponsiveNavLink href={route('admin')} active={route().current('admin')}>
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('post.index')} active={route().current('post.index')}>
+                            Post
+                        </ResponsiveNavLink>
+                        <div className='relative'>
+                            <ResponsiveNavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
+                                Request
+                            </ResponsiveNavLink>
+                            {
+                                requestCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
+                                    <span className='sm:hidden md:block'>{requestCount}</span>
+                                </div> : null
+                            }
+                        </div>
+                        <ResponsiveNavLink href={route('streamdownload')} active={route().current('streamdownload')}>
+                            Episode
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('permissions.index')} active={route().current('permissions.index')}>
+                            Permission
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('roles.index')} active={route().current('roles.index')}>
+                            Role
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('user.index')} active={route().current('user.index')}>
+                            Users
+                        </ResponsiveNavLink>
+
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
@@ -122,13 +169,75 @@ export default function Authenticated({ user, header, children }) {
                 </div>
             </nav>
 
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
-                </header>
-            )}
+            <div className="flex space-x-1 w-full sm:space-y-10 sm:relative">
+                <div className=" md:w-[23vw] sm:w-[10vw] bg-red-500">
+                    <div className="hidden sm:flex flex-col md:w-[20vw] sm:w-fit min-h-screen space-y-1 bg-gray-950 p-4 text-gray-400 sm:fixed top-16">
+                        <NavLink href={route('admin')} active={route().current('admin')}>
+                            <IoHomeOutline color={iconActive === 'admin' ? act : def} size={22} />
+                            <span className='sm:hidden md:block'>
+                                Dashboard
+                            </span>
+                        </NavLink>
+                        <NavLink href={route('post.index')} active={route().current('post.index')}>
+                            <MdPostAdd size={25} color={iconActive === 'post.index' ? act : def} />
+                            <span className='sm:hidden md:block'>Post</span>
+                        </NavLink>
+                        <NavLink href={route('genres.index')} active={route().current('genres.index')}>
+                            <MdPostAdd size={25} color={iconActive === 'genres.index' ? act : def} />
+                            <span className='sm:hidden md:block'>Genres</span>
+                        </NavLink>
+                        <div className='relative'>
+                            <NavLink href={route('adminrequest.index')} active={route().current('adminrequest.index')}>
+                                <IoGitPullRequestOutline size={23} color={iconActive === 'adminrequest.index' ? act : def} />
+                                <span className='sm:hidden md:block'> Request</span>
+                            </NavLink>
+                            {
+                                requestCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
+                                    <span className='sm:hidden md:block'>{requestCount}</span>
+                                </div> : null
+                            }
 
-            <main>{children}</main>
+                        </div>
+
+                        <NavLink href={route('streamdownload')} active={route().current('streamdownload')}>
+                            <MdMovieEdit size={23} color={iconActive === 'streamdownload' ? act : def} />
+                            <span className='sm:hidden md:block'>Episdoe</span>
+                        </NavLink>
+                        <NavLink href={route('permissions.index')} active={route().current('permissions.index')}>
+                            <IoFingerPrintSharp size={23} color={iconActive === 'permissions.index' ? act : def} />
+                            <span className='sm:hidden md:block'>Permissions</span>
+                        </NavLink>
+                        <NavLink href={route('roles.index')} active={route().current('roles.index')}>
+                            <FaUserLock color={iconActive === 'roles.index' ? act : def} size={22} />
+                            <span className='sm:hidden md:block'>Roles</span>
+                        </NavLink>
+                        <NavLink href={route('banner.index')} active={route().current('banner.index')}>
+                            <BiMoneyWithdraw color={iconActive === 'banner.index' ? act : def} size={22} />
+                            <span className='sm:hidden md:block'>Banner</span>
+                        </NavLink>
+                        <NavLink href={route('user.index')} active={route().current('user.index')}>
+                            <FaUsers size={23} color={iconActive === 'user.index' ? act : def} />
+                            <span className='sm:hidden md:block'>Users</span>
+                        </NavLink>
+                        <div className='relative'>
+                            <NavLink href={route('report.index')} active={route().current('report.index')}>
+                                <MdOutlineReportGmailerrorred size={23} color={iconActive === 'report.index' ? act : def} />
+                                <span className='sm:hidden md:block'>Report</span>
+                            </NavLink>
+                            {
+                                reportCount > 0 ? <div className='absolute right-0 w-5 h-5 top-0 rounded-full bg-red-500 text-sm flex justify-center items-center text-white'>
+                                    <span className='sm:hidden md:block'>{reportCount}</span>
+                                </div> : null
+                            }
+                        </div>
+                        <NavLink href={route('settings.index')} active={route().current('settings.index')}>
+                            <MdSettings size={23} color={iconActive === 'settings.index' ? act : def} />
+                            <span className='sm:hidden md:block'>Settings</span>
+                        </NavLink>
+                    </div>
+                </div>
+                <main className='w-[100vw]'>{children}</main>
+            </div>
         </div>
     );
 }

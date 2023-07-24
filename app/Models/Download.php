@@ -10,7 +10,7 @@ class Download extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    public function stream(){
-        return $this->belongsTo(Stream::class);
+    public function post(){
+        return $this->belongsTo(Post::class);
     }
 }

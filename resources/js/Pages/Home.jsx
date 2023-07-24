@@ -1,18 +1,15 @@
-import React, { useState } from 'react'
 import AuthLayout from '@/Layouts/AuthLayout'
-import axios from 'axios';
-import { Link } from '@inertiajs/react';
-import useHook from '@/hooks/useHook';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { SwiperSlide } from 'swiper/react';
 import { IoPlay } from 'react-icons/io5'
-import { FaStarOfLife } from 'react-icons/fa'
 
-import 'swiper/css';
-import 'swiper/css/virtual';
-import { Autoplay, Navigation, Pagination, Virtual, } from 'swiper';
 import GenerateButton from '@/Components/GenerateButton';
 import { shortSentence } from '@/Helper/shortSentence';
-import Card from '@/Components/Card';
+import DisplayMovieWithSlide from './HomePartials/DisplayMovieWithSlide';
+import BannerSlider from './HomePartials/BannerSlider';
+import SwiperAuto from '@/Components/SwiperAuto';
+import { Head, usePage } from '@inertiajs/react';
+import { MdMenu } from 'react-icons/md';
+import { useState } from 'react';
 
 const img = [
   '../../Gravity.jpg',
@@ -23,88 +20,37 @@ const img = [
   '../../Moana-Movie-Poster-landscape.jpg',
 ]
 
-const breakpoints = {
-  240: {
-    slidesPerView: 2,
-    spaceBetween: 80,
-  },
-  300: {
-    slidesPerView: 3,
-    spaceBetween: 120
-  },
-  330: {
-    slidesPerView: 3,
-    spaceBetween: 90
-  },
-  400: {
-    slidesPerView: 3,
-    spaceBetween: 75
-  },
-  480: {
-    slidesPerView: 4,
-    spaceBetween: 100
-  },
-  620:{
-    slidesPerView: 3,
-    spaceBetween: 30
-  },
-  738:{
-    slidesPerView: 4,
-    spaceBetween: 100
-  },
-  768: {
-    slidesPerView: 4,
-    spaceBetween: 20
-  },
-  1024: {
-    slidesPerView: 5,
-    spaceBetween: 10
-  },
-  1280: {
-    slidesPerView: 6,
-    spaceBetween: 10
-  },
-};
+export default function Home({
+  popularMovie,
+  auth,
+  recently_added,
+  recomendationMovies
+}) {
 
-export default function Home({ datas, auth }) {
+  const { web_name } = usePage().props
+  const [isDetail, setIsDetail] = useState(false);
 
-  const { setHistory } = useHook();
-  
-  const [ dataHistory, setDataHistory ] = useState({
-    post_id: '',
-    user_id: auth.user?.id,
-});
-
-const useHistory = async (post_id) => {
-    if(auth.user){
-        setDataHistory(prev => prev.post_id = post_id);
-        setHistory(dataHistory);
-    }
-}
-
-console.log(datas);
-  
   return (
-    <AuthLayout user={auth?.user} isDetail={false}>
-    <Swiper 
-      modules={[Virtual, Autoplay]} 
-      spaceBetween={50} 
-      slidesPerView={1}
-      centeredSlides={true}
-      autoplay= {{ 
-        delay: 2500,
-        disableOnInteraction: false,
-       }} 
-      loop={true}
-      virtual
-      >
-      {img.map((img, index) => (
-        <SwiperSlide key={index} virtualIndex={index} >
-            <div 
-              className='w-full sm:h-[60vh] h-[45vh] bg-cover shadow-bg rounded-sm flex flex-col justify-center sm:px-14 px-3' 
-              style={{ 
-                backgroundImage: `url(${img})`
-              }} 
+
+    <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail} >
+      <Head>
+        <title>Home</title>
+        <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+        <meta property="og:title" content="Home" />
+        <meta property="og:description" content="Halaman Home adalah pintu gerbang utama bagi pengguna untuk memulai perjalanan mereka di situs kami. Di sini, pengguna akan menemukan beragam film dan acara TV terbaru yang tersedia untuk streaming. Dengan tampilan yang sederhana dan intuitif, pengguna dapat dengan mudah menelusuri koleksi film dan acara TV berdasarkan kategori, popularitas, atau tahun rilis. Selain itu, kami menyediakan rekomendasi khusus berdasarkan preferensi pengguna dan film favorit mereka. Halaman Home adalah tempat yang sempurna untuk memulai petualangan hiburan mereka" />
+        <meta property="og:url" content={window.location.url} />
+      </Head>
+      <button type="button" className={`absolute -top-8  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
+        <MdMenu size={25} color='#ffffff' />
+      </button>
+      <SwiperAuto>
+        {img.map((data, index) => (
+          <SwiperSlide key={index} virtualIndex={index} >
+            <div
+              className={`bg-cover bg-center rounded-sm flex flex-col justify-center sm:px-14 sm:h-[60vh] h-[40vh] p-2 sm:p-0 shadow-bg w-full`}
+              style={{
+                backgroundImage: `url(storage/${data})`
+              }}
             >
               <div className='text-text mt-20 sm:space-y-2 space-y-1'>
                 <h1 className=' font-bold sm:text-2xl text-xl'>Lorem ipsum dolor sit amet.</h1>
@@ -121,26 +67,19 @@ console.log(datas);
                 </div>
                 <p className='w-[80%] text-sm font-light text-secondaryAccent'>{shortSentence('Lorem ipsum dolor sit amet consectetur adipisicing elit. A, sint sed voluptates exercitationem quisquam, quasi recusandae minima nemo eligendi eaque corporis facilis autem? Autem, odit.')}</p>
                 <GenerateButton className='bg-secondaryAccent hidden sm:flex'>
-                  <IoPlay size={20}/>
+                  <IoPlay size={20} />
                   watch
                 </GenerateButton>
               </div>
-             </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-      <div className='p-2'>
-        <h1 className='text-primaryBtn text-2xl font-semibold py-3'>Popular Movie</h1>
-        <Swiper 
-          navigation={true}
-          breakpoints={breakpoints}
-        >
-          {datas.map((item, index) => (
-            <SwiperSlide key={index}>
-              <Card item={item}/>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+            </div>
+          </SwiperSlide>
+        ))}
+      </SwiperAuto>
+      <div className="space-y-3 sm:p-0 p-2">
+        <DisplayMovieWithSlide title='Recomendations' datas={recomendationMovies} />
+        <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
+        <BannerSlider />
+        <DisplayMovieWithSlide title='Latest Movie' datas={recently_added} />
       </div>
     </AuthLayout>
   )

@@ -30,8 +30,17 @@ class UserRequestController extends Controller
         $req->content = $data['content'];
         $req->user_id = $data['user_id'];
         $req->status = $data['status'];
+        $req->is_new = true;
         $req->save();
 
         return redirect()->route('request.index')->with('message', 'request sent');
+    }
+
+    public function destroy(Request $request, String $id){
+
+        $req = ModelsRequest::findOrFail($id);
+        $req->delete();
+        
+        return redirect()->back()->with('message', 'request successfully deleted');
     }
 }

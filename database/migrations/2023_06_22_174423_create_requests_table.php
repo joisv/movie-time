@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->longText('content');
             $table->string('status');
+            $table->boolean('is_new')->default(false);
             $table->timestamps();
         });
     }

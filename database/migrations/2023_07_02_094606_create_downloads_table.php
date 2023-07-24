@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('downloads', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('stream_id');
+            $table->foreignId('post_id');
             $table->string('name_download');
             $table->string('url_download');
             $table->timestamps();

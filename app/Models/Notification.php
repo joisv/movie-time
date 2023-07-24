@@ -18,4 +18,8 @@ class Notification extends Model
     public function request(){
         return $this->belongsTo(Request::class);
     }
+
+    public function report(){
+        return $this->belongsTo(Report::class);
+    }
 }
