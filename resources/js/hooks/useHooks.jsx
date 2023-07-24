@@ -16,17 +16,18 @@ export default function useHooks() {
 
         try {
             const response = await axios.get(param);
-            console.log(response);
             if (response.status === 200) {
                 setData(response.data);
-                onSuccess();
+                onSuccess(response.data);
             }
         } catch (error) {
             const validationErrors = error?.response?.data;
             setErr(validationErrors);
-            onError();
+            onError(err);
         } finally {
+            
             setLoading(false);
+
         }
     };
     const post = async (param, { onSuccess, onError }) => {
@@ -34,15 +35,15 @@ export default function useHooks() {
         setErr('')
         try {
             const response = await axios.post(param)
-            setData(response)
             if (response.status === 200) {
-                onSuccess()
+                setData(response.data)
+                onSuccess(response.data)
             }
 
         } catch (error) {
             const validationErrors = error?.response?.data;
             setErr(validationErrors)
-            onError()
+            onError(err)
         } finally {
             setLoading(false);
         }

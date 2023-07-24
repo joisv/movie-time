@@ -16,8 +16,6 @@ export default function Card({ item }) {
     user_id: auth.user?.id,
     post_id: item.id
   })
-  console.log(item.poster_path);
-
   const vote = parseFloat(item.vote_average)
   const voteFix = vote.toFixed(1)
   const date = new Date(item.release_date);

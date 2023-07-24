@@ -17,7 +17,7 @@ export default function Index({ auth, banners, base_url }) {
     const filteredDatas = banners?.map(({ id, name, banner_img, redirect_to, created_at }) => ({
         id,
         title: name,
-        banner_img,
+        poster: banner_img,
         redirect_to,
         created_at,
     }));

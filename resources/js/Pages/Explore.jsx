@@ -16,7 +16,7 @@ export default function Explore({
     movieThisYear,
     topLike
 }) {
-    const [histories, setHistory] = useState(userHistory.map(history => history.post))
+    const [histories, setHistory] = useState(userHistory?.map(history => history.post))
     const { web_name } = usePage().props
     const [isDetail, setIsDetail] = useState(false);
     return (
@@ -39,7 +39,7 @@ export default function Explore({
                     topLike.length === 0 ? null : <DisplayMovieWithSlide title='Top Like' datas={topLike} />
                 }
                 {
-                    auth.user && userHistory.length === 0 ? null : <DisplayMovieWithSlide title='History' datas={histories} />
+                    userHistory?.length === 0 ? null : auth.user ? <DisplayMovieWithSlide title='History' datas={histories} /> : null
                 }
                 <DisplayMovieWithSlide title={`Genre ${genreName.name}`} datas={postByGenres} />
             </div>

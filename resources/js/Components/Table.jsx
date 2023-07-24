@@ -86,7 +86,7 @@ export default function Table({ datas, handleSearchChange, searchTerm, setProps,
                                             <span className={`h-fit p-1 rounded-md ${value === 'open' ? open : value === 'close' ? completed : value === 'completed' ? completed : value === 'pending' ? pending : value === 'release' ? open : 'bg-transparent'}`}>
                                                 {value}
                                             </span>
-                                        </td> : key === 'banner_img' ? <td className='px-6 py-4'>
+                                        </td> : key === 'poster' ? <td className='px-6 py-4'>
                                             <img src={`${base_url}/storage/${value}`} className='w-12 h-12 rounded-full object-cover object-center' />
                                         </td> :
                                             key === 'id' ? <td className="hidden">

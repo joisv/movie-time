@@ -12,10 +12,17 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $recomendationMovies = Post::withCount('comments')
+            ->orderBy('views', 'desc')
+            ->orderBy('like', 'desc')
+            ->orderBy('bookmark', 'desc')
+            ->take(10)
+            ->get();
         $popularMovie = Post::orderBy('views')->take(10)->get();
         $recently_added = Post::orderBy('created_at', 'desc')->take(10)->get();
 
         return Inertia::render('Home', [
+            'recomendationMovies' => $recomendationMovies,
             'popularMovie' => $popularMovie,
             'recently_added' => $recently_added,
             'canLogin' => Route::has('login'),

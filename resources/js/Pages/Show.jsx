@@ -14,7 +14,7 @@ import { ImSpinner8 } from 'react-icons/im';
 import Recomendation from './Recomendation';
 
 export default function Show({ auth, postdata }) {
-    console.log(postdata);
+    
     const { data , post, loading, err } = useHooks()
     const [bookmark, setBookmark] = useState(false);
     const [isDetail, setIsDetail] = useState(true);

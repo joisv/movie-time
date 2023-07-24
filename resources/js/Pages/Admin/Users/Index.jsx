@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Edit from '../Users/Edit';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ auth, users }) {
     const { flash } = usePage().props
@@ -39,7 +40,7 @@ export default function Index({ auth, users }) {
 
         }
     };
-    const filteredDatas = users.map(({ id, name, email }) => ({
+    const filteredDatas = users.data.map(({ id, name, email }) => ({
         id,
         title: name,
         email,
@@ -68,7 +69,7 @@ export default function Index({ auth, users }) {
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                             <GenerateButton className='bg-purple-500' onClick={() => { }} >create</GenerateButton>
                            {displayData()}
-
+                           <Pagination data={users} />
                         </div>
                     </div>
                 </div>

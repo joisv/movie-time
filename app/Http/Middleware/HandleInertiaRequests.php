@@ -44,7 +44,8 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('message')
             ],
             'web_name' => [
-                'name' => fn () => Settings::first()
+                'name' => fn () => Settings::first(),
+                'base_url' => fn () => \config('app.url') 
             ]
         ]);
     }

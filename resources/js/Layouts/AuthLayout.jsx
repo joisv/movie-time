@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 
 import { IoHomeOutline, IoBookmarkOutline, IoNotificationsCircleOutline, IoGitPullRequestOutline } from "react-icons/io5";
 import { ImHistory } from "react-icons/im";
@@ -7,13 +7,14 @@ import { FiThumbsUp } from "react-icons/fi";
 import { FaUserEdit, FaUserCircle } from "react-icons/fa";
 
 import checkScreen from '@/Helper/checkScreen';
-import axios from 'axios';
 import Dropdown from '@/Components/Dropdown';
 import ProfileUser from '@/Components/ProfileUser';
 import ResponsiveMenu from '@/Components/ResponsiveMenu';
 import { MdMenu, MdOutlineExplore } from 'react-icons/md';
 import Search from '@/Components/Search';
 import useHooks from '@/hooks/useHooks';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const active = 'bg-secondaryAccent bg-opacity-70 border-r-4 border-secondaryAccent font-semibold '
 
@@ -22,12 +23,11 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
   const { screen, width } = checkScreen()
   const [navbar, setNavbar] = useState(false);
   const { data: notifications, loading, err, get } = useHooks()
-
+  const { web_name } = usePage().props
   useEffect(() => {
     screen(640)
-    if (user) get(route('notification'),{
+    if (user) get(route('notification'), {
       onSuccess: () => {
-        console.log('succes');
       }
     })
   }, []);
@@ -36,8 +36,17 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
       {/* desktop */}
       <div className={`sm:flex w-full hidden`}>
         <div className={` h-screen lg:px-3 md:p-1 sm:p-2 fixed py-1 sm:w-fit md:w-[17%] text-text flex flex-col items-center lg:space-y-4 ease-in duration-150 ${isDetail ? '-translate-x-full' : ''}`}>
-          <div className='flex items-center w-full p-3 text-lg font-semibold sm:hidden md:block'>
-            <h1>Auth Layout</h1>
+          <div className='md:flex sm:hidden items-center w-full p-3 text-lg font-semibold space-x-2'>
+            <div className='w-[30%]'>
+              <LazyLoadImage
+                effect='blur'
+                src={`/storage/${web_name.name.logo ? web_name.name.logo : null}`}
+                className='h-full'
+              />
+            </div>
+            <div className='w-70%'>
+              <h1>{web_name.name.name}</h1>
+            </div>
           </div>
           <nav className='w-full '>
             <ul className='space-y-1'>
@@ -119,7 +128,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
           </nav>
         </div>
         <div className={`p-3 w-full flex justify-between `}>
-          <div className={`w-[36vw] ease-in duration-150 ${ isDetail ? 'ml-10' : 'ml-[20vw]' }`}>
+          <div className={`w-[36vw] ease-in duration-150 ${isDetail ? 'ml-10' : 'ml-[20vw]'}`}>
             <Search />
           </div>
           <div className='flex space-x-3 text-text items-center '>
@@ -177,7 +186,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
                 </Link>
               </>
             }
-            
+
           </div>
         </div>
       </div>
@@ -195,7 +204,7 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
         <div className={`flex mt-2 ${user ? 'justify-between' : ''}`}>
           {
             user ? <> <ProfileUser user={user} />
-              <Link href={route('logout')} className='bg-primaryBtn h-fit px-2 text-sm font-medium'>logout</Link>  </> : <>
+              <button onClick={() => router.post(route('logout'))} className='bg-primaryBtn h-fit px-2 text-sm font-medium'>logout</button>  </> : <>
               <Link
                 href={route('login')}
                 className="font-semibold text-text hover:text-accent dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
@@ -215,6 +224,19 @@ export default function AuthLayout({ children, user, isDetail, setIsDetail }) {
 
         <div className='mt-8'>
           <ul className='space-y-3'>
+            <li>
+              <ResponsiveMenu href={route('home')} active={route().current('home')}>
+                <IoHomeOutline color='#f5f5f5' size={22} />
+                Home
+              </ResponsiveMenu>
+            </li>
+            <li>
+              <ResponsiveMenu href={route('explore.index')} active={route().current('explore.index')}>
+                <MdOutlineExplore color='#f5f5f5' size={22} />
+                Explore
+              </ResponsiveMenu>
+            </li>
+            <hr className='my-3 text-text opacity-25' />
             <li>
               <ResponsiveMenu href={route('history.index')} active={route().current('history.index')}>
                 <ImHistory color='#f5f5f5' size={22} />

@@ -20,10 +20,18 @@ const img = [
   '../../Moana-Movie-Poster-landscape.jpg',
 ]
 
-export default function Home({ popularMovie, auth, recently_added }) {
+export default function Home({
+  popularMovie,
+  auth,
+  recently_added,
+  recomendationMovies
+}) {
+
   const { web_name } = usePage().props
   const [isDetail, setIsDetail] = useState(false);
+
   return (
+
     <AuthLayout user={auth?.user} isDetail={isDetail} setIsDetail={setIsDetail} >
       <Head>
         <title>Home</title>
@@ -39,7 +47,7 @@ export default function Home({ popularMovie, auth, recently_added }) {
         {img.map((data, index) => (
           <SwiperSlide key={index} virtualIndex={index} >
             <div
-              className={`bg-cover bg-center rounded-sm flex flex-col justify-center sm:px-14 sm:h-[60vh] h-[45vh] shadow-bg w-full`}
+              className={`bg-cover bg-center rounded-sm flex flex-col justify-center sm:px-14 sm:h-[60vh] h-[40vh] p-2 sm:p-0 shadow-bg w-full`}
               style={{
                 backgroundImage: `url(storage/${data})`
               }}
@@ -68,9 +76,10 @@ export default function Home({ popularMovie, auth, recently_added }) {
         ))}
       </SwiperAuto>
       <div className="space-y-3 sm:p-0 p-2">
+        <DisplayMovieWithSlide title='Recomendations' datas={recomendationMovies} />
         <DisplayMovieWithSlide title='Popular Movie' datas={popularMovie} />
-        <DisplayMovieWithSlide  title='Latest Movie' datas={recently_added} />
         <BannerSlider />
+        <DisplayMovieWithSlide title='Latest Movie' datas={recently_added} />
       </div>
     </AuthLayout>
   )

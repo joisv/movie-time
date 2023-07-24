@@ -10,7 +10,7 @@ import useDebounce from '@/hooks/useDebounce';
 import useHooks from '@/hooks/useHooks';
 
 const setProps = {
-  th: ['title', 'tmdb_id', 'created_at', 'status', 'actions'],
+  th: ['title', 'tmdb_id', 'created_at', 'poster', 'actions'],
   destroyUrl: 'api.post.destroy',
   bulkDeleteUrl: 'post.bulkdelete',
   handleEdit: (params) => {
@@ -18,16 +18,16 @@ const setProps = {
   }
 }
 
-export default function Index({ auth, posts }) {
+export default function Index({ auth, posts, }) {
 
-  const { flash } = usePage().props
+  const { flash, web_name } = usePage().props
   const [tmdbId, setTmdbId] = useState(null);
   const [postdata, setPosData] = useState(posts)
   const { data, post, loading, err } = useHooks();
   const { data: searchDebouncedValue, get: getData, loading: loadingSearch, err: errorSearch } = useHooks();
 
   async function handleGenerate() {
-    post(route('generate', tmdbId),{
+    post(route('generate', tmdbId), {
       onSuccess: () => {
         router.reload();
       },
@@ -43,17 +43,15 @@ export default function Index({ auth, posts }) {
   const debouncedSearchTerm = useDebounce(searchTerm.search, 1000);
 
   useEffect(() => {
-    if(debouncedSearchTerm){
-      getData(route('search', { search: debouncedSearchTerm }),{
+    if (debouncedSearchTerm) {
+      getData(route('search', { search: debouncedSearchTerm }), {
         onSuccess: () => {
-          console.log('akdjakdjh');
           setPosData(searchDebouncedValue);
         },
       });
     }
   }, [debouncedSearchTerm]);
-  
-  // console.log(postdata);
+
   const handleSearchChange = (e) => {
     setSearchTerm(prev => ({
       ...prev,
@@ -61,13 +59,27 @@ export default function Index({ auth, posts }) {
     }));
   };
 
-  const filteredDatas = posts.data.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
-  const filteredDatasSearch = postdata?.data?.map(({ id, title, tmdb_id, created_at, status }) => ({ id, title, tmdb_id, created_at, status }));
+  const filteredDatas = posts.data.map(({ id, title, tmdb_id, created_at, poster_path }) =>
+  ({
+    id,
+    title,
+    tmdb_id,
+    created_at,
+    poster: poster_path
+  }));
+  const filteredDatasSearch = postdata?.data?.map(({ id, title, tmdb_id, created_at, poster_path }) =>
+  ({
+    id,
+    title,
+    tmdb_id,
+    created_at,
+    poster: poster_path
+  }));
 
   function displayData() {
     const datas = searchTerm.search ? filteredDatasSearch : filteredDatas;
 
-    return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} />;
+    return <Table datas={datas} handleSearchChange={handleSearchChange} searchTerm={searchTerm} setProps={setProps} base_url={web_name.base_url}/>;
   }
 
   const [open, setOpen] = useState(false)

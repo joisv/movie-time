@@ -14,19 +14,21 @@ class ExploreController extends Controller
     public function index()
     {
         $currentYear = Carbon::now()->year;
-        $randomGenreName = Genre::inRandomOrder()->first()->first();
+        $randomGenreName = Genre::inRandomOrder()->first();
         $postsByGenres = $randomGenreName->posts->take(10);
         $postByVoteAverage = Post::orderBy('vote_average', 'desc')->take(10)->get();
         $topLike = Post::orderBy('like', 'desc')->take(10)->get();
         $user = auth()->user();
-        $userHistory = History::where('user_id', $user->id)->with('post')->orderBy('timestamp', 'desc')->take(10)->get();
+        if(auth()->check()){
+            $userHistory = History::where('user_id', $user->id)->with('post')->orderBy('timestamp', 'desc')->take(10)->get();
+        }
         $movieThisYear = Post::whereRaw('YEAR(release_date) = ?', [$currentYear])->take(10)->get();
         
         return Inertia::render('Explore', [
             'postByGenres' => $postsByGenres,
             'genreName' => $randomGenreName,
             'postByVoteAverage' => $postByVoteAverage,
-            'userHistory' => $userHistory,
+            'userHistory' => auth()->check() ? $userHistory : null,
             'movieThisYear' => $movieThisYear,
             'topLike' => $topLike
         ]);

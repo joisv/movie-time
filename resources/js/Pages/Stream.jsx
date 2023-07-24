@@ -10,7 +10,6 @@ import Radio from "@/Pages/Users/Partials/Radio";
 
 import { MdThumbUp, MdOutlineReportGmailerrorred, MdDownload, MdOutlineSettings, MdMenu } from 'react-icons/md'
 import { IoBookmark, } from "react-icons/io5";
-import { BsThreeDotsVertical } from 'react-icons/bs'
 import { ImSpinner8 } from "react-icons/im";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import dayjs from "dayjs";
@@ -18,6 +17,8 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { FaUserCircle } from "react-icons/fa";
 import InputError from "@/Components/InputError";
+import useHooks from "@/hooks/useHooks";
+import Card from "@/Components/Card";
 
 const isLiked = '#01AED3'
 
@@ -32,29 +33,27 @@ export default function Stream({ auth, postdata }) {
     const [bookmark, setBookmark] = useState(false);
     const [commentsCounts, setCommentsCounts] = useState('');
     const [modalContent, setModalContent] = useState(null);
-    const [commentLoad, setCommentLoad] = useState(false);
     const [res, setRes] = useState([]);
     const [err, setErr] = useState('')
-    const [ dataServer, setDataServer ] = useState(postdata.streams)
-  
+    const [dataServer, setDataServer] = useState(postdata.streams)
+    const { data: datas, post, loading: commentLoad, err: errors, get } = useHooks()
+
 
     const date = new Date(postdata.release_date);
     const formattedDate = date.toLocaleDateString("en-US");
 
-    const getComment = async () => {
-        setCommentLoad(true)
-        try {
-            const response = await axios.get(route('api.postcomment', postdata.id))
-            if (response.status === 200) {
-                setRes(response.data)
-                setComments(response.data.comments.data)
-                setCommentsCounts(response.data.count)
+
+    const getComment = () => {
+        get(route('api.postcomment', postdata.id), {
+            onSuccess: (data) => {
+                setRes(data)
+                setComments(data.comments.data)
+                setCommentsCounts(data.count)
+            },
+            onError: (err) => {
+                console.log(err);
             }
-        } catch (error) {
-            setErr(error.response.data.message)
-        } finally {
-            setCommentLoad(false)
-        }
+        })
     }
     const [data, setData] = useState({
         post_id: postdata.id,
@@ -63,22 +62,18 @@ export default function Stream({ auth, postdata }) {
     async function submitComment(e) {
         e.preventDefault();
         if (auth.user) {
-            setCommentLoad(true)
-            try {
-                const response = await axios.post(route('comment.store', data))
-                if (response.status === 200) {
-                    setOpen(false);
+            post(route('comment.store', data), {
+                onSuccess: () => {
                     getComment();
                     setData(prev => ({
                         ...prev,
                         content: ''
                     }))
+                },
+                onError: () => {
+                    console.log(err);
                 }
-            } catch (error) {
-                setErr(error.response.data.message)
-            } finally {
-                setCommentLoad(false)
-            }
+            })
         } else {
             router.visit(route('login'))
         }
@@ -137,7 +132,7 @@ export default function Stream({ auth, postdata }) {
             throw new Error(error);
         }
     };
-
+    const [recomendation, setRecomendation] = useState([]);
     useEffect(() => {
         const findLike = postdata.liked_by_users?.findIndex(element => element.id === auth.user?.id)
         if (findLike > -1) {
@@ -148,12 +143,20 @@ export default function Stream({ auth, postdata }) {
             setBookmark(true)
         }
         getComment();
+        get(route('recomendation.movies'), {
+            onSuccess: (data) => {
+                setRecomendation(data)
+            },
+            onError: () => {
+                console.log(err);
+            }
+        })
     }, [])
 
-    const [serverState, setServerState] = useState(dataServer[0].url);
+    const [serverState, setServerState] = useState(dataServer[0]?.url);
 
     const handleQuality = () => {
-        const createComponent = <ServerOption  onClose={() => setOpen(false)} datas={dataServer} selected={serverState} onChange={handleChange}/>
+        const createComponent = <ServerOption onClose={() => setOpen(false)} datas={dataServer} selected={serverState} onChange={handleChange} />
         displayModal(createComponent);
     }
 
@@ -224,9 +227,19 @@ export default function Stream({ auth, postdata }) {
                             </button>
                         </div>
                     </div>
+                    <h1 className='text-primaryBtn sm:text-2xl text-lg ml-2 font-semibold py-2'>Recomendations</h1>
+                    <div className={`grid h-fit p-2 ${isDetail ? 'md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 sm:grid-cols-4 grid-cols-3  gap-2 max-[375px]:grid-cols-2' : 'grid-cols-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-4 gap-2 max-[375px]:grid-cols-2'}`}>
+                        {
+                            recomendation.map((data, index) => (
+                                <div key={index}>
+                                    <Card item={data} />
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
                 <div className="block mt-0 text-text p-1 lg:max-w-[31%] w-full overflow-ellipsis">
-                    <div className="px-1 py-2 text-text text-xs font-medium opacity-75">
+                    <div className="px-1 py-2 text-text text-sm font-medium opacity-75">
                         <h4>Comments must be polite, relevant, and free from illegal content or inappropriate promotions according to our guidelines.</h4>
                     </div>
                     <span className="text-sm font-medium text-white sm:text-base">{`Comments ${commentsCounts}`}</span>
@@ -254,6 +267,7 @@ export default function Stream({ auth, postdata }) {
                                         content: e.target.value
                                     }))}
                                     onKeyDown={(e) => { if (e.key === 'Enter') { submitComment(e) } }}
+                                    disabled={commentLoad}
                                 />
                                 <InputError message={err} className="mt-2" />
                             </form>
@@ -267,8 +281,8 @@ export default function Stream({ auth, postdata }) {
                         </div> : <div className="space-y-10 mt-4 w-full">
                             {
                                 comments.map((comment, index) => (
-                                    <div className="flex items-start font-medium w-full justify-between px-1 relative" key={index}>
-                                        <div className="flex justify-end w-full ">
+                                    <div className="flex items-start font-medium justify-between px-1 relative ml-7" key={index}>
+                                        <div className="flex md:justify-end w-full space-x-14">
                                             <div className="absolute left-0">
                                                 {
                                                     comment.user?.avatar ? <LazyLoadImage
@@ -278,7 +292,7 @@ export default function Stream({ auth, postdata }) {
                                                     /> : <FaUserCircle size={35} color='#ffffff' />
                                                 }
                                             </div>
-                                            <div className="w-[85%] space-y-1">
+                                            <div className="md:w-[90%]  space-y-1">
                                                 <div className="flex space-x-1 items-center text-primaryBtn ">
                                                     <p className=" ">@{comment.user?.name}</p>
                                                     <span className="text-xs">. {dayjs(comment.created_at).fromNow()}</span>
@@ -290,23 +304,17 @@ export default function Stream({ auth, postdata }) {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* <div className="absolute top-0 -right-2 opacity-70">
-                                            <BsThreeDotsVertical size={17} color="#ffffff" />
-                                        </div> */}
                                     </div>
                                 ))
                             }
                             {
-                                res.comments?.next_page_url != null ? <div className="w-full flex items-center justify-center">
+                                res?.comments?.next_page_url != null ? <div className="w-full flex items-center justify-center">
                                     <button
                                         type="button"
                                         className=" text-white bg-secondaryAccent  hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-base px-5 py-2 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex justify-center gap-1 items-center min-w-[13vw]"
                                         onClick={loadMore}
                                     >
                                         load more
-                                        {/* {
-                                                     processing ? <ImSpinner8 size={24} color='#ffffff' className='animate-spin' /> : 'Login Now'
-                                                 } */}
                                     </button>
                                 </div> : null
                             }

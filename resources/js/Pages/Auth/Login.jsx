@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { ImSpinner8 } from "react-icons/im";
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { MdAlternateEmail, MdOutlineLockPerson, MdErrorOutline } from 'react-icons/md'
 import AuthInput from '@/Components/AuthInput';
 import Toggle from '@/Components/Toggle';
 
 export default function Login({ status, canResetPassword }) {
+    const { web_name } = usePage().props
     const { data, setData, post, processing, errors, reset, hasErrors } = useForm({
         email: '',
         password: '',
@@ -27,7 +28,13 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            <Head>
+                <title>Log in</title>
+                <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                <meta property="og:title" content="Login" />
+                <meta property="og:description" content="Halaman login adalah tempat di mana pengguna dapat login" />
+                <meta property="og:url" content={window.location.url} />
+            </Head>
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
             <header className='max-w-screen-sm w-full h-fit sm:flex items-center sm:space-x-4 p-2'>
                 <div className='w-full'>

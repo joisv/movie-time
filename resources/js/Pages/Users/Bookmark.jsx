@@ -26,6 +26,10 @@ export default function Bookmark({ bookmarks, auth }) {
                 <button type="button" className={`absolute -top-8  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
                     <MdMenu size={25} color='#ffffff' />
                 </button>
+                <div className="pb-5 px-1">
+                    <h1 className='text-secondaryAccent text-xl font-semibold'>Bookmark page</h1>
+                    <p className='text-white text-base font-light'>Your movie wishlist and reminders</p>
+                </div>
                 <NoDataDisplay>
                     nothing to display
                 </NoDataDisplay>
@@ -44,11 +48,11 @@ export default function Bookmark({ bookmarks, auth }) {
             <button type="button" className={`absolute -top-8  p-1 ease-in duration-500 ${isDetail ? 'bg-transparent' : 'bg-gray-700 left-1'}`} onClick={() => setIsDetail((prev) => !prev)}>
                 <MdMenu size={25} color='#ffffff' />
             </button>
-            <div className="pb-5">
+            <div className="pb-5 px-1">
                 <h1 className='text-secondaryAccent text-xl font-semibold'>Bookmark page</h1>
                 <p className='text-white text-base font-light'>Your movie wishlist and reminders</p>
             </div>
-            <div className={`md:w-[65%] grid h-fit ${isDetail ? 'md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:grid-cols-4 grid-cols-3 gap-2 max-[375px]:grid-cols-2' : 'grid-cols-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-4 grid-cols-3 gap-2 max-[375px]:grid-cols-2 gap-2'}`}>
+            <div className={`md:w-[65%] grid h-fit ${isDetail ? 'md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:grid-cols-4 grid-cols-3 gap-2 max-[375px]:grid-cols-2' : 'md:grid-cols-2 p-2 sm:p-0 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-4 grid-cols-3 gap-2 max-[375px]:grid-cols-2'}`}>
                 {
                     bookmarks.map((bookmark, index) => (
                         <Card item={bookmark} key={index} />
