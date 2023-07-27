@@ -22,8 +22,8 @@ export default function WebInformations({ web }) {
   })
   const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
     name: web?.name,
-    icon: '',
-    logo: ''
+    icon: null,
+    logo: null
   })
 
   const handleImageChange = (event) => {
@@ -65,6 +65,7 @@ export default function WebInformations({ web }) {
     else if (e.type === 'mouseleave')
       setIsMouseEnter(p => ({ ...p, logo: false, icon: false }));
   };
+  console.log(data);
   return (
     <div>
       <form onSubmit={submit}>

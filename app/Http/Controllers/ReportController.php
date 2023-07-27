@@ -39,12 +39,14 @@ class ReportController extends Controller
             $report = new Report();
             $report->user_id = $data['user_id'];
             $report->post_id = $data['post_id'];
+            $report->is_new = true;
             $report->content = $data['content'];
+            $report->status = 'open';
             $report->save();
 
-            return response()->json(['message' => 'report sent'], 200);
+            return redirect()->back()->with('message', 'report sent');
         } catch (\Throwable $th) {
-            return response()->json('something went wrong', 500);
+            return redirect()->back()->with('message', 'something went wrong');
         }
     }
 

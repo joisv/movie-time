@@ -1,9 +1,10 @@
 
+import { useForm } from '@inertiajs/react';
 import axios from 'axios';
 import React, { useState } from 'react'
 import { ImSpinner9 } from "react-icons/im";
 
-const data = [
+const datareport = [
     'Buffering terjadi secara berkala',
     'Kualitas video rendah',
     'Video terputus atau berhenti tiba-tiba',
@@ -15,27 +16,19 @@ const data = [
 
 export default function Radio({ onClose, itemId, auth, setOpen }) {
 
-    const [loading, setLoading] = useState(false);
-
-    const [dataReport, setDataReport] = useState({
+    const { data, setData, errors, processing, post } = useForm({
         user_id: auth.user?.id,
         post_id: itemId,
-        content: data[0]
+        content: datareport[0]
     })
 
     const handleReport = async () => {
         if (auth.user) {
-            setLoading(true)
-            try {
-                const response = await axios.post(route('report.store', dataReport))
-                if (response.status === 200) {
-                    setOpen(false)
-                }
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false)
-            }
+            post(route('report.store'),{
+                onSuccess: () => {
+                    onClose(false)
+                },
+            })
         } else {
             alert('login')
         }
@@ -43,15 +36,12 @@ export default function Radio({ onClose, itemId, auth, setOpen }) {
     return (
         <div>
             {
-                data.map((item, index) => (
+                datareport.map((item, index) => (
                     <div className="flex items-center mb-4" key={index}>
                         <input id={`default-radio-${index}`} type="radio" name="default-radio" className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                             value={item}
-                            checked={dataReport.content == item}
-                            onChange={(e) => setDataReport(values => ({
-                                ...values,
-                                content: e.target.value
-                            }))}
+                            checked={data.content == item}
+                            onChange={(e) => setData('content', e.target.value)}
                         />
                         <label htmlFor={`default-radio-${index}`} className="ml-2 text-sm font-medium text-white ">{item}</label>
                     </div>
@@ -65,10 +55,10 @@ export default function Radio({ onClose, itemId, auth, setOpen }) {
                     type="button"
                     className='bg-[#f2cd00] text-white rounded-sm w-14 disabled:bg-red-400 flex items-center justify-center  gap-1 p-1'
                     onClick={handleReport}
-                    disabled={loading}
+                    disabled={processing}
                 >
                     {
-                        loading ? <ImSpinner9 size={15} color='#ffffff' className='animate-spin'/> : ' send'
+                        processing ? <ImSpinner9 size={15} color='#ffffff' className='animate-spin'/> : ' send'
                     }
                    
                 </button>

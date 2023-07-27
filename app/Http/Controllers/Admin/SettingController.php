@@ -20,10 +20,11 @@ class SettingController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->hasFile('icon'));
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|required',
-            'icon' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'name' => 'required|string|max:255',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         if ($validator->fails()) {
@@ -45,10 +46,10 @@ class SettingController extends Controller
         }
 
         // Simpan file icon baru jika ada dalam request
-        $iconPath = $request->hasFile('icon') ? $request->file('icon')->store('icons') : $setting->icon;
+        $iconPath = $request->hasFile('icon') ? $request->file('icon')->store('public/icons') : ($setting ? $setting->icon : '');
 
         // Simpan file logo baru jika ada dalam request
-        $logoPath = $request->hasFile('logo') ? $request->file('logo')->store('logos') : $setting->logo;
+        $logoPath = $request->hasFile('logo') ? $request->file('logo')->store('public/logos') : ($setting ? $setting->logo : '');
 
         // Simpan data ke dalam database
         if ($setting) {

@@ -30,7 +30,7 @@ export default function Login({ status, canResetPassword }) {
         <GuestLayout>
             <Head>
                 <title>Log in</title>
-                <link rel="shortcut icon" href={`storage/${web_name.name.icon}`} type="image/x-icon" />
+                <link rel="shortcut icon" href={`storage/${web_name?.name?.icon}`} type="image/x-icon" />
                 <meta property="og:title" content="Login" />
                 <meta property="og:description" content="Halaman login adalah tempat di mana pengguna dapat login" />
                 <meta property="og:url" content={window.location.url} />
