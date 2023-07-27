@@ -11,7 +11,7 @@ import useHooks from '@/hooks/useHooks';
 
 const setProps = {
   th: ['title', 'tmdb_id', 'created_at', 'poster', 'actions'],
-  destroyUrl: 'api.post.destroy',
+  destroyUrl: 'post.destroy',
   bulkDeleteUrl: 'post.bulkdelete',
   handleEdit: (params) => {
     router.visit(route('post.edit', params))

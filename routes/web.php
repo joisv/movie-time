@@ -55,6 +55,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/post-update/{id}', [PostController::class, 'update'])->name('post.update');
     Route::get('/post-create', [PostController::class, 'create'])->name('post.create');
     Route::post('/post-store', [PostController::class, 'store'])->name('post.store');
+    Route::delete('/post-destroy/{id}', [PostController::class, 'destroy'])->name('post.destroy');
     Route::delete('/post-bulkdelete', [PostController::class, 'bulkDelete'])->name('post.bulkdelete');
 
     Route::get('/genres', [GenreController::class, 'index'])->name('genres.index');
@@ -122,6 +123,7 @@ Route::middleware('last_activity')->group(function () {
 
         Route::get('/report/all', [ReportController::class, 'index'])->name('report.index');
         Route::patch('/report/update/{id}', [ReportController::class, 'update'])->name('report.update');
+        Route::post('/report-post', [ReportController::class, 'store'])->name('report.store');
 
         Route::get('/user-profile', [UserProfileController::class, 'edit'])->name('userprofile.edit');
         Route::post('/user-profile/update', [UserProfileController::class, 'update'])->name('userprofile.update');

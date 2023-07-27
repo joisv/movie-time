@@ -112,7 +112,7 @@ export default function Stream({ auth, postdata }) {
     };
 
     const handleReport = () => {
-        const createComponent = <Radio onClose={() => setOpen(false)} itemId={postdata.id} setOpen={setOpen} auth={auth} />;
+        const createComponent = <Radio onClose={() => setOpen(false)} itemId={postdata.id} auth={auth} />;
         displayModal(createComponent);
     }
     const handleDownload = () => {

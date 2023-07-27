@@ -1,5 +1,5 @@
+import useHooks from '@/hooks/useHooks';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { useState } from 'react';
 import { useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -7,22 +7,19 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function PostIssue() {
 
-  const [ reports, setReports ] = useState([]);
+  const { data:reports, err, get } = useHooks();
 
   useEffect(() => {
-    const getReportStatus = async () => {
-      try {
+
+    get(route('reportstatus'),{
+      onSuccess: () => {
         
-        const response =  await axios.get(route('reportstatus'))
-        setReports(response.data)
-        
-      } catch (error) {
-        console.log(error);
+      },
+      onError: () => {
+
       }
-    }
-    getReportStatus(); 
+    })
   }, [])
-  
   const data = {
     labels: reports.report_status?.map(report => report.status),
     datasets: [
@@ -41,6 +38,9 @@ export default function PostIssue() {
   
   return (
     <div className='w-full h-full'>
+      <div className='bg-gray-800 p-1 text-white rounded-md font-medium w-fit'>
+        Post issue
+      </div>
        <Doughnut data={data} />;
     </div>
   )

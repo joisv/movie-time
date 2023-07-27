@@ -20,7 +20,7 @@ const getRequestCount = async (param) => {
             return response.data;
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
     }
 };
 
@@ -30,9 +30,8 @@ export default function Authenticated({ user, header, children }) {
     const [reportCount, setReportCount] = useState(null);
     const [iconActive, setIconActive] = useState(route().current());
 
-
     useEffect(() => {
-
+        
         (async () => {
             const [requestCount, reportCount] = await Promise.all([
                 getRequestCount(route('api.request.count')),
@@ -43,7 +42,6 @@ export default function Authenticated({ user, header, children }) {
             setReportCount(reportCount);
         })();
     }, [])
-
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="bg-white border-b border-gray-100 sm:relative">

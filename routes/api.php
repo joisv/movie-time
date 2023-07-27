@@ -43,8 +43,7 @@ Route::get('/search/movie', [HomeController::class, 'searchMovie'])->name('searc
 Route::get('/genre/all', [ExploreController::class, 'getGenres'])->name('get.genre');
 Route::get('/recomendation-movies', [RecomendationController::class, 'getRecomendation'])->name('recomendation.movies');
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    Route::delete('/post-delete/{id}', [PostController::class, 'destroy'])->name('api.post.destroy');
+Route::middleware(['role:admin'])->group(function () {
     Route::post('/genereate-movie/{id}', [GenerateMovieController::class, 'generate'])->name('generate');
     Route::get('/generate-genre', [GenerateMovieController::class, 'generateMovieGenre'])->name('generate.genre');
     Route::get('/search', [PostController::class, 'search'])->name('search');
@@ -54,7 +53,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/search/download', [DownloadController::class, 'search'])->name('download.search');
     Route::get('/search/user', [UserController::class, 'search'])->name('user.search');
     Route::get('/get-post', function () {
-
+    
         $data = Post::all();
         return response()->json($data);
     })->name('getpost');
@@ -97,41 +96,38 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         ]);
     })->name('api.report.show');
     Route::get('/banner/edit/{id}', [BannerController::class, 'edit'])->name('api.banner.edit');
-
+    
     Route::get('/request/count', function(){
         $req = ModelsRequest::where('is_new', true)->count();
         return response()->json($req);
     })->name('api.request.count');
-
+    
     Route::get('/report/count/is-new', function(){
         $req = Report::where('is_new', true)->count();
         return response()->json($req);
     })->name('api.usereport.count');
-
-    Route::get('/user-count', [ AnalitycsController::class, 'userCount' ])->name('usercount');
-    Route::get('/report-status', [ AnalitycsController::class, 'reportStatus' ])->name('reportstatus');
-    Route::get('/post-most', [ AnalitycsController::class, 'mostmovie' ])->name('mostmovie');
-    Route::get('/post/views/bydays', [ AnalitycsController::class, 'postViewByDays' ])->name('post.bydays');
-    Route::get('/post/views/weeks', [ AnalitycsController::class, 'postViewByWeeks' ])->name('post.byweeks');
-    Route::get('/post/views/month', [ AnalitycsController::class, 'postViewByMonth' ])->name('post.bymonth');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
-    Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.like');
-    Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
-    Route::post('/report-post', [ReportController::class, 'store'])->name('report.store');
+Route::get('/user-count', [ AnalitycsController::class, 'userCount' ])->name('usercount');
+Route::get('/report-status', [ AnalitycsController::class, 'reportStatus' ])->name('reportstatus');
+Route::get('/post-most', [ AnalitycsController::class, 'mostmovie' ])->name('mostmovie');
+Route::get('/post/views/bydays', [ AnalitycsController::class, 'postViewByDays' ])->name('post.bydays');
+Route::get('/post/views/weeks', [ AnalitycsController::class, 'postViewByWeeks' ])->name('post.byweeks');
+Route::get('/post/views/month', [ AnalitycsController::class, 'postViewByMonth' ])->name('post.bymonth');
 
-    Route::get('/notification', function () {
-        $user = auth()->user();
-        $data = Notification::where('user_id', $user->id)
-            ->where('is_read', false)
-            ->count();
+Route::post('/history/store', [UserHistoryController::class, 'store'])->name('history.store');
+Route::post('/like-post/{id}', [PostController::class, 'likePost'])->name('post.like');
+Route::post('/bookmark-post/{id}', [PostController::class, 'bookmark'])->name('post.bookmark');
 
-        return response()->json(['notifications' => $data], 200);
-    })->name('notification');
+Route::get('/notification', function () {
+    $user = auth()->user();
+    $data = Notification::where('user_id', $user->id)
+        ->where('is_read', false)
+        ->count();
 
-    Route::patch('/notification/update/{id}', [UserNotificationsController::class, 'update'])->name('notification.update');
-    
-    Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
-});
+    return response()->json(['notifications' => $data], 200);
+})->name('notification');
+
+Route::patch('/notification/update/{id}', [UserNotificationsController::class, 'update'])->name('notification.update');
+
+Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');

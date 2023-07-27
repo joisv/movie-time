@@ -19,7 +19,7 @@ class HomeController extends Controller
             ->take(10)
             ->get();
         $popularMovie = Post::orderBy('views')->take(10)->get();
-        $recently_added = Post::orderBy('created_at', 'desc')->take(10)->get();
+        $recently_added = Post::orderBy('created_at', 'desc')->with('genres')->take(10)->get();
 
         return Inertia::render('Home', [
             'recomendationMovies' => $recomendationMovies,

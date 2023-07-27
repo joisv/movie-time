@@ -1,6 +1,7 @@
 import { formatDateTime } from '@/Helper/formatDate';
 import { shortSentence } from '@/Helper/shortSentence';
 import { Tab } from '@headlessui/react';
+import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import React from 'react'
 import { Fragment } from 'react';
@@ -11,8 +12,9 @@ import { ImSpinner8 } from 'react-icons/im';
 const tabs = ['Views', 'Likes']
 
 const OptionsCard = ({ posts, loading }) => {
+    const {web_name} = usePage().props
     return (
-        <div className='bg-gray-900 h-full p-3 rounded-sm'>
+        <div className='bg-gray-900 h-full p-3 rounded-md'>
             {
                 posts?.map((post, index) => (
 
@@ -20,7 +22,7 @@ const OptionsCard = ({ posts, loading }) => {
                         <li >
                             <div className="flex items-center space-x-4 ">
                                 <div className="flex-shrink-0">
-                                    <img className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image" />
+                                    <img className="w-8 h-8 rounded-full" src={`${web_name.base_url}/storage/${post.poster_path}`} alt="Neil image" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-gray-300 truncate ">

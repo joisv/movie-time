@@ -30,14 +30,9 @@ export default function Recomendation({ isDetail }) {
                 </div>
                 <div className="flex flex-col items-center md:w-[35%] border border-secondaryAccent rounded-md">
                     <h1 className='text-primaryBtn text-2xl font-semibold py-2 w-full px-4'>Banner</h1>
-                    <div className='w-full relative mt-4'>
+                    <div className='w-full relative'>
                         <BannerSlider />
                     </div>
-                    {/* <div className=" w-full">
-                        <div className="w-full p-3 bg-cyan-500">
-                            <h1>halo dunia</h1>
-                        </div>
-                    </div> */}
                 </div>
             </div>
         </div>
