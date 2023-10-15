@@ -3,6 +3,7 @@ import AuthLayout from '@/Layouts/AuthLayout';
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { MdMenu } from 'react-icons/md';
+import Card from '@/Components/Card';
 
 export default function Like({ auth, likes }) {
     const { web_name } = usePage().props
